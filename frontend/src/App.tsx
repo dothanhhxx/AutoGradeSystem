@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Play, 
-  Activity, 
-  Settings, 
-  BookOpen, 
-  Layers, 
-  XCircle, 
-  RefreshCw, 
-  Sliders, 
-  Info, 
-  Download, 
-  Shield, 
-  Database, 
+import {
+  Play,
+  Activity,
+  Settings,
+  BookOpen,
+  Layers,
+  XCircle,
+  RefreshCw,
+  Sliders,
+  Info,
+  Download,
+  Shield,
+  Database,
   Cpu,
   ChevronRight,
   TrendingUp,
@@ -21,991 +21,804 @@ import {
   HelpCircle,
   Edit3,
   AlignLeft,
-  Settings2
+  Settings2,
+  Zap,
+  BarChart2,
+  Brain,
+  Sparkles,
 } from 'lucide-react';
 import type { GradingResult, Weights, BatchItem, SystemThresholds } from './types';
-import { 
-  DEFAULT_WEIGHTS, 
-  WEIGHT_PRESETS, 
-  DEFAULT_THRESHOLDS, 
-  simulateGrading, 
-  calculateLocalGrade 
+import {
+  DEFAULT_WEIGHTS,
+  WEIGHT_PRESETS,
+  DEFAULT_THRESHOLDS,
+  simulateGrading,
+  calculateLocalGrade,
 } from './mockData';
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const getScoreColor = (score: number) => {
+  if (score >= 80) return { stroke: 'stroke-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-500' };
+  if (score >= 55) return { stroke: 'stroke-amber-500', text: 'text-amber-600', bg: 'bg-amber-500' };
+  return { stroke: 'stroke-rose-500', text: 'text-rose-600', bg: 'bg-rose-500' };
+};
+
+const getScoreLabel = (score: number) => {
+  if (score >= 80) return { label: 'Excellent', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (score >= 55) return { label: 'Partial', color: 'text-amber-700 bg-amber-50 border-amber-200' };
+  return { label: 'Needs Work', color: 'text-rose-700 bg-rose-50 border-rose-200' };
+};
+
+const getBadgeStyle = (tag: string) => {
+  switch (tag) {
+    case 'Correct':           return 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400';
+    case 'Partially Correct': return 'bg-amber-100 text-amber-900 border-2 border-amber-400';
+    case 'Incorrect':         return 'bg-rose-100 text-rose-900 border-2 border-rose-400';
+    case 'Missing Concepts':  return 'bg-sky-100 text-sky-900 border-2 border-sky-400';
+    case 'Factual Error':     return 'bg-red-100 text-red-900 border-2 border-red-400';
+    case 'Logical Error':     return 'bg-purple-100 text-purple-900 border-2 border-purple-400';
+    case 'Vague Expression':  return 'bg-slate-200 text-slate-800 border-2 border-slate-400';
+    case 'Grammar Error':     return 'bg-orange-100 text-orange-900 border-2 border-orange-400';
+    case 'Off-Topic':         return 'bg-fuchsia-100 text-fuchsia-900 border-2 border-fuchsia-400';
+    case 'Incomplete':        return 'bg-yellow-100 text-yellow-900 border-2 border-yellow-400';
+    default:                  return 'bg-slate-100 text-slate-700 border-2 border-slate-300';
+  }
+};
+
+const getTagIcon = (tag: string) => {
+  switch (tag) {
+    case 'Correct':           return <CheckCircle2 className="w-3 h-3 text-emerald-700 flex-shrink-0" strokeWidth={2.5} />;
+    case 'Partially Correct': return <Info className="w-3 h-3 text-amber-700 flex-shrink-0" strokeWidth={2.5} />;
+    case 'Incorrect':         return <XCircle className="w-3 h-3 text-rose-700 flex-shrink-0" strokeWidth={2.5} />;
+    case 'Factual Error':
+    case 'Logical Error':     return <AlertOctagon className="w-3 h-3 text-red-700 flex-shrink-0" strokeWidth={2.5} />;
+    default:                  return <HelpCircle className="w-3 h-3 text-slate-500 flex-shrink-0" strokeWidth={2} />;
+  }
+};
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+/** Circular SVG score ring */
+function ScoreRing({ score, size = 96 }: { score: number; size?: number }) {
+  const c = getScoreColor(score);
+  const r = 15.9155;
+  const circ = 283;
+  const offset = circ - (circ * score) / 100;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg className="w-full h-full" viewBox="0 0 36 36">
+        <path
+          strokeWidth="2.5" fill="none" stroke="#e2e8f0"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+        <path
+          className={`progress-circle ${c.stroke}`}
+          strokeWidth="2.5" strokeLinecap="round" fill="none"
+          style={{ '--offset': offset } as React.CSSProperties}
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+      </svg>
+      <div className={`absolute inset-0 flex flex-col items-center justify-center ${c.text}`}>
+        <span className="text-lg font-semibold tabular-nums leading-none">{Math.round(score)}</span>
+        <span className="text-[9px] text-slate-500 leading-none mt-0.5">/ 100</span>
+      </div>
+    </div>
+  );
+}
+
+/** Horizontal metric bar */
+function MetricBar({
+  label, value, color,
+}: { label: string; value: number; color: string }) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex justify-between items-center">
+        <span className="text-xs text-slate-500">{label}</span>
+        <span className="text-xs font-semibold text-slate-800 tabular-nums">{Math.round(value)}%</span>
+      </div>
+      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full metric-bar-fill ${color}`}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Tag badge chip */
+function Badge({ tag }: { tag: string }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold ${getBadgeStyle(tag)}`}>
+      {getTagIcon(tag)}
+      {tag}
+    </span>
+  );
+}
+
+/** Empty state placeholder */
+function EmptyState({ icon: Icon, title, body }: { icon: React.ElementType; title: string; body: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center text-center py-14 space-y-3">
+      <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-slate-400" strokeWidth={1.5} />
+      </div>
+      <p className="text-sm font-semibold text-slate-800">{title}</p>
+      <p className="text-xs text-slate-500 max-w-xs leading-relaxed">{body}</p>
+    </div>
+  );
+}
+
+/** Section card wrapper */
+function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`bg-white rounded-2xl border border-slate-200/80 shadow-sm ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/** Section title row inside a card */
+function CardHeader({ icon: Icon, title, right }: {
+  icon: React.ElementType; title: string; right?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+      <div className="flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center">
+          <Icon className="w-3.5 h-3.5 text-slate-500" strokeWidth={2} />
+        </div>
+        <span className="text-sm font-semibold text-slate-800">{title}</span>
+      </div>
+      {right && <div>{right}</div>}
+    </div>
+  );
+}
+
+// ─── Stats Card ───────────────────────────────────────────────────────────────
+
+function StatCard({
+  label, value, sub, accent,
+}: { label: string; value: string | number; sub: string; accent: string }) {
+  return (
+    <Card className="card-hover p-6">
+      <p className={`text-[10px] font-semibold uppercase tracking-widest ${accent}`}>{label}</p>
+      <p className="text-3xl font-semibold text-slate-800 mt-1.5 tabular-nums">{value}</p>
+      <p className="text-xs text-slate-500 mt-1">{sub}</p>
+    </Card>
+  );
+}
+
+// ─── Weight Sliders Panel ─────────────────────────────────────────────────────
+
+function WeightsPanel({
+  weights, activePreset, onPresetChange, onWeightChange,
+}: {
+  weights: Weights;
+  activePreset: string;
+  onPresetChange: (p: string) => void;
+  onWeightChange: (k: keyof Weights, v: number) => void;
+}) {
+  const total = Object.values(weights).reduce((a, b) => a + b, 0);
+  const isBalanced = Math.abs(total - 1) < 0.01;
+
+  const presets = [
+    { key: 'balanced', label: 'Balanced' },
+    { key: 'content_focused', label: 'Content' },
+    { key: 'academic_writing', label: 'Academic' },
+    { key: 'logic_heavy', label: 'Logic' },
+    { key: 'quick_check', label: 'Quick' },
+  ];
+
+  const sliders: { key: keyof Weights; label: string; color: string }[] = [
+    { key: 'semantic',  label: 'Semantic Similarity', color: 'bg-indigo-500' },
+    { key: 'coverage',  label: 'Keyword Coverage',    color: 'bg-sky-500' },
+    { key: 'formality', label: 'Formality',           color: 'bg-slate-500' },
+    { key: 'grammar',   label: 'Grammar',             color: 'bg-orange-500' },
+    { key: 'logic',     label: 'Logical Coherence',   color: 'bg-purple-500' },
+  ];
+
+  return (
+    <Card>
+      <CardHeader icon={Settings2} title="Weights Configuration" />
+      <div className="p-5 space-y-5">
+        {/* Preset pills */}
+        <div className="flex flex-wrap gap-1.5">
+          {presets.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => onPresetChange(p.key)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                activePreset === p.key
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+          {activePreset === 'custom' && (
+            <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-100 text-violet-700 border border-violet-200">
+              Custom
+            </span>
+          )}
+        </div>
+
+        {/* Sliders */}
+        <div className="space-y-4">
+          {sliders.map(({ key, label, color }) => (
+            <div key={key} className="space-y-1.5">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-600 font-semibold">{label}</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{Math.round(weights[key] * 100)}%</span>
+              </div>
+              <input
+                type="range" min="0" max="1" step="0.05"
+                value={weights[key]}
+                onChange={(e) => onWeightChange(key, parseFloat(e.target.value))}
+                className="w-full"
+                style={{ background: `linear-gradient(to right, ${color === 'bg-indigo-500' ? '#6366f1' : color === 'bg-sky-500' ? '#0ea5e9' : color === 'bg-slate-500' ? '#64748b' : color === 'bg-orange-500' ? '#f97316' : '#a855f7'} ${weights[key] * 100}%, #e2e8f0 ${weights[key] * 100}%)` }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Total indicator */}
+        <div className={`flex items-center gap-2 text-xs px-3 py-2.5 rounded-xl border ${
+          isBalanced
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+            : 'bg-amber-50 border-amber-200 text-amber-700'
+        }`}>
+          <Info className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+          <span>
+            Total: <span className="font-semibold tabular-nums">{Math.round(total * 100)}%</span>
+            {isBalanced ? ' · Weights auto-normalize on evaluation.' : ' · Weights will be normalized automatically.'}
+          </span>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ─── Single Result Panel ──────────────────────────────────────────────────────
+
+function ResultPanel({ result }: { result: GradingResult }) {
+  const score = result.metrics.final_grade;
+  const sl = getScoreLabel(score);
+
+  return (
+    <div className="space-y-4 animate-fade-up">
+      {/* Score hero card */}
+      <Card className="p-6">
+        <div className="flex items-center gap-6">
+          <ScoreRing score={score} size={88} />
+          <div className="flex-1 space-y-2.5">
+            <div className="flex items-center gap-2">
+              <span className={`px-2.5 py-1 rounded-lg border text-xs font-semibold ${sl.color}`}>
+                {sl.label}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed">Weighted composite score across 5 NLP criteria.</p>
+            <div className="flex flex-wrap gap-1.5">
+              {result.feedback.tags.map((tag, i) => <Badge key={i} tag={tag} />)}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Metric bars */}
+      <Card>
+        <CardHeader icon={BarChart2} title="Feature Breakdown" />
+        <div className="p-5 space-y-3.5">
+          <MetricBar label="Semantic Similarity" value={result.metrics.semantic_score * 100}  color="bg-indigo-500" />
+          <MetricBar label="Keyword Coverage"    value={result.metrics.coverage_score * 100}   color="bg-sky-500" />
+          <MetricBar label="Formality"           value={result.metrics.formality_score * 100} color="bg-slate-400" />
+          <MetricBar label="Grammar"             value={result.metrics.grammar_score * 100}    color="bg-orange-500" />
+          <MetricBar label="Logical Coherence"   value={result.metrics.logic_score * 100}      color="bg-purple-500" />
+        </div>
+      </Card>
+
+      {/* LLM Feedback */}
+      <Card>
+        <CardHeader icon={Brain} title="AI Feedback" />
+        <div className="p-5 space-y-4">
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Explanation</p>
+            <p className="text-xs text-slate-700 leading-relaxed">{result.feedback.explanation}</p>
+          </div>
+          <div className="space-y-1.5 pt-3 border-t border-slate-100">
+            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Recommendation</p>
+            <p className="text-xs text-slate-700 leading-relaxed">{result.feedback.suggestion}</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Missing keywords */}
+      {result.metrics.missing_keywords?.length > 0 && (
+        <Card>
+          <div className="p-5 space-y-2.5">
+            <p className="text-[10px] font-semibold text-rose-600 uppercase tracking-widest">Missing Keywords</p>
+            <div className="flex flex-wrap gap-1.5">
+              {result.metrics.missing_keywords.map((kw, i) => (
+                <span key={i} className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-[10px] font-semibold">
+                  {kw}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* NLI details */}
+      {result.metrics.logic_details && (
+        <Card>
+          <div className="p-5 space-y-2.5">
+            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">NLI Probabilities</p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs text-slate-600">
+              {Object.entries(result.metrics.logic_details).map(([k, v]) =>
+                v !== undefined ? (
+                  <div key={k} className="flex justify-between border-b border-slate-100 pb-1.5">
+                    <span className="capitalize">{k.replace(/_/g, ' ')}</span>
+                    <span className="font-semibold tabular-nums text-slate-800">{Math.round((v as number) * 100)}%</span>
+                  </div>
+                ) : null
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// ─── Main App ─────────────────────────────────────────────────────────────────
+
 export default function App() {
-  // Navigation & Core States
   const [activeTab, setActiveTab] = useState<'dashboard' | 'single' | 'batch' | 'settings'>('dashboard');
-  const [isLive, setIsLive] = useState<boolean>(false); // Default to simulated for zero-setup demo
+  const [isLive, setIsLive] = useState<boolean>(false);
   const [apiUrl, setApiUrl] = useState<string>('http://localhost:8000');
   const [healthStatus, setHealthStatus] = useState<{ status: string; device: string; models_loaded: boolean } | null>(null);
-  
-  // Weights and Thresholds (Client Local Copy, syncs with backend if Live)
+
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [activePreset, setActivePreset] = useState<string>('balanced');
   const [thresholds] = useState<SystemThresholds>(DEFAULT_THRESHOLDS);
-  
-  // Single Grader States
-  const [singleContext, setSingleContext] = useState<string>('Photosynthesis is the process by which plants make food.');
+
+  const [singleContext, setSingleContext]   = useState<string>('Photosynthesis is the process by which plants make food.');
   const [singleQuestion, setSingleQuestion] = useState<string>('Explain the process of photosynthesis.');
   const [singleReference, setSingleReference] = useState<string>('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-  const [singleStudent, setSingleStudent] = useState<string>('Plants use sunlight and water to make food and release oxygen.');
-  const [singleResult, setSingleResult] = useState<GradingResult | null>(null);
+  const [singleStudent, setSingleStudent]   = useState<string>('Plants use sunlight and water to make food and release oxygen.');
+  const [singleResult, setSingleResult]     = useState<GradingResult | null>(null);
   const [isGradingSingle, setIsGradingSingle] = useState<boolean>(false);
-  const [singleError, setSingleError] = useState<string | null>(null);
-  
-  // Batch Grader States
-  const [batchQuestion, setBatchQuestion] = useState<string>('Explain the process of photosynthesis.');
+  const [singleError, setSingleError]       = useState<string | null>(null);
+
+  const [batchQuestion, setBatchQuestion]   = useState<string>('Explain the process of photosynthesis.');
   const [batchReference, setBatchReference] = useState<string>('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-  const [batchRawInput, setBatchRawInput] = useState<string>(
+  const [batchRawInput, setBatchRawInput]   = useState<string>(
     `Student A: Plants use light to make food.\nStudent B: Animals eat plants to get energy.\nStudent C: Plants use sunlight, water, carbon dioxide to produce glucose and oxygen via chlorophyll.\nStudent D: It is a process.`
   );
-  const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
-  const [isGradingBatch, setIsGradingBatch] = useState<boolean>(false);
+  const [batchItems, setBatchItems]           = useState<BatchItem[]>([]);
+  const [isGradingBatch, setIsGradingBatch]   = useState<boolean>(false);
   const [selectedBatchItem, setSelectedBatchItem] = useState<BatchItem | null>(null);
 
-  // Stats
   const [stats, setStats] = useState({
-    totalGraded: 4,
-    averageGrade: 64.63,
-    correctCount: 1,
-    partialCount: 2,
-    incorrectCount: 1,
+    totalGraded: 4, averageGrade: 64.63, correctCount: 1, partialCount: 2, incorrectCount: 1,
   });
 
-  // Verify health on load & Live toggle
   useEffect(() => {
-    if (isLive) {
-      checkHealth();
-    } else {
-      setHealthStatus({ status: 'healthy', device: 'Client Sim (WASM)', models_loaded: true });
-    }
+    if (isLive) checkHealth();
+    else setHealthStatus({ status: 'healthy', device: 'Client Sim', models_loaded: true });
   }, [isLive, apiUrl]);
 
   const checkHealth = async () => {
     try {
       const res = await fetch(`${apiUrl}/health`);
-      if (res.ok) {
-        const data = await res.json();
-        setHealthStatus(data);
-      } else {
-        setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
-      }
-    } catch (err) {
+      if (res.ok) setHealthStatus(await res.json());
+      else setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
+    } catch {
       setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
     }
   };
 
-  // Preset Selection Helper
-  const handlePresetChange = (presetName: string) => {
-    setActivePreset(presetName);
-    if (WEIGHT_PRESETS[presetName]) {
-      setWeights(WEIGHT_PRESETS[presetName]);
-      if (singleResult) {
-        recalculateSingle(WEIGHT_PRESETS[presetName]);
-      }
+  const handlePresetChange = (name: string) => {
+    setActivePreset(name);
+    if (WEIGHT_PRESETS[name]) {
+      setWeights(WEIGHT_PRESETS[name]);
+      if (singleResult) recalculateSingle(WEIGHT_PRESETS[name]);
     }
   };
 
-  // Adjust Custom Slider Weights
   const handleWeightChange = (key: keyof Weights, value: number) => {
     setActivePreset('custom');
-    const newWeights = { ...weights, [key]: Math.round(value * 100) / 100 };
-    setWeights(newWeights);
-    
-    if (singleResult) {
-      recalculateSingle(newWeights);
-    }
+    const nw = { ...weights, [key]: Math.round(value * 100) / 100 };
+    setWeights(nw);
+    if (singleResult) recalculateSingle(nw);
   };
 
-  // Recalculate Grade locally or via API
-  const recalculateSingle = async (newWeights: Weights) => {
+  const recalculateSingle = async (nw: Weights) => {
     if (!singleResult) return;
-    
     if (isLive) {
       try {
         const res = await fetch(`${apiUrl}/grade/recalculate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            metrics: singleResult.metrics,
-            weights: newWeights
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ metrics: singleResult.metrics, weights: nw }),
         });
         if (res.ok) {
           const data = await res.json();
-          setSingleResult(prev => {
-            if (!prev) return null;
-            return {
-              ...prev,
-              metrics: {
-                ...prev.metrics,
-                final_grade: data.new_grade
-              }
-            };
-          });
+          setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: data.new_grade } } : null);
         }
-      } catch (err) {
-        const updatedGrade = calculateLocalGrade(singleResult.metrics, newWeights);
-        setSingleResult(prev => {
-          if (!prev) return null;
-          return { ...prev, metrics: { ...prev.metrics, final_grade: updatedGrade } };
-        });
+      } catch {
+        const g = calculateLocalGrade(singleResult.metrics, nw);
+        setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null);
       }
     } else {
-      const updatedGrade = calculateLocalGrade(singleResult.metrics, newWeights);
-      setSingleResult(prev => {
-        if (!prev) return null;
-        return { ...prev, metrics: { ...prev.metrics, final_grade: updatedGrade } };
-      });
+      const g = calculateLocalGrade(singleResult.metrics, nw);
+      setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null);
     }
   };
 
-  // Grade Single Answer Action
   const handleGradeSingle = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGradingSingle(true);
     setSingleError(null);
-    
     if (isLive) {
       try {
         const res = await fetch(`${apiUrl}/grade`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            context: singleContext,
-            question: singleQuestion,
-            reference: singleReference,
-            student: singleStudent,
-            weights: weights
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ context: singleContext, question: singleQuestion, reference: singleReference, student: singleStudent, weights }),
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.success) {
-            setSingleResult(data.data);
-            updateStats(data.data.metrics.final_grade, data.data.feedback.tags);
-          } else {
-            setSingleError(data.error || 'Unknown error occurred during grading.');
-          }
+          if (data.success) { setSingleResult(data.data); updateStats(data.data.metrics.final_grade, data.data.feedback.tags); }
+          else setSingleError(data.error || 'Unknown error.');
         } else {
-          const errData = await res.json().catch(() => ({}));
-          setSingleError(errData.error || `Server responded with status code ${res.status}`);
+          const e2 = await res.json().catch(() => ({}));
+          setSingleError(e2.error || `Server error ${res.status}`);
         }
-      } catch (err) {
-        setSingleError('Failed to connect to the backend server. Verify uvicorn is running, or switch to simulated Demo Mode.');
-      } finally {
-        setIsGradingSingle(false);
-      }
+      } catch { setSingleError('Cannot reach backend. Switch to Simulated Mode or start uvicorn.'); }
+      finally { setIsGradingSingle(false); }
     } else {
-      // Simulate
       setTimeout(() => {
         try {
-          const result = simulateGrading(singleContext, singleQuestion, singleReference, singleStudent, weights);
-          setSingleResult(result);
-          updateStats(result.metrics.final_grade, result.feedback.tags);
-        } catch (err: any) {
-          setSingleError(err.message || 'Simulated grading error');
-        } finally {
-          setIsGradingSingle(false);
-        }
+          const r = simulateGrading(singleContext, singleQuestion, singleReference, singleStudent, weights);
+          setSingleResult(r); updateStats(r.metrics.final_grade, r.feedback.tags);
+        } catch (err: any) { setSingleError(err.message || 'Simulation error'); }
+        finally { setIsGradingSingle(false); }
       }, 800);
     }
   };
 
-  // Update Stats Helper
   const updateStats = (score: number, tags: string[]) => {
     setStats(prev => {
-      const newTotal = prev.totalGraded + 1;
-      const isCorrect = tags.includes('Correct');
-      const isPartial = tags.includes('Partially Correct');
-      
+      const nt = prev.totalGraded + 1;
       return {
-        totalGraded: newTotal,
-        averageGrade: Math.round(((prev.averageGrade * prev.totalGraded + score) / newTotal) * 100) / 100,
-        correctCount: prev.correctCount + (isCorrect ? 1 : 0),
-        partialCount: prev.partialCount + (isPartial ? 1 : 0),
-        incorrectCount: prev.incorrectCount + (!isCorrect && !isPartial ? 1 : 0),
+        totalGraded:    nt,
+        averageGrade:   Math.round(((prev.averageGrade * prev.totalGraded + score) / nt) * 100) / 100,
+        correctCount:   prev.correctCount   + (tags.includes('Correct') ? 1 : 0),
+        partialCount:   prev.partialCount   + (tags.includes('Partially Correct') ? 1 : 0),
+        incorrectCount: prev.incorrectCount + (!tags.includes('Correct') && !tags.includes('Partially Correct') ? 1 : 0),
       };
     });
   };
 
-  // Run Batch Grading
   const handleGradeBatch = async () => {
     if (!batchRawInput.trim()) return;
     setIsGradingBatch(true);
     setSelectedBatchItem(null);
-
-    const lines = batchRawInput.split('\n').filter(line => line.trim().length > 0);
+    const lines = batchRawInput.split('\n').filter(l => l.trim());
     const items: BatchItem[] = lines.map((line, idx) => {
-      let identifier = `Student ${idx + 1}`;
-      let studentAns = line;
-      
-      const colonIdx = line.indexOf(':');
-      if (colonIdx > 0 && colonIdx < 30) {
-        identifier = line.substring(0, colonIdx).trim();
-        studentAns = line.substring(colonIdx + 1).trim();
-      }
-
-      return {
-        id: identifier,
-        context: '',
-        question: batchQuestion,
-        reference: batchReference,
-        student: studentAns,
-        status: 'grading'
-      };
+      let id = `Student ${idx + 1}`, student = line;
+      const ci = line.indexOf(':');
+      if (ci > 0 && ci < 30) { id = line.substring(0, ci).trim(); student = line.substring(ci + 1).trim(); }
+      return { id, context: '', question: batchQuestion, reference: batchReference, student, status: 'grading' };
     });
-
     setBatchItems(items);
 
     if (isLive) {
       try {
-        const batchPayload = items.map(item => ({
-          context: item.context,
-          question: item.question,
-          reference: item.reference,
-          student: item.student
-        }));
-
         const res = await fetch(`${apiUrl}/grade/batch`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: batchPayload,
-            weights: weights
-          })
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: items.map(i => ({ context: i.context, question: i.question, reference: i.reference, student: i.student })), weights }),
         });
-
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.data.results) {
-            const results = data.data.results;
-            setBatchItems(prev => prev.map((item, index) => ({
-              ...item,
-              status: 'success',
-              result: results[index]
-            })));
-          } else {
-            throw new Error(data.message || 'Batch endpoint error');
-          }
-        } else {
-          throw new Error(`Server returned HTTP ${res.status}`);
-        }
+            setBatchItems(prev => prev.map((item, idx) => ({ ...item, status: 'success', result: data.data.results[idx] })));
+          } else throw new Error(data.message);
+        } else throw new Error(`HTTP ${res.status}`);
       } catch (err: any) {
-        setBatchItems(prev => prev.map(item => ({
-          ...item,
-          status: 'failed',
-          error: err.message || 'Network error'
-        })));
-      } finally {
-        setIsGradingBatch(false);
-      }
+        setBatchItems(prev => prev.map(item => ({ ...item, status: 'failed', error: err.message })));
+      } finally { setIsGradingBatch(false); }
     } else {
       for (let i = 0; i < items.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(r => setTimeout(r, 320));
         const res = simulateGrading('', items[i].question, items[i].reference, items[i].student, weights);
-        setBatchItems(prev => {
-          const updated = [...prev];
-          updated[i] = {
-            ...updated[i],
-            status: 'success',
-            result: res
-          };
-          return updated;
-        });
+        setBatchItems(prev => { const u = [...prev]; u[i] = { ...u[i], status: 'success', result: res }; return u; });
       }
       setIsGradingBatch(false);
     }
   };
 
-  // Load sample datasets
   const handleLoadSample = (topic: 'photosynthesis' | 'watercycle') => {
     if (topic === 'photosynthesis') {
       setBatchQuestion('Explain the process of photosynthesis.');
       setBatchReference('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-      setBatchRawInput(
-        `Alice: Plants use sunlight, carbon dioxide, and water to make glucose (sugar) and release oxygen via chlorophyll.\n` +
-        `Bob: Plants require sunlight and water to produce food. They release oxygen gas.\n` +
-        `Charlie: Animals eat grass and plants to acquire chemical energy which was generated by sun.\n` +
-        `David: water and sun`
-      );
+      setBatchRawInput(`Alice: Plants use sunlight, carbon dioxide, and water to make glucose and release oxygen via chlorophyll.\nBob: Plants require sunlight and water to produce food. They release oxygen gas.\nCharlie: Animals eat grass and plants to acquire chemical energy which was generated by sun.\nDavid: water and sun`);
     } else {
       setBatchQuestion('Describe the water cycle.');
       setBatchReference('The water cycle is the continuous process where water evaporates from the Earth, condenses into clouds, and falls as precipitation.');
-      setBatchRawInput(
-        `John: Water evaporates from oceans, forms clouds in the sky, and then rains back down to Earth.\n` +
-        `Sarah: The water cycle involves evaporation of water, condensation into clouds, and precipitation like rain.\n` +
-        `Kevin: Water goes up to the sky because of heat. This happens many times.\n` +
-        `Emma: Rain falls from clouds.`
-      );
+      setBatchRawInput(`John: Water evaporates from oceans, forms clouds in the sky, and then rains back down to Earth.\nSarah: The water cycle involves evaporation of water, condensation into clouds, and precipitation like rain.\nKevin: Water goes up to the sky because of heat. This happens many times.\nEmma: Rain falls from clouds.`);
     }
   };
 
-  // Export helper
   const handleExportCSV = () => {
-    if (batchItems.length === 0) return;
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += 'Student,Answer,Grade,Correctness,Explanation\n';
-    
+    if (!batchItems.length) return;
+    let csv = 'data:text/csv;charset=utf-8,Student,Answer,Grade,Correctness,Explanation\n';
     batchItems.forEach(item => {
-      const name = item.id;
       const ans = `"${item.student.replace(/"/g, '""')}"`;
       const grade = item.result?.metrics.final_grade ?? 'N/A';
-      const correctness = item.result?.feedback.tags[0] ?? 'N/A';
-      const explanation = item.result ? `"${item.result.feedback.explanation.replace(/"/g, '""')}"` : 'N/A';
-      csvContent += `${name},${ans},${grade},${correctness},${explanation}\n`;
+      const tag = item.result?.feedback.tags[0] ?? 'N/A';
+      const exp = item.result ? `"${item.result.feedback.explanation.replace(/"/g, '""')}"` : 'N/A';
+      csv += `${item.id},${ans},${grade},${tag},${exp}\n`;
     });
-
-    const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `grading_batch_results.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('download', 'grading_results.csv');
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
   };
 
-  // Score circular color helper (Light Mode)
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'stroke-emerald-500 text-emerald-600';
-    if (score >= 55) return 'stroke-amber-500 text-amber-600';
-    return 'stroke-rose-500 text-rose-600';
-  };
+  // ─── Nav items ────────────────────────────────────────────────────────────
 
-  // Distinct Color Styling for Badges with Vibrant, Saturated Tones (Vibrant Light Mode)
-  const getBadgeStyle = (tag: string) => {
-    switch (tag) {
-      // Correctness Levels
-      case 'Correct':
-        return 'bg-emerald-100/90 text-emerald-900 border-2 border-emerald-400 shadow-sm';
-      case 'Partially Correct':
-        return 'bg-amber-100/90 text-amber-900 border-2 border-amber-400 shadow-sm';
-      case 'Incorrect':
-        return 'bg-rose-100/90 text-rose-900 border-2 border-rose-400 shadow-sm';
-      
-      // Issue Tags (High Contrast & Distinct Colors)
-      case 'Missing Concepts':
-        return 'bg-sky-100/90 text-sky-900 border-2 border-sky-400 shadow-sm';
-      case 'Factual Error':
-        return 'bg-red-100/90 text-red-900 border-2 border-red-400 shadow-sm';
-      case 'Logical Error':
-        return 'bg-purple-100/90 text-purple-900 border-2 border-purple-400 shadow-sm';
-      case 'Vague Expression':
-        return 'bg-slate-200/90 text-slate-800 border-2 border-slate-400 shadow-sm';
-      case 'Grammar Error':
-        return 'bg-orange-100/90 text-orange-900 border-2 border-orange-400 shadow-sm';
-      case 'Off-Topic':
-        return 'bg-fuchsia-100/90 text-fuchsia-900 border-2 border-fuchsia-400 shadow-sm';
-      case 'Incomplete':
-        return 'bg-yellow-100/90 text-yellow-900 border-2 border-yellow-400 shadow-sm';
-      default:
-        return 'bg-slate-50 text-slate-700 border-2 border-slate-300';
-    }
-  };
+  const navItems = [
+    { id: 'dashboard', label: 'Overview',      icon: Activity },
+    { id: 'single',    label: 'Single Grader', icon: Play },
+    { id: 'batch',     label: 'Batch Grader',  icon: Layers },
+    { id: 'settings',  label: 'Settings',      icon: Settings },
+  ] as const;
 
-  // Helper to render label next to an icon
-  const getTagIcon = (tag: string) => {
-    switch (tag) {
-      case 'Correct':
-        return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-800 flex-shrink-0" />;
-      case 'Partially Correct':
-        return <Info className="w-3.5 h-3.5 text-amber-800 flex-shrink-0" />;
-      case 'Incorrect':
-        return <XCircle className="w-3.5 h-3.5 text-rose-800 flex-shrink-0" />;
-      case 'Factual Error':
-      case 'Logical Error':
-        return <AlertOctagon className="w-3.5 h-3.5 text-red-800 flex-shrink-0" />;
-      default:
-        return <HelpCircle className="w-3.5 h-3.5 text-slate-800 flex-shrink-0" />;
-    }
-  };
+  // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-700 flex flex-col font-sans select-none antialiased">
-      
-      {/* HEADER BAR */}
-      <header className="border-b border-slate-200/50 bg-white/70 backdrop-blur-md sticky top-0 z-50 px-8 py-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-slate-50 border border-slate-200/60 rounded-2xl shadow-sm">
-            <Award className="w-5 h-5 text-indigo-650" strokeWidth={2} />
-          </div>
-          <div>
-            <h1 className="text-base font-semibold leading-none tracking-tight text-slate-800">HybridASAG Grader</h1>
-            <p className="text-xs text-slate-500 mt-1">Short Answer Evaluation Dashboard</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans antialiased select-none">
 
-        {/* MODE TOGGLE */}
-        <div className="flex items-center gap-6">
-          <div className="flex items-center bg-slate-100/80 border border-slate-200/50 p-1 rounded-2xl">
-            <button
-              onClick={() => setIsLive(false)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                !isLive 
-                  ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/60' 
-                  : 'text-slate-500 hover:text-slate-850'
-              }`}
-            >
-              Simulated Mode
-            </button>
-            <button
-              onClick={() => setIsLive(true)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                isLive 
-                  ? 'bg-white text-emerald-600 shadow-sm border border-slate-200/60' 
-                  : 'text-slate-500 hover:text-slate-850'
-              }`}
-            >
-              Live API Mode
-            </button>
+      {/* ══ HEADER ══════════════════════════════════════════════════════════ */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/70 shadow-sm">
+        <div className="flex items-center justify-between px-6 py-3.5">
+
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
+              <Award className="w-4 h-4 text-white" strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-slate-800 leading-tight">HybridASAG Grader</h1>
+              <p className="text-[10px] text-slate-500 leading-tight">Short Answer Evaluation</p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                healthStatus?.status === 'healthy' ? 'bg-emerald-400' : 'bg-rose-400'
-              }`}></span>
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                healthStatus?.status === 'healthy' ? 'bg-emerald-500' : 'bg-rose-500'
-              }`}></span>
-            </span>
-            <span className="text-xs text-slate-500">
-              {isLive ? `Port 8000: ${healthStatus?.status || 'connecting...'}` : 'Sim Active'}
-            </span>
+          {/* Right controls */}
+          <div className="flex items-center gap-4">
+
+            {/* Mode toggle */}
+            <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-0.5">
+              <button
+                onClick={() => setIsLive(false)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                  !isLive ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Simulated
+              </button>
+              <button
+                onClick={() => setIsLive(true)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                  isLive ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Live API
+              </button>
+            </div>
+
+            {/* Health status */}
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className={`animate-pulse-dot absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  healthStatus?.status === 'healthy' ? 'bg-emerald-400' : 'bg-rose-400'
+                }`} />
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                  healthStatus?.status === 'healthy' ? 'bg-emerald-500' : 'bg-rose-500'
+                }`} />
+              </span>
+              <span className="text-xs text-slate-500">
+                {isLive ? healthStatus?.status ?? 'connecting…' : 'Simulated'}
+              </span>
+            </div>
+
           </div>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        
-        {/* SIDEBAR NAVIGATION (Dark Slate Blue - cuts glare, divides layout) */}
-        <nav className="w-64 border-r border-slate-800 bg-slate-900 p-6 flex flex-col justify-between text-slate-300">
-          <div className="space-y-2">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-150 ${
-                activeTab === 'dashboard'
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-inner'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
-              }`}
-            >
-              <Activity className="w-4 h-4 text-slate-400" strokeWidth={2} />
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('single')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-150 ${
-                activeTab === 'single'
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-inner'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
-              }`}
-            >
-              <Play className="w-4 h-4 text-slate-400" strokeWidth={2} />
-              Single Grader
-            </button>
-            <button
-              onClick={() => setActiveTab('batch')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-150 ${
-                activeTab === 'batch'
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-inner'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
-              }`}
-            >
-              <Layers className="w-4 h-4 text-slate-400" strokeWidth={2} />
-              Batch Grader
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-150 ${
-                activeTab === 'settings'
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-inner'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
-              }`}
-            >
-              <Settings className="w-4 h-4 text-slate-400" strokeWidth={2} />
-              System config
-            </button>
+
+        {/* ══ SIDEBAR ═════════════════════════════════════════════════════════ */}
+        <nav className="w-56 bg-slate-900 border-r border-slate-800 flex flex-col py-5 px-3">
+          <div className="space-y-1">
+            {navItems.map(({ id, label, icon: Icon }) => {
+              const active = activeTab === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setActiveTab(id)}
+                  className={`relative w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${
+                    active
+                      ? 'bg-slate-800 text-white'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  }`}
+                >
+                  {active && <span className="nav-active-indicator" />}
+                  <Icon className={`w-4 h-4 ${active ? 'text-indigo-400' : 'text-slate-500'}`} strokeWidth={active ? 2.5 : 2} />
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* LOWER META INFO */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2 shadow-inner">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Cpu className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.5} />
-              <span className="text-[11px]">Hardware: {healthStatus?.device || 'Detecting...'}</span>
+          {/* System info */}
+          <div className="mt-auto mx-1 bg-slate-950 rounded-xl p-3.5 border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-slate-500">
+              <Cpu className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span className="text-[10px] font-semibold">{healthStatus?.device || 'Detecting…'}</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-400">
-              <Database className="w-3.5 h-3.5 text-slate-400" strokeWidth={1.5} />
-              <span className="text-[11px]">Models: {healthStatus?.models_loaded ? 'Ready' : 'Unloaded'}</span>
+            <div className="flex items-center gap-2 text-slate-500">
+              <Database className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span className="text-[10px] font-semibold">Models: {healthStatus?.models_loaded ? 'Ready' : 'Unloaded'}</span>
             </div>
           </div>
         </nav>
 
-        {/* MAIN BODY AREA */}
-        <main className="flex-1 overflow-y-auto p-8 bg-slate-100">
-          
-          {/* TAB 1: OVERVIEW */}
+        {/* ══ MAIN CONTENT ════════════════════════════════════════════════════ */}
+        <main className="flex-1 overflow-y-auto bg-slate-50 p-8">
+
+          {/* ── TAB: DASHBOARD ───────────────────────────────────────────── */}
           {activeTab === 'dashboard' && (
-            <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+            <div className="max-w-5xl mx-auto space-y-8 animate-fade-up">
+
+              {/* Page header */}
+              <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold tracking-tight text-slate-800">Performance Summary</h2>
-                  <p className="text-sm text-slate-500 mt-1">Aggregated scoring metrics from current session.</p>
+                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Performance Overview</h2>
+                  <p className="text-sm text-slate-500 mt-1">Aggregated metrics from the current session.</p>
                 </div>
                 {!isLive && (
-                  <div className="bg-amber-50 border border-amber-250 rounded-2xl px-3 py-1.5 flex items-center gap-2 shadow-sm animate-fade-in">
-                    <Info className="w-4 h-4 text-amber-600" strokeWidth={2} />
-                    <span className="text-xs text-amber-700 font-semibold">Demo Mode: Grading is simulated.</span>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl">
+                    <Zap className="w-3.5 h-3.5 text-amber-600" strokeWidth={2.5} />
+                    <span className="text-xs font-semibold text-amber-700">Demo Mode — simulated grading</span>
                   </div>
                 )}
               </div>
 
-              {/* METRICS GRID WITH GENTLE MATTE COLOR CARDS */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-blue-50/90 rounded-3xl p-6 shadow-sm border-t-4 border-t-blue-500 border border-blue-200 relative overflow-hidden transition-all duration-200 hover:shadow-md">
-                  <span className="text-xs text-blue-800 font-semibold uppercase tracking-wider">Total Graded</span>
-                  <div className="text-3xl font-semibold text-blue-900 mt-2">{stats.totalGraded}</div>
-                  <div className="text-xs text-blue-700 mt-2 flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-blue-600" strokeWidth={2} />
-                    Active evaluations
-                  </div>
-                </div>
-
-                <div className="bg-indigo-50/90 rounded-3xl p-6 shadow-sm border-t-4 border-t-indigo-500 border border-indigo-200 relative overflow-hidden transition-all duration-200 hover:shadow-md">
-                  <span className="text-xs text-indigo-800 font-semibold uppercase tracking-wider">Average Grade</span>
-                  <div className="text-3xl font-semibold text-indigo-900 mt-2">{stats.averageGrade}%</div>
-                  <div className="text-xs text-indigo-700 mt-2">Weighted average scale</div>
-                </div>
-
-                <div className="bg-emerald-50/90 rounded-3xl p-6 shadow-sm border-t-4 border-t-emerald-500 border border-emerald-200 relative overflow-hidden transition-all duration-200 hover:shadow-md">
-                  <span className="text-xs text-emerald-800 font-semibold uppercase tracking-wider">Correct Answers</span>
-                  <div className="text-3xl font-semibold text-emerald-900 mt-2">{stats.correctCount}</div>
-                  <div className="text-xs text-emerald-700 mt-2">Pass rate: {Math.round((stats.correctCount / stats.totalGraded) * 100 || 0)}%</div>
-                </div>
-
-                <div className="bg-rose-50/90 rounded-3xl p-6 shadow-sm border-t-4 border-t-rose-500 border border-rose-200 relative overflow-hidden transition-all duration-200 hover:shadow-md">
-                  <span className="text-xs text-rose-800 font-semibold uppercase tracking-wider">Logic Contradictions</span>
-                  <div className="text-3xl font-semibold text-rose-900 mt-2">{stats.incorrectCount}</div>
-                  <div className="text-xs text-rose-700 mt-2">Capped & penalized runs</div>
-                </div>
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <StatCard label="Total Graded"   value={stats.totalGraded}              sub="Sessions evaluated"  accent="text-indigo-600" />
+                <StatCard label="Average Grade"  value={`${stats.averageGrade}%`}        sub="Weighted composite"  accent="text-sky-600" />
+                <StatCard label="Correct"        value={stats.correctCount}             sub={`Pass rate ${Math.round((stats.correctCount / stats.totalGraded) * 100 || 0)}%`} accent="text-emerald-600" />
+                <StatCard label="Incorrect"      value={stats.incorrectCount}           sub="Capped / penalized"  accent="text-rose-600" />
               </div>
 
-              {/* ARCHITECTURE DIAGRAM EXPLANATION (Vibrant Matte Cards) */}
-              <div className="bg-slate-50/60 rounded-3xl p-8 shadow-sm border border-slate-200/80 space-y-6">
-                <h3 className="text-sm font-semibold tracking-tight text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
-                  <BookOpen className="w-4 h-4 text-indigo-600" strokeWidth={2} />
-                  Hybrid Automated Short Answer Grading (ASAG) Pipeline
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-xs text-slate-700">
-                  <div className="p-4 bg-indigo-50/70 rounded-2xl border border-indigo-200 space-y-2 shadow-sm border-t-4 border-t-indigo-500">
-                    <span className="text-indigo-950 font-semibold block">1. Semantic Similarity</span>
-                    <p className="text-indigo-900/90">Uses <strong>SimCSE (RoBERTa-Large)</strong> to check core context compatibility and phrasing meaning similarity.</p>
-                  </div>
-                  <div className="p-4 bg-sky-50/70 rounded-2xl border border-sky-200 space-y-2 shadow-sm border-t-4 border-t-sky-500">
-                    <span className="text-sky-955 font-semibold block text-sky-950">2. Keyword Coverage</span>
-                    <p className="text-sky-900/90">Uses <strong>KeyBERT (MiniLM)</strong> to extract reference keywords and search for them in the student response.</p>
-                  </div>
-                  <div className="p-4 bg-orange-50/70 rounded-2xl border border-orange-200 space-y-2 shadow-sm border-t-4 border-t-orange-500">
-                    <span className="text-orange-950 font-semibold block">3. Writing Quality</span>
-                    <p className="text-orange-900/90">Uses CoLA classifier for <strong>Grammatical Acceptability</strong> and RoBERTa for <strong>Formality Score</strong>.</p>
-                  </div>
-                  <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-200 space-y-2 shadow-sm border-t-4 border-t-purple-500">
-                    <span className="text-purple-955 font-semibold block text-purple-950">4. Logical NLI Check</span>
-                    <p className="text-purple-900/90">Uses <strong>DeBERTa NLI</strong> for contradiction and entailment mapping to penalize incorrect/contradictory facts.</p>
-                  </div>
-                  <div className="p-4 bg-slate-100/70 rounded-2xl border border-slate-200/80 space-y-2 shadow-sm border-t-4 border-t-slate-500">
-                    <span className="text-slate-900 font-semibold block">5. Reasoning Output</span>
-                    <p className="text-slate-800/90">Uses <strong>Qwen2.5-3B-Instruct</strong> to parse metrics and output structured JSON explanations and suggestions.</p>
+              {/* Pipeline diagram */}
+              <Card>
+                <CardHeader icon={BookOpen} title="Hybrid ASAG Pipeline" />
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    {[
+                      { n: '1', title: 'Semantic',   model: 'SimCSE · RoBERTa-Large', color: 'indigo' },
+                      { n: '2', title: 'Coverage',   model: 'KeyBERT · MiniLM',        color: 'sky' },
+                      { n: '3', title: 'Writing',    model: 'CoLA + RoBERTa',           color: 'orange' },
+                      { n: '4', title: 'Logic NLI',  model: 'DeBERTa v3-Base',          color: 'purple' },
+                      { n: '5', title: 'Reasoning',  model: 'Qwen2.5-3B-Instruct',      color: 'slate' },
+                    ].map((step, i, arr) => (
+                      <React.Fragment key={step.n}>
+                        <div className={`p-4 rounded-2xl border bg-${step.color}-50/80 border-${step.color}-200 border-t-4 border-t-${step.color}-500 space-y-1.5`}>
+                          <span className={`text-[10px] font-semibold text-${step.color}-700 uppercase tracking-wider`}>Step {step.n}</span>
+                          <p className={`text-sm font-semibold text-${step.color}-900`}>{step.title}</p>
+                          <p className={`text-[10px] text-${step.color}-700`}>{step.model}</p>
+                        </div>
+                        {i < arr.length - 1 && (
+                          <div className="hidden md:flex items-center justify-center text-slate-300">
+                            <ChevronRight className="w-4 h-4" strokeWidth={2} />
+                          </div>
+                        )}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
-              </div>
+              </Card>
+
             </div>
           )}
 
-          {/* TAB 2: SINGLE ANSWER GRADER */}
+          {/* ── TAB: SINGLE GRADER ──────────────────────────────────────── */}
           {activeTab === 'single' && (
-            <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div>
-                  <h2 className="text-xl font-semibold tracking-tight text-slate-800">Grade Student Answer</h2>
-                  <p className="text-sm text-slate-500 mt-1">Run single short answer evaluation with custom criteria weights.</p>
-                </div>
+            <div className="max-w-6xl mx-auto animate-fade-up">
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Grade Student Answer</h2>
+                <p className="text-sm text-slate-500 mt-1">Single short-answer evaluation with custom criterion weights.</p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* INPUT FORM PANEL (Soft Blue Card with Blue Header) */}
-                <form onSubmit={handleGradeSingle} className="lg:col-span-7 space-y-6">
-                  
-                  {/* TEXT INPUTS */}
-                  <div className="bg-blue-50/70 rounded-3xl p-6 shadow-sm border border-blue-200/80 border-t-4 border-t-blue-500 space-y-4">
-                    <div className="flex items-center gap-2 border-b border-blue-200/60 pb-2 mb-2">
-                      <div className="p-1.5 bg-blue-100 text-blue-700 rounded-xl">
-                        <AlignLeft className="w-4 h-4" strokeWidth={2.5} />
-                      </div>
-                      <h3 className="text-sm font-semibold text-blue-950">Grader Inputs</h3>
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Context (Optional)</label>
-                      <input 
-                        type="text" 
-                        value={singleContext}
-                        onChange={(e) => setSingleContext(e.target.value)}
-                        placeholder="e.g. Photosynthesis converts sunlight..."
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all duration-200 shadow-sm"
-                      />
-                    </div>
+                {/* Left: Form + Weights */}
+                <div className="lg:col-span-7 space-y-5">
 
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Question</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={singleQuestion}
-                        onChange={(e) => setSingleQuestion(e.target.value)}
-                        placeholder="e.g. Explain photosynthesis."
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all duration-200 shadow-sm"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Reference Answer</label>
-                      <textarea 
-                        required
-                        rows={2}
-                        value={singleReference}
-                        onChange={(e) => setSingleReference(e.target.value)}
-                        placeholder="Enter the golden standard response..."
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all duration-200 resize-none shadow-sm"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Student Answer</label>
-                      <textarea 
-                        required
-                        rows={3}
-                        value={singleStudent}
-                        onChange={(e) => setSingleStudent(e.target.value)}
-                        placeholder="Enter the student response to grade..."
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all duration-200 resize-none font-sans shadow-sm"
-                      />
-                    </div>
-                  </div>
-
-                  {/* CRITERIA WEIGHTS SLIDERS (Soft Purple Card) */}
-                  <div className="bg-purple-100/70 rounded-3xl p-6 shadow-sm border border-purple-200 border-t-4 border-t-purple-500 space-y-6">
-                    <div className="flex items-center justify-between border-b border-purple-200/60 pb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 bg-purple-200 text-purple-800 rounded-xl">
-                          <Settings2 className="w-4 h-4" strokeWidth={2.5} />
+                  {/* Input form */}
+                  <Card>
+                    <CardHeader icon={AlignLeft} title="Grader Inputs" />
+                    <form onSubmit={handleGradeSingle} className="p-5 space-y-4">
+                      {[
+                        { label: 'Context', value: singleContext,   set: setSingleContext,   req: false, placeholder: 'Background context (optional)…', rows: 1 },
+                        { label: 'Question', value: singleQuestion, set: setSingleQuestion,  req: true,  placeholder: 'e.g. Explain photosynthesis.',   rows: 1 },
+                        { label: 'Reference Answer', value: singleReference, set: setSingleReference, req: true, placeholder: 'Golden standard answer…', rows: 2 },
+                        { label: 'Student Answer',   value: singleStudent,   set: setSingleStudent,   req: true, placeholder: 'Student response to grade…', rows: 3 },
+                      ].map(({ label, value, set, req, placeholder, rows }) => (
+                        <div key={label} className="space-y-1.5">
+                          <label className="text-xs font-semibold text-slate-600">
+                            {label}{req && <span className="text-rose-500 ml-0.5">*</span>}
+                          </label>
+                          {rows === 1 ? (
+                            <input
+                              type="text" value={value} required={req} placeholder={placeholder}
+                              onChange={(e) => set(e.target.value)}
+                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all"
+                            />
+                          ) : (
+                            <textarea
+                              rows={rows} value={value} required={req} placeholder={placeholder}
+                              onChange={(e) => set(e.target.value)}
+                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none"
+                            />
+                          )}
                         </div>
-                        <span className="text-sm font-semibold text-purple-950">Weights Configuration</span>
-                      </div>
-                      <select 
-                        value={activePreset} 
-                        onChange={(e) => handlePresetChange(e.target.value)}
-                        className="text-xs bg-white border border-purple-300 text-slate-800 rounded-2xl px-3 py-2 focus:outline-none focus:border-purple-500 font-semibold shadow-sm animate-fade-in"
+                      ))}
+
+                      {singleError && (
+                        <div className="flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 animate-fade-in">
+                          <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                          {singleError}
+                        </div>
+                      )}
+
+                      <button
+                        type="submit" disabled={isGradingSingle}
+                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm cursor-pointer"
                       >
-                        <option value="balanced">Preset: Balanced</option>
-                        <option value="content_focused">Preset: Content Focused</option>
-                        <option value="academic_writing">Preset: Academic Writing</option>
-                        <option value="logic_heavy">Preset: Logic Heavy</option>
-                        <option value="quick_check">Preset: Quick Check</option>
-                        <option value="custom" disabled>Preset: Custom</option>
-                      </select>
-                    </div>
+                        {isGradingSingle ? (
+                          <><RefreshCw className="w-4 h-4 animate-spin" strokeWidth={2.5} /> Evaluating…</>
+                        ) : (
+                          <><Play className="w-4 h-4" strokeWidth={2.5} /> Run Evaluator</>
+                        )}
+                      </button>
+                    </form>
+                  </Card>
 
-                    <div className="space-y-4">
-                      {/* SEMANTIC */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-purple-900 font-semibold">Semantic similarity</span>
-                          <span className="text-purple-950 font-semibold">{Math.round(weights.semantic * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" min="0" max="1" step="0.05"
-                          value={weights.semantic}
-                          onChange={(e) => handleWeightChange('semantic', parseFloat(e.target.value))}
-                          className="w-full accent-purple-600 bg-purple-200 h-1.5 rounded-2xl appearance-none cursor-pointer"
-                        />
-                      </div>
+                  {/* Weights */}
+                  <WeightsPanel
+                    weights={weights} activePreset={activePreset}
+                    onPresetChange={handlePresetChange} onWeightChange={handleWeightChange}
+                  />
+                </div>
 
-                      {/* COVERAGE */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-purple-900 font-semibold">Keyword Coverage</span>
-                          <span className="text-purple-955 font-semibold text-purple-950">{Math.round(weights.coverage * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" min="0" max="1" step="0.05"
-                          value={weights.coverage}
-                          onChange={(e) => handleWeightChange('coverage', parseFloat(e.target.value))}
-                          className="w-full accent-purple-600 bg-purple-200 h-1.5 rounded-2xl appearance-none cursor-pointer"
-                        />
-                      </div>
-
-                      {/* FORMALITY */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-purple-900 font-semibold">Formality (Style)</span>
-                          <span className="text-purple-955 font-semibold text-purple-950">{Math.round(weights.formality * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" min="0" max="1" step="0.05"
-                          value={weights.formality}
-                          onChange={(e) => handleWeightChange('formality', parseFloat(e.target.value))}
-                          className="w-full accent-purple-600 bg-purple-200 h-1.5 rounded-2xl appearance-none cursor-pointer"
-                        />
-                      </div>
-
-                      {/* GRAMMAR */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-purple-900 font-semibold">Grammar acceptability</span>
-                          <span className="text-purple-955 font-semibold text-purple-950">{Math.round(weights.grammar * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" min="0" max="1" step="0.05"
-                          value={weights.grammar}
-                          onChange={(e) => handleWeightChange('grammar', parseFloat(e.target.value))}
-                          className="w-full accent-purple-600 bg-purple-200 h-1.5 rounded-2xl appearance-none cursor-pointer"
-                        />
-                      </div>
-
-                      {/* LOGIC */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-purple-900 font-semibold">Logical Coherence (NLI)</span>
-                          <span className="text-purple-955 font-semibold text-purple-950">{Math.round(weights.logic * 100)}%</span>
-                        </div>
-                        <input 
-                          type="range" min="0" max="1" step="0.05"
-                          value={weights.logic}
-                          onChange={(e) => handleWeightChange('logic', parseFloat(e.target.value))}
-                          className="w-full accent-purple-600 bg-purple-200 h-1.5 rounded-2xl appearance-none cursor-pointer"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="text-[10px] text-purple-950 flex items-center gap-2 bg-purple-200/50 p-3 rounded-2xl border border-purple-300/40">
-                      <Info className="w-4 h-4 text-purple-800 flex-shrink-0" strokeWidth={1.5} />
-                      <span>Input weights normalize dynamically to total 100% when evaluating. Recalculation is computed instantly client-side on slider adjustments.</span>
-                    </div>
-                  </div>
-
-                  {singleError && (
-                    <div className="bg-rose-100/80 border border-rose-250 rounded-2xl p-4 flex gap-3 text-xs text-rose-700 shadow-sm">
-                      <XCircle className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
-                      <span>{singleError}</span>
-                    </div>
-                  )}
-
-                  <button 
-                    type="submit"
-                    disabled={isGradingSingle}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 shadow-sm"
-                  >
-                    {isGradingSingle ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={2.5} />
-                        Evaluating...
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4" strokeWidth={2.5} />
-                        Run Evaluator
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {/* RESULTS VIEW PANEL */}
-                <div className="lg:col-span-5 space-y-6">
+                {/* Right: Results */}
+                <div className="lg:col-span-5">
                   {singleResult ? (
-                    <div className="space-y-6 animate-fade-in">
-                      
-                      {/* SCORE CARD */}
-                      <div className={`rounded-3xl p-6 shadow-sm border ${
-                        singleResult.metrics.final_grade >= 80 
-                          ? 'bg-emerald-50/95 border-emerald-300 border-t-4 border-t-emerald-500 text-emerald-950' 
-                          : singleResult.metrics.final_grade >= 55 
-                          ? 'bg-amber-50/95 border-amber-300 border-t-4 border-t-amber-500 text-amber-950' 
-                          : 'bg-rose-50/95 border-rose-300 border-t-4 border-t-rose-500 text-rose-950'
-                      } flex items-center justify-between relative overflow-hidden transition-all duration-200 hover:shadow-md`}>
-                        <div className="space-y-2">
-                          <span className={`text-xs uppercase tracking-wider font-semibold ${
-                            singleResult.metrics.final_grade >= 80 
-                              ? 'text-emerald-800' 
-                              : singleResult.metrics.final_grade >= 55 
-                              ? 'text-amber-800' 
-                              : 'text-rose-800'
-                          }`}>Evaluation Grade</span>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-semibold tracking-tight">{singleResult.metrics.final_grade}</span>
-                            <span className={`text-sm ${
-                              singleResult.metrics.final_grade >= 80 
-                                ? 'text-emerald-700/80' 
-                                : singleResult.metrics.final_grade >= 55 
-                                ? 'text-amber-700/80' 
-                                : 'text-rose-700/80'
-                            }`}>/ 100</span>
-                          </div>
-                          
-                          {/* Saturated Tags Display */}
-                          <div className="flex flex-wrap gap-1.5 mt-3">
-                            {singleResult.feedback.tags.map((tag, idx) => (
-                              <span 
-                                key={idx} 
-                                className={`text-[10px] px-2.5 py-0.8 rounded-lg border flex items-center gap-1.5 font-semibold ${getBadgeStyle(tag)}`}
-                              >
-                                {getTagIcon(tag)}
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Circular Score Visualizer */}
-                        <div className="relative w-20 h-20">
-                          <svg className="w-full h-full" viewBox="0 0 36 36">
-                            <path
-                              className={singleResult.metrics.final_grade >= 80 
-                                ? 'stroke-emerald-100/50' 
-                                : singleResult.metrics.final_grade >= 55 
-                                ? 'stroke-amber-100/50' 
-                                : 'stroke-rose-100/50'}
-                              strokeWidth="2.5"
-                              fill="none"
-                              d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                            />
-                            <path
-                              className={`progress-circle ${getScoreColor(singleResult.metrics.final_grade).split(' ')[0]}`}
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              fill="none"
-                              style={{ '--offset': 283 - (283 * singleResult.metrics.final_grade) / 100 } as any}
-                              d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                            />
-                          </svg>
-                          <div className={`absolute inset-0 flex items-center justify-center text-xs font-semibold ${getScoreColor(singleResult.metrics.final_grade).split(' ')[1]}`}>
-                            {Math.round(singleResult.metrics.final_grade)}%
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* LLM FEEDBACK CARDS (Soft Violet Card) */}
-                      <div className="bg-violet-50/80 rounded-3xl p-6 shadow-sm border border-violet-200 border-t-4 border-t-violet-500 space-y-6">
-                        <div className="space-y-2 border-b border-violet-200 pb-4">
-                          <span className="text-xs text-violet-850 font-semibold block uppercase tracking-wider">Explanation</span>
-                          <p className="text-xs text-violet-950 leading-relaxed font-normal">
-                            {singleResult.feedback.explanation}
-                          </p>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <span className="text-xs text-violet-850 font-semibold block uppercase tracking-wider">Recommendation & Actionable Steps</span>
-                          <p className="text-xs text-violet-955 leading-relaxed font-normal">
-                            {singleResult.feedback.suggestion}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* TECHNICAL BREAKDOWN SECTION (Grid of beautiful distinct Emerald-tinted cards) */}
-                      <div className="bg-emerald-50/80 rounded-3xl p-6 shadow-sm border border-emerald-200 border-t-4 border-t-emerald-500 space-y-4">
-                        <span className="text-xs text-emerald-900 font-semibold block border-b border-emerald-200 pb-2 uppercase tracking-wider">Technical Feature Breakdown</span>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                          {/* Semantic Similarity */}
-                          <div className="p-3 bg-blue-100/60 rounded-2xl border border-blue-200/80 flex items-center justify-between shadow-sm hover:shadow transition-shadow">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                              <span className="text-blue-900 font-semibold">Semantic</span>
-                            </div>
-                            <span className="text-blue-950 font-semibold">{Math.round(singleResult.metrics.semantic_score * 100)}%</span>
-                          </div>
-
-                          {/* Keyword Coverage */}
-                          <div className="p-3 bg-sky-100/60 rounded-2xl border border-sky-200/80 flex items-center justify-between shadow-sm hover:shadow transition-shadow">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
-                              <span className="text-sky-900 font-semibold">Keywords</span>
-                            </div>
-                            <span className="text-sky-950 font-semibold">{Math.round(singleResult.metrics.coverage_score * 100)}%</span>
-                          </div>
-
-                          {/* Formality */}
-                          <div className="p-3 bg-slate-100/80 rounded-2xl border border-slate-200/80 flex items-center justify-between shadow-sm hover:shadow transition-shadow">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
-                              <span className="text-slate-650 font-semibold">Formality</span>
-                            </div>
-                            <span className="text-slate-800 font-semibold">{Math.round(singleResult.metrics.formality_score * 100)}%</span>
-                          </div>
-
-                          {/* Grammar */}
-                          <div className="p-3 bg-orange-100/60 rounded-2xl border border-orange-200/80 flex items-center justify-between shadow-sm hover:shadow transition-shadow">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-                              <span className="text-orange-900 font-semibold">Grammar</span>
-                            </div>
-                            <span className="text-orange-955 font-semibold">{Math.round(singleResult.metrics.grammar_score * 100)}%</span>
-                          </div>
-
-                          {/* Logic/NLI Details */}
-                          <div className="p-3 bg-purple-100/60 rounded-2xl border border-purple-200/80 flex items-center justify-between shadow-sm hover:shadow transition-shadow md:col-span-2">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
-                              <span className="text-purple-900 font-semibold">Logical Consistency</span>
-                            </div>
-                            <span className="text-purple-955 font-semibold">{Math.round(singleResult.metrics.logic_score * 100)}%</span>
-                          </div>
-                        </div>
-
-                        {/* Missing Keywords display block */}
-                        {singleResult.metrics.missing_keywords && singleResult.metrics.missing_keywords.length > 0 && (
-                          <div className="bg-rose-100/40 p-3 rounded-2xl border border-rose-200 mt-2 space-y-1.5 shadow-inner">
-                            <span className="text-[10px] text-rose-800 font-semibold block uppercase tracking-wider">Missing Reference Keywords:</span>
-                            <div className="flex flex-wrap gap-1.5">
-                              {singleResult.metrics.missing_keywords.map((kw, idx) => (
-                                <span key={idx} className="bg-rose-100 text-rose-900 border border-rose-250 text-[10px] px-2.5 py-0.5 rounded-lg font-semibold">
-                                  {kw}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* NLI probabilities breakdown */}
-                        {singleResult.metrics.logic_details && (
-                          <div className="bg-emerald-50/40 p-3.5 rounded-2xl border border-emerald-200/60 text-[10px] text-emerald-950 space-y-1.5 shadow-inner">
-                            <span className="font-semibold text-emerald-900 uppercase tracking-wider block">Natural Language Inference (NLI) Details:</span>
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-emerald-800">
-                              <div>Contradiction: {Math.round((singleResult.metrics.logic_details.contradiction || 0) * 100)}%</div>
-                              <div>Entailment: {Math.round((singleResult.metrics.logic_details.entailment || 0) * 100)}%</div>
-                              <div>Backward-Contradiction: {Math.round((singleResult.metrics.logic_details.backward_contradiction || 0) * 100)}%</div>
-                              <div>Backward-Entailment: {Math.round((singleResult.metrics.logic_details.backward_entailment || 0) * 100)}%</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
+                    <ResultPanel result={singleResult} />
                   ) : (
-                    <div className="h-full bg-slate-50 rounded-3xl p-8 flex flex-col items-center justify-center text-center space-y-3 min-h-[300px] border border-slate-200 shadow-sm">
-                      <div className="p-3 bg-white border border-slate-200 rounded-full shadow-sm">
-                        <Sliders className="w-5 h-5 text-slate-400" strokeWidth={1.5} />
-                      </div>
-                      <h3 className="text-sm font-semibold text-slate-800">Ready for Evaluation</h3>
-                      <p className="text-xs text-slate-500 max-w-[240px] leading-relaxed">
-                        Submit a student response to review model scores, tags, and AI-generated feedback.
-                      </p>
-                    </div>
+                    <Card>
+                      <EmptyState
+                        icon={Sliders}
+                        title="Ready for Evaluation"
+                        body="Submit a student answer on the left to view detailed model scores, tags, and AI feedback."
+                      />
+                    </Card>
                   )}
                 </div>
 
@@ -1013,367 +826,281 @@ export default function App() {
             </div>
           )}
 
-          {/* TAB 3: BATCH GRADER */}
+          {/* ── TAB: BATCH GRADER ───────────────────────────────────────── */}
           {activeTab === 'batch' && (
-            <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+            <div className="max-w-6xl mx-auto animate-fade-up">
+              <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h2 className="text-xl font-semibold tracking-tight text-slate-800">Batch Evaluation</h2>
-                  <p className="text-sm text-slate-500 mt-1">Grade multiple student responses at once using pre-loaded templates or raw lists.</p>
+                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Batch Evaluation</h2>
+                  <p className="text-sm text-slate-500 mt-1">Grade multiple student responses at once.</p>
                 </div>
-                
-                {/* Sample datasets loading */}
                 <div className="flex gap-2">
-                  <button 
-                    onClick={() => handleLoadSample('photosynthesis')}
-                    className="text-xs bg-white hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 px-3.5 py-2 rounded-2xl border border-slate-200 transition-all font-semibold shadow-sm cursor-pointer"
-                  >
-                    Template: Photosynthesis
-                  </button>
-                  <button 
-                    onClick={() => handleLoadSample('watercycle')}
-                    className="text-xs bg-white hover:bg-sky-50 hover:text-sky-700 text-slate-700 px-3.5 py-2 rounded-2xl border border-slate-200 transition-all font-semibold shadow-sm cursor-pointer"
-                  >
-                    Template: Water Cycle
-                  </button>
+                  {(['photosynthesis', 'watercycle'] as const).map(t => (
+                    <button
+                      key={t}
+                      onClick={() => handleLoadSample(t)}
+                      className="text-xs font-semibold text-slate-600 hover:text-indigo-700 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
+                    >
+                      {t === 'photosynthesis' ? '🌿 Photosynthesis' : '💧 Water Cycle'}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* INPUT AND BATCH PARSER */}
-                <div className="lg:col-span-5 space-y-6">
-                  <div className="bg-blue-50/70 rounded-3xl p-6 shadow-sm border border-blue-200/80 border-t-4 border-t-blue-500 space-y-4">
-                    <div className="flex items-center gap-2 border-b border-blue-200/60 pb-2 mb-2">
-                      <div className="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
-                        <Edit3 className="w-4 h-4" strokeWidth={2.5} />
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                {/* Input panel */}
+                <div className="lg:col-span-5">
+                  <Card>
+                    <CardHeader icon={Edit3} title="Batch Configuration" />
+                    <div className="p-5 space-y-4">
+                      {[
+                        { label: 'Question Title', value: batchQuestion, set: setBatchQuestion, rows: 1, placeholder: 'e.g. Explain photosynthesis.' },
+                        { label: 'Reference Answer', value: batchReference, set: setBatchReference, rows: 2, placeholder: 'Golden standard answer…' },
+                      ].map(({ label, value, set, rows, placeholder }) => (
+                        <div key={label} className="space-y-1.5">
+                          <label className="text-xs font-semibold text-slate-600">{label}</label>
+                          {rows === 1 ? (
+                            <input type="text" value={value} placeholder={placeholder} onChange={(e) => set(e.target.value)}
+                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all" />
+                          ) : (
+                            <textarea rows={rows} value={value} placeholder={placeholder} onChange={(e) => set(e.target.value)}
+                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none" />
+                          )}
+                        </div>
+                      ))}
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-600">
+                          Student Answers <span className="text-slate-400 font-normal">(format: Name: answer, one per line)</span>
+                        </label>
+                        <textarea rows={7} value={batchRawInput} onChange={(e) => setBatchRawInput(e.target.value)}
+                          placeholder="Student A: Plants absorb sunlight…"
+                          className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none font-mono leading-relaxed" />
                       </div>
-                      <h3 className="text-sm font-semibold text-blue-950">Batch Configuration</h3>
-                    </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Question Title</label>
-                      <input 
-                        type="text" 
-                        value={batchQuestion}
-                        onChange={(e) => setBatchQuestion(e.target.value)}
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-sans shadow-sm"
-                      />
+                      <button
+                        onClick={handleGradeBatch}
+                        disabled={isGradingBatch || !batchRawInput.trim()}
+                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
+                      >
+                        {isGradingBatch ? (
+                          <><RefreshCw className="w-4 h-4 animate-spin" strokeWidth={2.5} /> Grading in progress…</>
+                        ) : (
+                          <><Play className="w-4 h-4" strokeWidth={2.5} /> Evaluate Batch</>
+                        )}
+                      </button>
                     </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs text-blue-900/80 font-semibold">Golden Reference Answer</label>
-                      <textarea 
-                        rows={2}
-                        value={batchReference}
-                        onChange={(e) => setBatchReference(e.target.value)}
-                        className="w-full text-sm bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all resize-none font-sans shadow-sm"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center">
-                        <label className="text-xs text-blue-900/80 font-semibold">Student Answers (Format: Identifier: Answer, one per line)</label>
-                      </div>
-                      <textarea 
-                        rows={6}
-                        value={batchRawInput}
-                        onChange={(e) => setBatchRawInput(e.target.value)}
-                        placeholder="e.g. Student A: Plants absorb sunlight..."
-                        className="w-full text-xs bg-white border border-blue-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all resize-none font-mono shadow-sm"
-                      />
-                    </div>
-
-                    <button
-                      onClick={handleGradeBatch}
-                      disabled={isGradingBatch || !batchRawInput.trim()}
-                      className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
-                    >
-                      {isGradingBatch ? (
-                        <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" strokeWidth={2.5} />
-                          Batch grading in progress...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3.5 h-3.5" strokeWidth={2.5} />
-                          Evaluate Batch
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  </Card>
                 </div>
 
-                {/* BATCH TABLE & DETAILS PANEL */}
-                <div className="lg:col-span-7 space-y-6">
+                {/* Results */}
+                <div className="lg:col-span-7 space-y-5">
                   {batchItems.length > 0 ? (
-                    <div className="space-y-6 animate-fade-in">
-                      
-                      {/* BATCH CONTROL & ACTIONS */}
+                    <div className="animate-fade-up space-y-5">
+
+                      {/* Table header controls */}
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-slate-500 font-semibold">Evaluation Status ({batchItems.length} records)</span>
+                        <span className="text-xs font-semibold text-slate-500">{batchItems.length} records</span>
                         <button
                           onClick={handleExportCSV}
-                          className="text-xs text-slate-700 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 bg-white border border-slate-200 px-3.5 py-2 rounded-2xl transition-all shadow-sm cursor-pointer"
+                          className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
                         >
                           <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
                           Export CSV
                         </button>
                       </div>
 
-                      {/* DATA TABLE (Dynamic Colored Rows based on status) */}
-                      <div className="bg-slate-50/80 rounded-3xl overflow-hidden border border-slate-200/80 border-t-4 border-t-amber-500 shadow-sm">
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-left border-collapse text-xs">
-                            <thead>
-                              <tr className="border-b border-slate-200 bg-slate-100/60 text-slate-500">
-                                <th className="p-4 font-semibold">Identifier</th>
-                                <th className="p-4 font-semibold">Student Answer</th>
-                                <th className="p-4 font-semibold text-right">Grade</th>
-                                <th className="p-4 font-semibold">Correctness</th>
-                                <th className="p-4 font-semibold"></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {batchItems.map((item) => {
-                                const finalGrade = item.result?.metrics.final_grade;
-                                const correctnessTag = item.result?.feedback.tags[0] || 'Unknown';
-                                
-                                // Dynamic pastel backgrounds for table rows
-                                let rowBg = 'bg-white hover:bg-slate-50';
-                                if (item.status === 'success' && finalGrade !== undefined) {
-                                  if (finalGrade >= 80) {
-                                    rowBg = 'bg-emerald-50/40 hover:bg-emerald-100/50';
-                                  } else if (finalGrade >= 55) {
-                                    rowBg = 'bg-amber-50/40 hover:bg-amber-100/50';
-                                  } else {
-                                    rowBg = 'bg-rose-50/40 hover:bg-rose-100/50';
-                                  }
-                                } else if (item.status === 'failed') {
-                                  rowBg = 'bg-rose-100/30 hover:bg-rose-100/50';
-                                }
+                      {/* Table */}
+                      <Card className="overflow-hidden">
+                        <table className="w-full text-left text-xs">
+                          <thead>
+                            <tr className="bg-slate-50 border-b border-slate-200">
+                              {['Student', 'Answer', 'Grade', 'Status', ''].map(h => (
+                                <th key={h} className="px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {batchItems.map((item) => {
+                              const grade = item.result?.metrics.final_grade;
+                              const tag   = item.result?.feedback.tags[0] || '';
+                              const rowBg = item.status === 'success' && grade !== undefined
+                                ? grade >= 80 ? 'bg-emerald-50/50 hover:bg-emerald-50'
+                                : grade >= 55 ? 'bg-amber-50/50 hover:bg-amber-50'
+                                : 'bg-rose-50/50 hover:bg-rose-50'
+                                : 'bg-white hover:bg-slate-50';
+                              const isSelected = selectedBatchItem?.id === item.id;
+                              return (
+                                <tr key={item.id}
+                                  className={`border-b border-slate-100 transition-colors cursor-pointer ${rowBg} ${isSelected ? 'ring-2 ring-inset ring-indigo-300' : ''}`}
+                                  onClick={() => item.result && setSelectedBatchItem(item)}
+                                >
+                                  <td className="px-4 py-3 font-semibold text-slate-800 whitespace-nowrap">{item.id}</td>
+                                  <td className="px-4 py-3 text-slate-500 max-w-[160px] truncate">{item.student}</td>
+                                  <td className="px-4 py-3 font-semibold tabular-nums text-slate-800 text-right whitespace-nowrap">
+                                    {item.status === 'grading'
+                                      ? <RefreshCw className="w-3.5 h-3.5 animate-spin ml-auto text-slate-400" />
+                                      : item.status === 'success' ? `${grade}%`
+                                      : <span className="text-rose-500">Err</span>}
+                                  </td>
+                                  <td className="px-4 py-3">
+                                    {item.status === 'success' && tag && <Badge tag={tag} />}
+                                  </td>
+                                  <td className="px-4 py-3">
+                                    {item.result && (
+                                      <ChevronRight className={`w-3.5 h-3.5 ml-auto transition-colors ${isSelected ? 'text-indigo-500' : 'text-slate-300'}`} strokeWidth={2.5} />
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </Card>
 
-                                const isSelected = selectedBatchItem?.id === item.id;
-
-                                return (
-                                  <tr 
-                                    key={item.id} 
-                                    className={`border-b border-slate-200/60 transition-all ${rowBg} ${
-                                      isSelected ? 'ring-2 ring-indigo-500/50 border-l-4 border-l-indigo-650' : ''
-                                    }`}
-                                  >
-                                    <td className="p-4 text-slate-800 font-semibold">{item.id}</td>
-                                    <td className="p-4 text-slate-500 max-w-[200px] truncate">{item.student}</td>
-                                    <td className="p-4 text-right font-semibold text-slate-800">
-                                      {item.status === 'grading' ? (
-                                        <RefreshCw className="w-3.5 h-3.5 animate-spin ml-auto text-slate-400" />
-                                      ) : item.status === 'success' ? (
-                                        `${finalGrade}%`
-                                      ) : (
-                                        <span className="text-rose-600 font-semibold">Err</span>
-                                      )}
-                                    </td>
-                                    <td className="p-4">
-                                      {item.status === 'success' && (
-                                        <span className={`px-2.5 py-0.8 rounded-lg border text-[9px] font-semibold flex items-center gap-1 w-max ${getBadgeStyle(correctnessTag)}`}>
-                                          {getTagIcon(correctnessTag)}
-                                          {correctnessTag}
-                                        </span>
-                                      )}
-                                    </td>
-                                    <td className="p-4 text-right">
-                                      <button
-                                        onClick={() => setSelectedBatchItem(item)}
-                                        className="text-[10px] text-slate-500 hover:text-indigo-600 font-semibold flex items-center gap-0.5 ml-auto cursor-pointer"
-                                      >
-                                        Details
-                                        <ChevronRight className="w-3 h-3" strokeWidth={2.5} />
-                                      </button>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-
-                      {/* SELECTED STUDENT DETAIL DRAWER (Emerald Accent with Vibrant cards) */}
+                      {/* Detail panel */}
                       {selectedBatchItem?.result && (
-                        <div className="bg-emerald-50/70 rounded-3xl p-6 shadow-sm border border-emerald-200 border-t-4 border-t-emerald-500 space-y-4 animate-fade-in">
-                          <div className="flex items-center justify-between border-b border-emerald-200/60 pb-3">
-                            <div>
-                              <h4 className="text-xs text-emerald-800 font-semibold uppercase tracking-wider">Detailed Evaluation View</h4>
-                              <p className="text-xs text-emerald-950 font-semibold mt-1 font-sans">
-                                {selectedBatchItem.student}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className={`px-2.5 py-0.8 rounded-lg border text-[9px] font-semibold flex items-center gap-1.5 ${getBadgeStyle(selectedBatchItem.result.feedback.tags[0])}`}>
-                                {getTagIcon(selectedBatchItem.result.feedback.tags[0])}
-                                {selectedBatchItem.result.feedback.tags[0]}
-                              </span>
-                              <span className="text-sm font-semibold text-emerald-950">{selectedBatchItem.result.metrics.final_grade}%</span>
-                            </div>
-                          </div>
+                        <div className="animate-fade-up">
+                          <Card>
+                            <CardHeader
+                              icon={Sparkles}
+                              title={`Detail: ${selectedBatchItem.id}`}
+                              right={
+                                <div className="flex items-center gap-2">
+                                  <Badge tag={selectedBatchItem.result.feedback.tags[0]} />
+                                  <span className="text-sm font-semibold text-slate-800 tabular-nums">
+                                    {selectedBatchItem.result.metrics.final_grade}%
+                                  </span>
+                                </div>
+                              }
+                            />
+                            <div className="p-5 space-y-5">
+                              <div className="grid grid-cols-2 gap-4 text-xs">
+                                <div className="space-y-1.5">
+                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Explanation</p>
+                                  <p className="text-slate-700 leading-relaxed">{selectedBatchItem.result.feedback.explanation}</p>
+                                </div>
+                                <div className="space-y-1.5">
+                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Recommendation</p>
+                                  <p className="text-slate-700 leading-relaxed">{selectedBatchItem.result.feedback.suggestion}</p>
+                                </div>
+                              </div>
 
-                          <div className="grid grid-cols-2 gap-4 text-xs">
-                            <div className="space-y-1">
-                              <span className="text-emerald-900 font-semibold block uppercase tracking-wider text-[10px]">Explanation</span>
-                              <p className="text-emerald-950 font-normal leading-relaxed text-[11px] bg-emerald-50/30 p-3 rounded-2xl border border-emerald-100/60 shadow-sm">
-                                {selectedBatchItem.result.feedback.explanation}
-                              </p>
+                              <div className="grid grid-cols-5 gap-2 pt-4 border-t border-slate-100">
+                                {[
+                                  { label: 'Semantic',  value: selectedBatchItem.result.metrics.semantic_score,  color: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
+                                  { label: 'Coverage',  value: selectedBatchItem.result.metrics.coverage_score,   color: 'text-sky-700 bg-sky-50 border-sky-200' },
+                                  { label: 'Formality', value: selectedBatchItem.result.metrics.formality_score, color: 'text-slate-700 bg-slate-50 border-slate-200' },
+                                  { label: 'Grammar',   value: selectedBatchItem.result.metrics.grammar_score,   color: 'text-orange-700 bg-orange-50 border-orange-200' },
+                                  { label: 'Logic',     value: selectedBatchItem.result.metrics.logic_score,     color: 'text-purple-700 bg-purple-50 border-purple-200' },
+                                ].map(({ label, value, color }) => (
+                                  <div key={label} className={`p-3 rounded-xl border text-center ${color}`}>
+                                    <p className="text-[9px] font-semibold uppercase tracking-wide">{label}</p>
+                                    <p className="text-base font-semibold tabular-nums mt-0.5">{Math.round(value * 100)}%</p>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="space-y-1">
-                              <span className="text-emerald-900 font-semibold block uppercase tracking-wider text-[10px]">Recommendation</span>
-                              <p className="text-emerald-955 font-normal leading-relaxed text-[11px] bg-emerald-50/30 p-3 rounded-2xl border border-emerald-100/60 shadow-sm">
-                                {selectedBatchItem.result.feedback.suggestion}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-5 gap-2.5 text-center pt-3 border-t border-emerald-200/60 text-[10px]">
-                            <div className="p-2.5 bg-blue-100/60 rounded-2xl border border-blue-200/80 shadow-sm">
-                              <span className="block text-blue-900 font-semibold">Semantic</span>
-                              <span className="block text-blue-950 font-semibold mt-1">{Math.round(selectedBatchItem.result.metrics.semantic_score * 100)}%</span>
-                            </div>
-                            <div className="p-2.5 bg-sky-100/60 rounded-2xl border border-sky-200/80 shadow-sm">
-                              <span className="block text-sky-900 font-semibold">Coverage</span>
-                              <span className="block text-sky-955 font-semibold mt-1">{Math.round(selectedBatchItem.result.metrics.coverage_score * 100)}%</span>
-                            </div>
-                            <div className="p-2.5 bg-slate-100/80 rounded-2xl border border-slate-200/80 shadow-sm">
-                              <span className="block text-slate-600 font-semibold">Formality</span>
-                              <span className="block text-slate-800 font-semibold mt-1">{Math.round(selectedBatchItem.result.metrics.formality_score * 100)}%</span>
-                            </div>
-                            <div className="p-2.5 bg-orange-100/60 rounded-2xl border border-orange-200/80 shadow-sm">
-                              <span className="block text-orange-900 font-semibold">Grammar</span>
-                              <span className="block text-orange-955 font-semibold mt-1">{Math.round(selectedBatchItem.result.metrics.grammar_score * 100)}%</span>
-                            </div>
-                            <div className="p-2.5 bg-purple-100/60 rounded-2xl border border-purple-200/80 shadow-sm">
-                              <span className="block text-purple-900 font-semibold">Logic NLI</span>
-                              <span className="block text-purple-955 font-semibold mt-1">{Math.round(selectedBatchItem.result.metrics.logic_score * 100)}%</span>
-                            </div>
-                          </div>
+                          </Card>
                         </div>
                       )}
-
                     </div>
                   ) : (
-                    <div className="bg-slate-50 rounded-3xl p-8 flex flex-col items-center justify-center text-center space-y-3 min-h-[300px] border border-slate-200 shadow-sm">
-                      <div className="p-3 bg-white border border-slate-200 rounded-full shadow-sm">
-                        <Layers className="w-5 h-5 text-slate-400" strokeWidth={1.5} />
-                      </div>
-                      <h3 className="text-sm font-semibold text-slate-800">No batch runs yet</h3>
-                      <p className="text-xs text-slate-500 max-w-[240px] leading-relaxed">
-                        Load a template or enter lists of answers on the left to evaluate all students in batch.
-                      </p>
-                    </div>
+                    <Card>
+                      <EmptyState
+                        icon={Layers}
+                        title="No batch results yet"
+                        body="Load a sample template or enter student answers on the left, then click Evaluate Batch."
+                      />
+                    </Card>
                   )}
                 </div>
-
               </div>
             </div>
           )}
 
-          {/* TAB 4: SYSTEM CONFIG */}
+          {/* ── TAB: SETTINGS ───────────────────────────────────────────── */}
           {activeTab === 'settings' && (
-            <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div>
-                  <h2 className="text-xl font-semibold tracking-tight text-slate-800">System Configuration</h2>
-                  <p className="text-sm text-slate-500 mt-1">Configure backend endpoints and view active scoring thresholds.</p>
-                </div>
+            <div className="max-w-3xl mx-auto animate-fade-up space-y-6">
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-slate-800 tracking-tight">System Configuration</h2>
+                <p className="text-sm text-slate-500 mt-1">Configure backend endpoints and review scoring thresholds.</p>
               </div>
 
-              {/* ENDPOINT CONFIG */}
-              <div className="bg-indigo-50/70 rounded-3xl p-6 shadow-sm border border-indigo-200 border-t-4 border-t-indigo-500 space-y-4">
-                <div className="flex items-center gap-2 border-b border-indigo-200/60 pb-2 mb-2">
-                  <div className="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg">
-                    <Database className="w-4 h-4" strokeWidth={2.5} />
-                  </div>
-                  <h3 className="text-sm font-semibold text-indigo-950">FastAPI Connection Settings</h3>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <div className="md:col-span-3 space-y-1">
-                    <label className="text-[10px] text-indigo-900/80">Server Endpoint URL</label>
-                    <input 
-                      type="text" 
-                      value={apiUrl}
-                      onChange={(e) => setApiUrl(e.target.value)}
-                      className="w-full text-xs bg-white border border-indigo-200 rounded-2xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white font-mono shadow-sm"
-                    />
-                  </div>
-                  <button
-                    onClick={checkHealth}
-                    className="w-full py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5 text-slate-500 animate-spin-hover" strokeWidth={2} />
-                    Test Connection
-                  </button>
-                </div>
-              </div>
-
-              {/* SYSTEM THRESHOLDS INFO */}
-              <div className="bg-purple-100/70 rounded-3xl p-6 shadow-sm border border-purple-200 border-t-4 border-t-purple-500 space-y-4">
-                <div className="flex items-center justify-between border-b border-purple-200/60 pb-3">
-                  <h3 className="text-sm font-semibold text-purple-950 flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-purple-800" strokeWidth={1.5} />
-                    Active Grading Thresholds
-                  </h3>
-                  <span className="text-[10px] text-purple-900/85 font-semibold">Config.py Settings</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-purple-950">
-                  <div className="space-y-2.5">
-                    <span className="text-purple-900 font-semibold block uppercase tracking-wider text-[10px]">Semantic Classification</span>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>Correct threshold</span>
-                      <span className="text-purple-950 font-mono font-semibold">&gt;= {thresholds.semantic_correct}</span>
+              {/* API URL */}
+              <Card>
+                <CardHeader icon={Database} title="FastAPI Connection" />
+                <div className="p-5">
+                  <div className="flex gap-3 items-end">
+                    <div className="flex-1 space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-600">Server Endpoint URL</label>
+                      <input
+                        type="text" value={apiUrl} onChange={(e) => setApiUrl(e.target.value)}
+                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 font-mono transition-all"
+                      />
                     </div>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>Partially correct</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&gt;= {thresholds.semantic_partial}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Off-topic cap</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&lt; {thresholds.semantic_off_topic}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2.5">
-                    <span className="text-purple-900 font-semibold block uppercase tracking-wider text-[10px]">Keyword Coverage</span>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>Correct coverage</span>
-                      <span className="text-purple-950 font-mono font-semibold">&gt;= {thresholds.coverage_correct}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>Good coverage</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&gt;= {thresholds.coverage_good}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Missing concept trigger</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&lt; {thresholds.coverage_missing}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2.5">
-                    <span className="text-purple-900 font-semibold block uppercase tracking-wider text-[10px]">Logical Contradiction NLI</span>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>High contradiction (Cap 40)</span>
-                      <span className="text-purple-950 font-mono font-semibold">&gt;= {thresholds.contradiction_high}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-purple-200/40 pb-1">
-                      <span>Moderate (Cap 55/penalty)</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&gt;= {thresholds.contradiction_moderate}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Grammar acceptability</span>
-                      <span className="text-purple-955 font-mono font-semibold text-purple-950">&gt;= {thresholds.grammar_good}</span>
-                    </div>
+                    <button
+                      onClick={checkHealth}
+                      className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" strokeWidth={2} />
+                      Test Connection
+                    </button>
                   </div>
                 </div>
-              </div>
+              </Card>
+
+              {/* Weights */}
+              <WeightsPanel
+                weights={weights} activePreset={activePreset}
+                onPresetChange={handlePresetChange} onWeightChange={handleWeightChange}
+              />
+
+              {/* Thresholds */}
+              <Card>
+                <CardHeader icon={Shield} title="Active Grading Thresholds" right={<span className="text-[10px] text-slate-400 font-semibold">config.py</span>} />
+                <div className="p-5">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                    {[
+                      {
+                        title: 'Semantic Classification',
+                        rows: [
+                          { label: 'Correct threshold',    val: `≥ ${thresholds.semantic_correct}` },
+                          { label: 'Partially correct',    val: `≥ ${thresholds.semantic_partial}` },
+                          { label: 'Off-topic cap',        val: `< ${thresholds.semantic_off_topic}` },
+                        ],
+                      },
+                      {
+                        title: 'Keyword Coverage',
+                        rows: [
+                          { label: 'Correct coverage',    val: `≥ ${thresholds.coverage_correct}` },
+                          { label: 'Good coverage',       val: `≥ ${thresholds.coverage_good}` },
+                          { label: 'Missing concepts',    val: `< ${thresholds.coverage_missing}` },
+                        ],
+                      },
+                      {
+                        title: 'Contradiction NLI',
+                        rows: [
+                          { label: 'High (cap 40)',       val: `≥ ${thresholds.contradiction_high}` },
+                          { label: 'Moderate (penalty)',  val: `≥ ${thresholds.contradiction_moderate}` },
+                          { label: 'Grammar accept.',     val: `≥ ${thresholds.grammar_good}` },
+                        ],
+                      },
+                    ].map(({ title, rows }) => (
+                      <div key={title} className="space-y-2.5">
+                        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">{title}</p>
+                        {rows.map(({ label, val }) => (
+                          <div key={label} className="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span className="text-slate-600">{label}</span>
+                            <span className="font-semibold tabular-nums text-slate-800 font-mono">{val}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
 
             </div>
           )}

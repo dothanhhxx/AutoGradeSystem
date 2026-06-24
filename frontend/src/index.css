@@ -1,84 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400&display=swap');
 
 @import "tailwindcss";
-
 
 @layer base {
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #f1f5f9; /* slate-100: matte soft grey */
+    background-color: #f8fafc;
     min-height: 100vh;
-    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #334155; /* slate-700 */
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1e293b;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
   }
 
-  /* Force exactly 2 font weights globally */
   * {
-    font-weight: 400; /* Default weight */
+    font-weight: 400;
+    box-sizing: border-box;
   }
 
-  h1, h2, h3, h4, h5, h6, th, strong, button, .semibold-text {
-    font-weight: 600; /* Bold/Semibold weight */
+  h1, h2, h3, h4, h5, h6, th, strong, button, label, .fw-semibold {
+    font-weight: 600;
   }
 
-  /* Custom Soft Light Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* slate-300 */
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; /* slate-400 */
-  }
+  /* Refined scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 }
 
-/* Light glare-free card structure */
-.glass-panel {
-  background: #ffffff;
-  border: 1px solid #e2e8f0; /* slate-200 */
-  box-shadow: 0 4px 12px 0 rgba(148, 163, 184, 0.06), 0 1px 3px 0 rgba(148, 163, 184, 0.04);
+/* ── Animations ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.7; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-.glow-card {
-  position: relative;
-  overflow: hidden;
-}
+.animate-fade-up   { animation: fadeUp 0.3s ease-out; }
+.animate-fade-in   { animation: fadeIn 0.25s ease-out; }
+.animate-slide-in  { animation: slideRight 0.25s ease-out; }
+.animate-spin      { animation: spin 1s linear infinite; }
+.animate-pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
 
-.glow-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(99, 102, 241, 0.03), transparent 50%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Limit transition states */
-.transition-standard {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Custom radial progress animation */
+/* ── Progress circle ────────────────────────────────────── */
 @keyframes progress {
-  from {
-    stroke-dashoffset: 283;
-  }
-  to {
-    stroke-dashoffset: var(--offset);
-  }
+  from { stroke-dashoffset: 283; }
+  to   { stroke-dashoffset: var(--offset); }
 }
 
 .progress-circle {
@@ -86,5 +70,61 @@
   stroke-dashoffset: var(--offset);
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
-  transition: stroke-dashoffset 0.8s ease-in-out;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Metric bar fill ────────────────────────────────────── */
+.metric-bar-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Sidebar nav active accent ──────────────────────────── */
+.nav-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: #6366f1;
+}
+
+/* ── Card hover lift ────────────────────────────────────── */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 8px 24px rgba(99,102,241,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+
+/* ── Range input custom ──────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(99,102,241,0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* ── Monospace numbers ───────────────────────────────────── */
+.tabular-nums {
+  font-family: 'DM Mono', monospace;
+  font-variant-numeric: tabular-nums;
 }
