@@ -120,9 +120,17 @@ class HybridASAGGrader:
         # 4. Grammar Classifier
         self._log("\n[4/6] Loading Grammar Model...")
         self.grammar_tokenizer = AutoTokenizer.from_pretrained(self.config.GRAMMAR_MODEL)
+        
+        # Suppress expected warnings about uninitialized pooler layers
+        from transformers import logging as hf_logging
+        old_verbosity = hf_logging.get_verbosity()
+        hf_logging.set_verbosity_error()
+        
         self.grammar_model = AutoModelForSequenceClassification.from_pretrained(
             self.config.GRAMMAR_MODEL
         ).to(self.device)
+        
+        hf_logging.set_verbosity(old_verbosity)
         self.grammar_model.eval()
         self._log(f"      Done: {self.config.GRAMMAR_MODEL}")
         
@@ -138,17 +146,19 @@ class HybridASAGGrader:
             trust_remote_code=True
         )
         
-        # Determine optimal dtype for device
+        # Determine optimal dtype for device to prevent OOM
         if self.device.type == "mps":
             model_dtype = torch.float16
         elif self.device.type == "cuda":
             model_dtype = torch.float16
         else:
-            model_dtype = torch.float32
+            # Use float16/bfloat16 on CPU instead of float32 to avoid OOM for 3B models
+            model_dtype = torch.bfloat16 if hasattr(torch, "bfloat16") else torch.float16
         
         self.reasoning_model = AutoModelForCausalLM.from_pretrained(
             self.config.REASONING_MODEL,
             torch_dtype=model_dtype,
+            dtype=model_dtype, # passing dtype as well to silence deprecation warning
             trust_remote_code=True,
             low_cpu_mem_usage=True
         ).to(self.device)
