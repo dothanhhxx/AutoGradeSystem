@@ -170,5 +170,12 @@ WEIGHT_PRESETS = {
         "formality": 0.05,
         "grammar": 0.05,
         "logic": 0.10
+    },
+    "ml_optimized": {
+        "semantic": 0.20,
+        "coverage": 0.30,
+        "formality": 0.00,
+        "grammar": 0.10,
+        "logic": 0.40
     }
 }
