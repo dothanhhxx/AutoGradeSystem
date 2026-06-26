@@ -75,6 +75,12 @@ class GraderConfig:
     verbose: bool = True
     device: Optional[torch.device] = None
     
+    # Research flags — new in research-grade version
+    # use_4bit_quantization: load Qwen with BitsAndBytes NF4 4-bit to avoid OOM on CPU/low-VRAM GPU
+    use_4bit_quantization: bool = False
+    # skip_llm: skip loading Qwen entirely — used for FM-LLM ablation variant and fast testing
+    skip_llm: bool = True
+    
     # Generation settings
     max_new_tokens: int = 500
     max_explanation_length: int = 500

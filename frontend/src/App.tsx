@@ -14,7 +14,6 @@ import {
   Database,
   Cpu,
   ChevronRight,
-  TrendingUp,
   Award,
   CheckCircle2,
   AlertOctagon,
@@ -26,6 +25,8 @@ import {
   BarChart2,
   Brain,
   Sparkles,
+  FlaskConical,
+  Table2,
 } from 'lucide-react';
 import type { GradingResult, Weights, BatchItem, SystemThresholds } from './types';
 import {
@@ -82,7 +83,6 @@ const getTagIcon = (tag: string) => {
 /** Circular SVG score ring */
 function ScoreRing({ score, size = 96 }: { score: number; size?: number }) {
   const c = getScoreColor(score);
-  const r = 15.9155;
   const circ = 283;
   const offset = circ - (circ * score) / 100;
   return (
@@ -375,7 +375,7 @@ function ResultPanel({ result }: { result: GradingResult }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'single' | 'batch' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'single' | 'batch' | 'settings' | 'research'>('dashboard');
   const [isLive, setIsLive] = useState<boolean>(false);
   const [apiUrl, setApiUrl] = useState<string>('http://localhost:8000');
   const [healthStatus, setHealthStatus] = useState<{ status: string; device: string; models_loaded: boolean } | null>(null);
@@ -567,12 +567,72 @@ export default function App() {
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
   };
 
+  // ─── Research tab state ────────────────────────────────────────────────────
+  const [researchConfig, setResearchConfig] = useState<any>(null);
+  const [ablationResults, setAblationResults] = useState<any[]>([]);
+  const [ablationLatex, setAblationLatex] = useState<string>('');
+  const [isRunningAblation, setIsRunningAblation] = useState<boolean>(false);
+  const [ablationCachePath, setAblationCachePath] = useState<string>('./cache/features.pkl');
+  const [ablationError, setAblationError] = useState<string | null>(null);
+  const [ablationSeed, setAblationSeed] = useState<number>(42);
+
+  const fetchResearchConfig = async () => {
+    if (!isLive) return;
+    try {
+      const res = await fetch(`${apiUrl}/research/config`);
+      if (res.ok) setResearchConfig(await res.json());
+    } catch { setResearchConfig(null); }
+  };
+
+  const handleRunAblation = async () => {
+    setIsRunningAblation(true);
+    setAblationError(null);
+    setAblationResults([]);
+    if (!isLive) {
+      // Demo mode: show simulated table
+      await new Promise(r => setTimeout(r, 1200));
+      setAblationResults([
+        { Variant: 'Full Model',          'Accuracy': '0.742', 'Macro F1': '0.718', 'QWK': '0.701', 'Δ F1': '—',     'Δ QWK': '—',     'Sig.': '' },
+        { Variant: 'FM-S (−Semantic)',    'Accuracy': '0.611', 'Macro F1': '0.589', 'QWK': '0.562', 'Δ F1': '-0.129', 'Δ QWK': '-0.139', 'Sig.': '***' },
+        { Variant: 'FM-C (−Coverage)',    'Accuracy': '0.698', 'Macro F1': '0.674', 'QWK': '0.651', 'Δ F1': '-0.044', 'Δ QWK': '-0.050', 'Sig.': '*' },
+        { Variant: 'FM-F (−Formality)',   'Accuracy': '0.751', 'Macro F1': '0.726', 'QWK': '0.709', 'Δ F1': '+0.008', 'Δ QWK': '+0.008', 'Sig.': 'ns' },
+        { Variant: 'FM-G (−Grammar)',     'Accuracy': '0.729', 'Macro F1': '0.703', 'QWK': '0.685', 'Δ F1': '-0.015', 'Δ QWK': '-0.016', 'Sig.': 'ns' },
+        { Variant: 'FM-L (−Logic)',       'Accuracy': '0.684', 'Macro F1': '0.661', 'QWK': '0.637', 'Δ F1': '-0.057', 'Δ QWK': '-0.064', 'Sig.': '**' },
+        { Variant: 'FM-LLM (−Synthesis)', 'Accuracy': '0.719', 'Macro F1': '0.695', 'QWK': '0.673', 'Δ F1': '-0.023', 'Δ QWK': '-0.028', 'Sig.': '*' },
+      ]);
+      setAblationLatex(`% Demo LaTeX — run Live API for real results\n\\begin{table}...\n\\end{table}`);
+      setIsRunningAblation(false);
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/research/ablation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cache_path: ablationCachePath, random_seed: ablationSeed }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setAblationResults(data.results_table);
+          setAblationLatex(data.latex_snippet);
+        } else setAblationError(data.error || 'Unknown error');
+      } else {
+        const e = await res.json().catch(() => ({}));
+        setAblationError(e.detail || `Server error ${res.status}`);
+      }
+    } catch { setAblationError('Cannot reach backend.'); }
+    finally { setIsRunningAblation(false); }
+  };
+
+  useEffect(() => { if (activeTab === 'research') fetchResearchConfig(); }, [activeTab, isLive]);
+
   // ─── Nav items ────────────────────────────────────────────────────────────
 
   const navItems = [
     { id: 'dashboard', label: 'Overview',      icon: Activity },
     { id: 'single',    label: 'Single Grader', icon: Play },
     { id: 'batch',     label: 'Batch Grader',  icon: Layers },
+    { id: 'research',  label: 'Research',      icon: FlaskConical },
     { id: 'settings',  label: 'Settings',      icon: Settings },
   ] as const;
 
@@ -1099,6 +1159,205 @@ export default function App() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </Card>
+
+            </div>
+          )}
+
+          {/* ── TAB: RESEARCH ───────────────────────────────────────── */}
+          {activeTab === 'research' && (
+            <div className="max-w-5xl mx-auto space-y-6 animate-fade-up">
+
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight flex items-center gap-2">
+                    <FlaskConical className="w-5 h-5 text-violet-600" strokeWidth={2} />
+                    Research Lab
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Ablation study, model comparison, and experiment tracking.
+                    {!isLive && <span className="ml-2 text-amber-600 font-semibold">Demo mode — switch to Live API for real results.</span>}
+                  </p>
+                </div>
+              </div>
+
+              {/* Model config card */}
+              <Card>
+                <CardHeader icon={Cpu} title="Active Model Configuration" right={
+                  isLive
+                    ? <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">Live</span>
+                    : <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200">Simulated</span>
+                } />
+                <div className="p-5">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    {(researchConfig ? [
+                      { label: 'Semantic',    value: researchConfig.semantic_model?.split('/').pop() || '—' },
+                      { label: 'Keywords',    value: researchConfig.keybert_model || '—' },
+                      { label: 'Formality',   value: researchConfig.formality_model?.split('/').pop() || '—' },
+                      { label: 'Grammar',     value: researchConfig.grammar_model?.split('/').pop() || '—' },
+                      { label: 'Logic/NLI',   value: researchConfig.logic_model?.split('/').pop() || '—' },
+                      { label: 'LLM Synth.',  value: researchConfig.reasoning_model?.split('/').pop() || '—' },
+                    ] : [
+                      { label: 'Semantic',    value: 'sup-simcse-roberta-large' },
+                      { label: 'Keywords',    value: 'all-MiniLM-L6-v2 (KeyBERT)' },
+                      { label: 'Formality',   value: 'roberta-base-formality' },
+                      { label: 'Grammar',     value: 'roberta-base-CoLA' },
+                      { label: 'Logic/NLI',   value: 'nli-deberta-v3-base' },
+                      { label: 'LLM Synth.',  value: 'Qwen2.5-3B-Instruct' },
+                    ]).map(({ label, value }) => (
+                      <div key={label} className="flex flex-col gap-0.5 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{label}</span>
+                        <span className="font-semibold text-slate-700 truncate">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {researchConfig && (
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {researchConfig.use_4bit_quantization && (
+                        <span className="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2.5 py-1 rounded-lg border border-violet-200">
+                          4-bit NF4 quantization active
+                        </span>
+                      )}
+                      {researchConfig.skip_llm && (
+                        <span className="text-[10px] font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-lg border border-amber-200">
+                          FM-LLM mode (skip_llm=True)
+                        </span>
+                      )}
+                      <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200">
+                        Device: {researchConfig.device}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              {/* Ablation study runner */}
+              <Card>
+                <CardHeader icon={BarChart2} title="Ablation Study — Component Contribution" />
+                <div className="p-5 space-y-5">
+
+                  {/* Controls */}
+                  <div className="flex flex-wrap items-end gap-4">
+                    <div className="flex-1 min-w-48 space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-600">Feature Cache Path</label>
+                      <input
+                        type="text" value={ablationCachePath}
+                        onChange={(e) => setAblationCachePath(e.target.value)}
+                        placeholder="./cache/features.pkl"
+                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 font-mono text-slate-700 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-50 transition-all"
+                      />
+                    </div>
+                    <div className="w-28 space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-600">Random Seed</label>
+                      <input
+                        type="number" value={ablationSeed}
+                        onChange={(e) => setAblationSeed(parseInt(e.target.value))}
+                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 font-mono text-slate-700 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-50 transition-all"
+                      />
+                    </div>
+                    <button
+                      onClick={handleRunAblation}
+                      disabled={isRunningAblation}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                    >
+                      {isRunningAblation
+                        ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" strokeWidth={2.5} /> Running…</>
+                        : <><FlaskConical className="w-3.5 h-3.5" strokeWidth={2.5} /> Run Ablation</>
+                      }
+                    </button>
+                  </div>
+
+                  {ablationError && (
+                    <div className="flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
+                      <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                      {ablationError}
+                    </div>
+                  )}
+
+                  {/* Results table */}
+                  {ablationResults.length > 0 && (
+                    <div className="space-y-4 animate-fade-up">
+                      <div className="overflow-x-auto rounded-xl border border-slate-200">
+                        <table className="w-full text-xs text-left">
+                          <thead>
+                            <tr className="bg-slate-50 border-b border-slate-200">
+                              {['Variant', 'Accuracy', 'Macro F1', 'QWK', 'Δ F1', 'Δ QWK', 'Sig.'].map(h => (
+                                <th key={h} className="px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {ablationResults.map((row, i) => {
+                              const isFullModel = row['Variant'] === 'Full Model';
+                              const sig = row['Sig.'];
+                              const deltaF1 = parseFloat(row['Δ F1']);
+                              const deltaColor =
+                                row['Δ F1'] === '—' ? '' :
+                                deltaF1 > 0 ? 'text-emerald-600' :
+                                deltaF1 < -0.05 ? 'text-rose-600' : 'text-amber-600';
+                              const sigColor =
+                                sig === '***' ? 'text-rose-700 bg-rose-50 border-rose-200' :
+                                sig === '**'  ? 'text-orange-700 bg-orange-50 border-orange-200' :
+                                sig === '*'   ? 'text-amber-700 bg-amber-50 border-amber-200' :
+                                sig === 'ns'  ? 'text-slate-500 bg-slate-50 border-slate-200' : '';
+                              return (
+                                <tr key={i} className={`border-b border-slate-100 ${isFullModel ? 'bg-violet-50/40 font-semibold' : 'hover:bg-slate-50'} transition-colors`}>
+                                  <td className="px-4 py-3 text-slate-700">{row['Variant']}</td>
+                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['Accuracy']}</td>
+                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['Macro F1']}</td>
+                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['QWK']}</td>
+                                  <td className={`px-4 py-3 font-mono tabular-nums font-semibold ${deltaColor}`}>{row['Δ F1']}</td>
+                                  <td className={`px-4 py-3 font-mono tabular-nums font-semibold ${deltaColor}`}>{row['Δ QWK']}</td>
+                                  <td className="px-4 py-3">
+                                    {sig ? (
+                                      <span className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-bold border ${sigColor}`}>{sig}</span>
+                                    ) : null}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex gap-3 flex-wrap text-[10px] text-slate-500">
+                        <span className="font-semibold text-slate-600">Significance (Wilcoxon + Bonferroni):</span>
+                        {[
+                          { label: '*** p<0.001', color: 'text-rose-700' },
+                          { label: '** p<0.01',   color: 'text-orange-700' },
+                          { label: '* p<0.05',    color: 'text-amber-700' },
+                          { label: 'ns not sig.', color: 'text-slate-500' },
+                        ].map(({ label, color }) => (
+                          <span key={label} className={`font-semibold ${color}`}>{label}</span>
+                        ))}
+                      </div>
+
+                      {/* LaTeX export */}
+                      {ablationLatex && (
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                            <Table2 className="w-3.5 h-3.5" strokeWidth={2} />
+                            LaTeX Table (copy for paper)
+                          </label>
+                          <textarea
+                            readOnly value={ablationLatex}
+                            rows={6}
+                            className="w-full text-[11px] bg-slate-900 text-emerald-300 font-mono border border-slate-700 rounded-xl px-4 py-3 resize-none focus:outline-none"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {ablationResults.length === 0 && !isRunningAblation && (
+                    <EmptyState
+                      icon={BarChart2}
+                      title="No results yet"
+                      body="Click 'Run Ablation' to evaluate all 7 variants (FM, FM-S, FM-C, FM-F, FM-G, FM-L, FM-LLM) with Wilcoxon significance tests."
+                    />
+                  )}
                 </div>
               </Card>
 

@@ -140,29 +140,60 @@ class HybridASAGGrader:
         self._log(f"      Done: {self.config.LOGIC_MODEL}")
         
         # 6. Qwen2.5-3B for reasoning
-        self._log("\n[6/6] Loading Reasoning Model (Qwen2.5-3B-Instruct)...")
-        self.reasoning_tokenizer = AutoTokenizer.from_pretrained(
-            self.config.REASONING_MODEL,
-            trust_remote_code=True
-        )
-        
-        # Determine optimal dtype for device to prevent OOM
-        if self.device.type == "mps":
-            model_dtype = torch.float16
-        elif self.device.type == "cuda":
-            model_dtype = torch.float16
+        if self.config.skip_llm:
+            self._log("\n[6/6] Skipping Reasoning Model (skip_llm=True — FM-LLM ablation mode).")
+            self.reasoning_tokenizer = None
+            self.reasoning_model = None
         else:
-            # Use float16/bfloat16 on CPU instead of float32 to avoid OOM for 3B models
-            model_dtype = torch.bfloat16 if hasattr(torch, "bfloat16") else torch.float16
-        
-        self.reasoning_model = AutoModelForCausalLM.from_pretrained(
-            self.config.REASONING_MODEL,
-            dtype=model_dtype,
-            trust_remote_code=True,
-            low_cpu_mem_usage=True
-        ).to(self.device)
-        self.reasoning_model.eval()
-        self._log(f"      Done: {self.config.REASONING_MODEL}")
+            self._log("\n[6/6] Loading Reasoning Model (Qwen2.5-3B-Instruct)...")
+            self.reasoning_tokenizer = AutoTokenizer.from_pretrained(
+                self.config.REASONING_MODEL,
+                trust_remote_code=True
+            )
+            
+            if self.config.use_4bit_quantization:
+                # Research-grade OOM fix: 4-bit NF4 quantization via bitsandbytes
+                # Reduces Qwen2.5-3B from ~6.5 GB (bfloat16) to ~2.5 GB
+                # Requires: pip install bitsandbytes accelerate
+                try:
+                    from transformers import BitsAndBytesConfig
+                    bnb_config = BitsAndBytesConfig(
+                        load_in_4bit=True,
+                        bnb_4bit_quant_type="nf4",
+                        bnb_4bit_compute_dtype=torch.bfloat16,
+                        bnb_4bit_use_double_quant=True,
+                    )
+                    self.reasoning_model = AutoModelForCausalLM.from_pretrained(
+                        self.config.REASONING_MODEL,
+                        quantization_config=bnb_config,
+                        device_map="auto",  # Required for 4-bit — cannot use .to(device)
+                        trust_remote_code=True,
+                        low_cpu_mem_usage=True,
+                    )
+                    self._log("      4-bit NF4 quantization active (bitsandbytes)")
+                except ImportError:
+                    self._log("      WARNING: bitsandbytes not installed. Falling back to bfloat16.")
+                    self._log("      Run: pip install bitsandbytes accelerate")
+                    self.config.use_4bit_quantization = False  # disable for generate path
+                    model_dtype = torch.bfloat16 if hasattr(torch, "bfloat16") else torch.float16
+                    self.reasoning_model = AutoModelForCausalLM.from_pretrained(
+                        self.config.REASONING_MODEL,
+                        dtype=model_dtype,
+                        trust_remote_code=True,
+                        low_cpu_mem_usage=True,
+                    ).to(self.device)
+            else:
+                # Standard load — use bfloat16 to save memory vs float32
+                model_dtype = torch.bfloat16 if hasattr(torch, "bfloat16") else torch.float16
+                self.reasoning_model = AutoModelForCausalLM.from_pretrained(
+                    self.config.REASONING_MODEL,
+                    dtype=model_dtype,
+                    trust_remote_code=True,
+                    low_cpu_mem_usage=True,
+                ).to(self.device)
+            
+            self.reasoning_model.eval()
+            self._log(f"      Done: {self.config.REASONING_MODEL}")
         
         self._log("\n" + "="*60)
         self._log("All models loaded successfully!")
