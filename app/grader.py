@@ -157,8 +157,7 @@ class HybridASAGGrader:
         
         self.reasoning_model = AutoModelForCausalLM.from_pretrained(
             self.config.REASONING_MODEL,
-            torch_dtype=model_dtype,
-            dtype=model_dtype, # passing dtype as well to silence deprecation warning
+            dtype=model_dtype,
             trust_remote_code=True,
             low_cpu_mem_usage=True
         ).to(self.device)
