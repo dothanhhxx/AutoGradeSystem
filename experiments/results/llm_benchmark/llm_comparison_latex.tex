@@ -1,0 +1,16 @@
+\begin{table}[h]
+\centering
+\caption{LLM Comparative Benchmark: Qwen2.5-3B vs Phi-3-Mini vs Qwen2.5-1.5B on Automated Grading Feedback Task}
+\label{tab:llm_benchmark}
+\begin{tabular}{lccccc}
+\hline
+Model & Size (GB) & Latency (s) & JSON Rate & Tag Acc. & Halluc. Rate \\ \hline
+Qwen2.5-3B & 6.5 & 27.6 & 0.90 & 0.84 & 0.11 \\
+Phi-3-Mini-4K & 7.2 & 33.7 & 0.78 & 0.70 & 0.18 \\
+Qwen2.5-1.5B & 3.1 & 14.3 & 0.69 & 0.65 & 0.23 \\
+\hline
+\end{tabular}
+\begin{tablenotes}
+\item Latency measured on CPU (Intel/AMD). JSON Rate = fraction of outputs parseable as valid JSON with required keys.
+\end{tablenotes}
+\end{table}

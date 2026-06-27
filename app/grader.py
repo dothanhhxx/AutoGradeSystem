@@ -744,7 +744,18 @@ Output JSON:
                           reference: str,
                           student: str,
                           metrics: MetricScores) -> LLMFeedback:
-        """Generate feedback using Qwen2."""
+        """Generate feedback using Qwen2. Falls back to rule-based feedback if LLM is skipped."""
+        # Guard: if skip_llm is True, reasoning_model and reasoning_tokenizer are never loaded
+        if self.config.skip_llm or not hasattr(self, 'reasoning_tokenizer') or self.reasoning_tokenizer is None:
+            tags, explanation = self._assign_tags(metrics)
+            return LLMFeedback(
+                tags=tags,
+                explanation=explanation,
+                suggestion="Enable LLM (set skip_llm=False in config) for detailed suggestions.",
+                parse_success=True,
+                raw_response="[LLM skipped — rule-based fallback]"
+            )
+
         prompt = self._build_prompt(context, question, reference, student, metrics)
         
         with torch.no_grad():

@@ -1,0 +1,4 @@
+model_name,model_size_gb,load_time_s,avg_latency_s,p50_latency_s,json_compliance_rate,parse_error_rate,tag_accuracy,peak_ram_mb,hallucination_rate,mode,notes
+Qwen2.5-3B-Instruct,6.5,143.9799,27.5906,26.7342,0.9047,0.0811,0.8388,6673.4206,0.1073,simulated,Strong instruction-following; occasional JSON prefix pollution
+Phi-3-Mini-4K-Instruct,7.2,160.7351,33.721,32.6395,0.7803,0.2138,0.6972,7167.8867,0.1805,simulated,Fast per token but larger context overhead; less reliable JSON output
+Qwen2.5-1.5B-Instruct,3.1,66.099,14.2761,13.7506,0.689,0.2953,0.6476,3149.5198,0.235,simulated,Fastest and lightest; best for resource-constrained deployment
