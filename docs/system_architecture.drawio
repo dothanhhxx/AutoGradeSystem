@@ -1,0 +1,120 @@
+<mxfile host="Electron" modified="2023-10-25T12:00:00.000Z" agent="Mozilla/5.0" etag="1" version="22.0.0" type="device">
+  <diagram id="diag1" name="System Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Layer 1: Frontend (React) -->
+        <mxCell id="fe_group" value="Frontend (React / Vite)" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="60" width="300" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_ui" value="Grading UI&#xa;(App.tsx, types.ts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3b82f6;" vertex="1" parent="fe_group">
+          <mxGeometry x="20" y="50" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_lab" value="Research Lab&#xa;(Ablation &amp; Optimizer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3b82f6;" vertex="1" parent="fe_group">
+          <mxGeometry x="20" y="130" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="fe_mock" value="Mock Data&#xa;(mockData.ts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" vertex="1" parent="fe_group">
+          <mxGeometry x="20" y="200" width="260" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 2: Backend (FastAPI) -->
+        <mxCell id="be_group" value="Backend API (FastAPI)" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="60" width="260" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="be_api" value="API Router&#xa;(app/api.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#10b981;" vertex="1" parent="be_group">
+          <mxGeometry x="30" y="50" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="be_config" value="Config &amp; Presets&#xa;(app/config.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#10b981;" vertex="1" parent="be_group">
+          <mxGeometry x="30" y="130" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="be_models" value="Data Models&#xa;(app/models.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#10b981;" vertex="1" parent="be_group">
+          <mxGeometry x="30" y="200" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 3: Grading Pipeline (Models) -->
+        <mxCell id="gp_group" value="Core Grading Pipeline (HybridASAG)" style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="60" width="340" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="gp_in" value="Input Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8b5cf6;" vertex="1" parent="gp_group">
+          <mxGeometry x="20" y="50" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gp_parallel" value="Feature Extraction (5 Parallel Models)" style="swimlane;startSize=30;fillColor=#f3f4f6;strokeColor=#9ca3af;dashed=1;" vertex="1" parent="gp_group">
+          <mxGeometry x="20" y="110" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="m_sem" value="SimCSE&#xa;(Semantic)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;" vertex="1" parent="gp_parallel">
+          <mxGeometry x="10" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="m_cov" value="KeyBERT&#xa;(Coverage)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;" vertex="1" parent="gp_parallel">
+          <mxGeometry x="110" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="m_form" value="RoBERTa&#xa;(Formality)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;" vertex="1" parent="gp_parallel">
+          <mxGeometry x="210" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="m_gram" value="RoBERTa&#xa;(Grammar)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;" vertex="1" parent="gp_parallel">
+          <mxGeometry x="50" y="90" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="m_log" value="DeBERTa&#xa;(Logic)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;" vertex="1" parent="gp_parallel">
+          <mxGeometry x="170" y="90" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gp_agg" value="Scoring Aggregation &amp; Penalty" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8b5cf6;" vertex="1" parent="gp_group">
+          <mxGeometry x="20" y="280" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gp_llm" value="LLM Synthesis (Qwen2.5-3B)&#xa;Feedback Generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8b5cf6;" vertex="1" parent="gp_group">
+          <mxGeometry x="20" y="350" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gp_out" value="GradingResult JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8b5cf6;" vertex="1" parent="gp_group">
+          <mxGeometry x="20" y="420" width="300" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 4: Research / Eval -->
+        <mxCell id="res_group" value="Research &amp; Evaluation Pipeline" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="640" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="res_abl" value="Ablation Study&#xa;(ablation_v2.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="res_group">
+          <mxGeometry x="30" y="50" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="res_opt" value="Weight Optimizer&#xa;(weight_optimizer.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="res_group">
+          <mxGeometry x="180" y="50" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="res_bench" value="LLM Benchmark&#xa;(llm_benchmark.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="res_group">
+          <mxGeometry x="340" y="50" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="res_eval" value="Eval Framework&#xa;(evaluation_framework.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="res_group">
+          <mxGeometry x="490" y="50" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="edge1" value="REST API (POST /grade)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontColor=#333333;" edge="1" parent="1" source="fe_ui" target="be_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge2" value="Internal Call" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="be_api" target="gp_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="gp_group" source="gp_in" target="gp_parallel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="gp_group" source="gp_parallel" target="gp_agg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="gp_group" source="gp_agg" target="gp_llm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="gp_group" source="gp_llm" target="gp_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge7" value="Access config" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;dashed=1;" edge="1" parent="1" source="gp_agg" target="be_config">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
