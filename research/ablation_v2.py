@@ -123,7 +123,13 @@ class AblationStudyV2:
             ("FM-F (-Formality)",   {"disable_formality": True}),
             ("FM-G (-Grammar)",     {"disable_grammar": True}),
             ("FM-L (-Logic)",       {"disable_logic": True}),
-            ("FM-LLM (-Synthesis)", {"disable_formality": True, "disable_grammar": True}),
+            # NOTE: FM-LLM removes the LLM Synthesis layer (Qwen2.5-3B feedback).
+            # The LLM layer only generates natural-language feedback (tags/explanation/suggestion);
+            # it does NOT affect composite score or classification label in _predict_variant.
+            # Therefore FM-LLM produces identical classification results to Full Model.
+            # Its value is measured separately via feedback quality metrics (not captured here).
+            # BUG FIX: previously incorrectly used disable_formality+disable_grammar (= FM-F+FM-G).
+            ("FM-LLM (-Synthesis)", {}),
         ]
 
         gold_labels = [s.gold_label for s in samples]
