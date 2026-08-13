@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "stem_0186",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves can only travel through solids not liquids or gases.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0070",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "In meiosis the cells have half the chromosomes, in mitosis they have the same number.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0077",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene tells the body how to make protein which affect traits.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0107",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes determine what you look like. They're made of DNA.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0161",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law says energy always increases in a system over time.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0054",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is where living things interact with their environment.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0094",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is where living things interact with their environment.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0078",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "The total mass doesn't change during a reaction.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0104",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem only includes living organisms, not non-living things.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0167",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are on chromosomes and you get them from your parents.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0074",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem only includes living organisms, not non-living things.",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0009",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "The formula is V = IR and it describes how electricity flows.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0015",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH 0 is neutral and pH 14 is the most acidic.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0181",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy can't be created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0146",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves go up and down, longitudinal waves go back and forth.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0155",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It's a 0-14 scale measuring how acidic or basic a solution is based on hydrogen ion concentration. Acidic solutions have pH < 7, neutral is pH 7, basic is pH > 7. The scale is logarithmic — pH 3 is 10 times more acidic than pH 4.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0175",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It's a 0-14 scale measuring how acidic or basic a solution is based on hydrogen ion concentration. Acidic solutions have pH < 7, neutral is pH 7, basic is pH > 7. The scale is logarithmic — pH 3 is 10 times more acidic than pH 4.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0141",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law is about conservation of energy.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0016",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Sound is longitudinal and light is transverse.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0089",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Resistance has no effect on current according to Ohm's law.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0085",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH 0 is neutral and pH 14 is the most acidic.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0041",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy can't be created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0067",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are on chromosomes and you get them from your parents.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0072",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds only exist between two nonmetal atoms.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0154",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is a community of organisms and their surroundings.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0192",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic is between metals and nonmetals, covalent is between nonmetals.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0144",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is the interaction between living (biotic) and non-living (abiotic) components. Biotic: plants (producers), animals (consumers), fungi/bacteri (decomposers). Abiotic: light, water, temperature, minerals. Energy flows and nutrients cycle.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0052",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "One involves sharing and the other involves giving electrons.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0040",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "In meiosis the cells have half the chromosomes, in mitosis they have the same number.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0114",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is a community of organisms and their surroundings.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0021",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law says total energy in an isolated system is constant — energy...",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0169",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "V = IR. Voltage equals current times resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0095",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH tells you if something is acidi or basic. 7 is neutral.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0153",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Every force has an equal and opposite reaction force. When you stand on the floor, you push down with your weight and the floor pushes up equally. These action-reaction pairs act on different objects.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0145",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH tells you if something is acidic or basic. 7 is neutral.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0019",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law relates voltage, current, and resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0157",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are sections of DNA on chromosomes that encode proteins. Different alleles of a gene produce different proteins, leading to trait variation. Your genotype (inherited allele pairs) determines your phenotype (expressed traits).",
+    "label": "correct",
+    "score": 5.0,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0069",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law states that current increases when resistance increases.",
+    "label": "contradictory",
+    "score": 0.1,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0123",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Every force has an equal and opposite reaction force. When you stand on the floor, you push down with your weight and the floor pushes up equally. These action-reaction pairs act on different objects.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0043",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Every force has an equal and opposite reaction force. When you stand on the floor, you push down with your weight and the floor pushes up equally. These action-reaction pairs act on different objects.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0164",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "It includes plants, animals, and the environment they live in.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0066",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "In transverse waves, particles move up/down while the wave travels horizontally (e.g., electromagnetic waves). In longitudinal waves, particles move back/forth in the same direction as the wave (e.g., sound), creating compression zones.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0187",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a DNA segment coding for a protein. Located on chromosomes, genes have variants called alleles. The genotype (allele combination from parents) determines which proteins are made, which controls the phenotype (observable traits).",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0103",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "When you push something, it pushes back.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0131",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy is conserved: it transforms but the total stays the same. For instance, an electric heater converts electrical energy to thermal energy. No energy is lost, only transformed.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0100",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "In meiosis the cells have half the chromosomes, in mitosis they have the sam number.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0076",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves have particle motion perpendicular to wave direction (like light, ripples). Longitudinal waves have parallel particle motion with compressions and rarefactions (like sound). Both transfer energy, not matter.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0030",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis creates 2 identical diploid cells for growth/repair. Meiosis creates 4 unique haploid gametes through two divisions with crossing over, enabling genetic diversity in sexual reproduction.",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0018",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Conservation of mass means total mass of reactants equals total mass of products in a chemical reaction. Atoms are rearranged, not created or destroyed, so chemical equations must be balanced to reflect this.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0120",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "In meiosis the cells have half the chromosomes, in mitosis they have the same number.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0007",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a DNA segment coding for a protein. Located on chromosomes, genes have variants called alleles. The genotype (allele combination from parents) determines which proteins are made, which controls the phenotype (observable traits).",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0050",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis is for growth and meiosis is for reproduction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0134",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is the interaction between living (biotic) and non-living (abiotic) components. Biotic: plants (producers), animals (consumers), fungi/bacteria (decomposers). Abiotic: light, water, temperature, minerals. Energy flows and nutrients cycle.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0020",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Meiosis produces 2 cells and mitosis produces 4 cells.",
+    "label": "contradictory",
+    "score": 0.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0010",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis creates 2 identical diploid cells for growth/repair. Meiosis creates 4 unique haploid gametes through two divisions with crossing over, enabling genetic diversity in sexual reproduction.",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0029",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law: V = IR. Voltage is proportional to current times resistance. For constant R, more voltage means more current. For constant V, more resistance means less current.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0042",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Covalent bonds transfer electrons while ionic bonds share them.",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0033",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "For every action there is an equal and opposite reaction. Forces come in pairs: when you push a wall, the wall pushes back equally. The action force on the wall equals the reaction force on your hand.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0049",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law only works for AC circuits, not DC.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0031",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy is conserved: it transforms but the total stays the same. For instance, an electric heater converts electrical energy to thermal energy. No energy is lost, only transformed.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0096",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves go up and down, longitudinal waves go back and forth.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0113",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Action and reaction forces cancel each other out so nothing moves.",
+    "label": "contradictory",
+    "score": 1.5,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0143",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Newton's third law: if object A pushes on B, then B pushes back on A with equal magnitude but opposite direction. Example: a rocket expels gas downward (action), and the gas pushes the rocket upward (reaction).",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0006",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves can only travel through solids, not liquids or gases.",
+    "label": "contradictory",
+    "score": 0.9,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0117",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a DNA segment coding for a protein. Located on chromosomes, genes have variants called alleles. The genotype (allele combination from parents) determines which proteins are made, which controls the phenotype (observable traits).",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0023",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "When you push something, it pushes back.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0121",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy is conserved: it transforms but the total stays the same. For instance, an electric heater converts electrical energy to thermal energy. No energy is lost, only transformed.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0180",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis makes 2 cells and meiosis makes 4 cells.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0182",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "One involves sharin and the other involves giving electrons.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0118",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "It means you have the same amount of stuff before and after a reaction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0128",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "The law only applies to reactions in closed containers.",
+    "label": "contradictory",
+    "score": 0.9,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0001",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law says energy always increases in a system over time.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0176",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "There is no real difference — all waves behave the same way.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0174",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem includes all living organisms and non-living factors in an area interacting together. Biotic components are producers, consumers, and decomposers. Abiotic components include sunlight, water, soil, and temperature. Energy flows through food chains.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0090",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "They are both cell division but meiosis has two stages.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0156",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "In transverse waves, particles move up/down while the wave travels horizontally (e.g., electromagnetic waves). In longitudinal waves, particles move back/forth in the same direction as the wave (e.g., sound), creating compression zones.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0086",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Sound waves are transverse because they make the air vibrate up and down.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0014",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "It includes plants, animals, and the environment they live in.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0184",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "It includes plants, animals, and the environment they live in.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0149",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law: V = IR. Voltage is proportional to current times resistance. For constant R, more voltage means more current. For constant V, more resistance means less current.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0110",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Meiosis produces 2 cells and mitosis produces 4 cells.",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0082",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "In ionic bonding, electrons are transferred from one atom to another (metal to nonmetal), forming ions. In covalent bonding, atoms share electrons (nonmetal to nonmetal). Ionic compounds are typically crystalline with high melting points.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0000",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "In meiosis the cells have half the chromosomes, in mitosis they have the same number.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0027",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene tells the body how to make proteins which affect traits.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0130",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "The key difference is output: mitosis yields 2 diploid clones for somatic growth, meiosis yields 4 haploid gametes with genetic recombination through crossing over during two division phases.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0195",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH is the negative logarithm of hydrogen ion concentration, ranging from 0 to 14. Lower pH means more H+ ions (more acidic), higher pH mean fewer H+ ions (more basic). Each unit is a 10x difference.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0185",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It measures how acidic a solution is.",
+    "label": "partially_correct_incomplete",
+    "score": 3.0,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0129",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "V = IR. Voltage equals current times resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0046",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves go up and down, longitudinal waves go back and forth.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0012",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic is between metals and nonmetals, covalent is between nonmetals.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0136",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Longitudinal waves move perpendicular to the direction of energy flow.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0190",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis = 2 identical diploid daughter cells (growth, repair). Meiosis = 4 genetically diverse haploid cells (gametes). Meiosis has two rounds of division and crossing over to increase variation.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0061",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law says energy always increases in a system over time.",
+    "label": "contradictory",
+    "score": 0.6,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0160",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis is for growth and meiosis is for reproduction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0057",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are parts of DNA that control traits.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0102",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds transfer electrons, covalent bonds share them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0137",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a functional unit of DNA that provides instructions for protein synthesis. Alleles are gene variants inherited from parents. The specific allele combination (genotype) determines which proteins are produced, controlling traits (phenotype).",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0003",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Newton's third law is about action and reaction forces.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0058",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "The law states matter cannot be created or destroyed in chemical reactions. The total mass before and after a reaction stays the same because atoms are only rearranged. Balanced equations demonstrate this conservation.",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0198",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "In any chemical reaction, mass is conserved: what goes in equals what comes out. Atoms rearrange to form new compounds but no atoms are gained or lost. That's why we balance equations — to show equal atoms on both sides.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0022",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic is between metals and nonmetals, covalent is between nonmetals.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0112",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds transfer electrons, covalent bonds share them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0126",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "One moves perpendicular and the other parallel to the wave direction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0132",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bond = electron transfer → ions with electrostatic attraction (e.g., NaCl). Covalent bonds = shared electron pairs (e.g., H₂O). Ionic compounds conduct electricity when dissolved; covalent ones generally don't.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0105",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH is a linear scale where each unit is the same change.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0017",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are parts of DNA that control traits.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0125",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It measures how acidic a solution is.",
+    "label": "partially_correct_incomplete",
+    "score": 3.0,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0044",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "Ecosystems are the same as habitats — just the physical place where organisms live.",
+    "label": "contradictory",
+    "score": 0.6,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0002",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds are stronger than covalent bonds in all cases.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0055",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "Low pH is acidic, high pH is basic.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0092",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "One involves sharing and the other involves giving electrons.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0172",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds involve electron transfer between a metal and nonmetal, creating charged ions that attract. Covalent bonds involve electron sharing between nonmetals. Ionic compounds have higher melting points and conduct electricity in solution.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0133",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Newton's third law: if object A pushes on B, then B pushes back on A with equal magnitude but opposite direction. Example: a rocket expels gas downward (action), and the gas pushes the rocket upward (reaction).",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0158",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "In any chemical reaction, mass is conserved: what goes in equals what comes out. Atoms rearrange to form new compounds but no atoms are gained or lost. That's why we balance equations — to show equal atoms on both sides.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0051",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "It says energy is conserved in a closed system.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0080",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis = 2 identical diploid daughter cells (growth, repair). Meiosis = 4 genetically diverse haploid cells (gametes). Meiosis has two rounds of division and crossing over to increase variation.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0025",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It measures how acidic a solution is.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0168",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass in equals mass out. That' why equations need to be balanced.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0081",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "The first law says total energy in an isolated system is constant — energy only changes forms. Example: a pendulum converts potential energy to kinetic energy and back repeatedly.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0047",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene tells the body how to make proteins which affect traits.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0083",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "When you push something, it pushes back.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0053",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Action and reaction forces cancel each other out so nothing moves.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0005",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It measure how acidic a solution is.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0163",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Forces come in pairs. Like when you jump, the ground pushes you up.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0013",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Action and reaction forces cancel each other out so nothing moves.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0093",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "When you push something, it pushes back.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0065",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It's a 0-14 scale measuring how acidic or basic a solution is based on hydrogen ion concentration. Acidic solutions have pH < 7, neutral is pH 7, basic is pH > 7. The scale is logarithmic — pH 3 is 10 times more acidic than pH 4.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0162",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic is between metals and nonmetals covalent is between nonmetals.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0191",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy cannot be created or destroyed, only converted between forms (conservation of energy). In a car engine, chemical energy in fuel becomes heat, then mechanical energy to move the car.",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0179",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law relates voltage, current, and resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0032",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds are stronger than covalent bonds in all cases.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0063",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "For every action there is an equal and opposite reaction. Forces come in pairs: when you push a wall, the wall pushes back equally. The action force on the wall equals the reaction force on your hand.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0071",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy can't be created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0087",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes can only be inherited from the mother, not the father.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0101",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy can't be created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0119",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law only works for AC circuits, not DC.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0139",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "The formula is V = IR and it describes how electricity flows.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0178",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "It means you have the same amount of stuff before and after a reaction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0073",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "When you push something, it pushes back.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0135",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH goes from 0 to 14, with acids being lower numbers.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0193",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Every action has an equal and opposite reaction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0024",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "It's a system of living organisms and their physical environment. Components include biotic factors (producers like plants, consumers like animals, decomposers like bacteria) and abiotic factors (water, sunlight, soil, air, temperature).",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0059",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Resistance has no effect on current according to Ohm's law.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0106",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves go up and down, longitudinal waves go back and forth.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0124",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is where living things interact with their environment.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0109",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law: V = IR. Voltage is proportional to current times resistance. For constant R, more voltage means more current. For constant V, more resistance means less current.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0075",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "Bases have a pH below 7 and acids have a pH abov 7.",
+    "label": "contradictory",
+    "score": 0.1,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0183",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Newton's third law: if object A pushes on B, then B pushes back on A with equal magnitude but opposite direction. Example: a rocket expels gas downward (action), and the gas pushes the rocket upward (reaction).",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0091",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy cannot be created or destroyed, only converted between forms (conservation of energy). In a car engine, chemical energy in fuel becomes heat, then mechanical energy to move the car.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0173",
+    "question": "Explain Newton's third law of motion with an example.",
+    "reference": "Newton's third law states that for every action, there is an equal and opposite reaction. When object A exerts a force on object B, object B simultaneously exerts an equal force in the opposite direction on object A. For example, when you push against a wall, the wall pushes back on you with equal force.",
+    "student": "Newton's third law is about action and reaction forces.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Physics — Mechanics"
+  },
+  {
+    "id": "stem_0079",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "V = IR. Voltage equals current times resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0196",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "The difference is in particle motion: transverse = perpendicular to propagation direction (light, water waves), longitudinal = parallel to propagation with compressions/rarefactions (sound waves). Neither type moves matter, only energy.",
+    "label": "correct",
+    "score": 5.0,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0062",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds involve electron transfer between a metal and nonmetal, creating charged ions that attract. Covalent bonds involve electron sharing between nonmetals. Ionic compounds have higher melting points and conduct electricity in solution.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0148",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass is conserved in chemical reactions. Nothing is created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0011",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy cannot be created or destroyed, only converted between forms (conservation of energy). In a car engine, chemical energy in fuel becomes heat, then mechanical energy to move the car.",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0170",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Meiosis produces 2 cells and mitosis produces 4 cells.",
+    "label": "contradictory",
+    "score": 1.5,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0147",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes are on chromosomes and you get them from your parents.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0122",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "In ionic bonding, electrons are transferred from one atom to another (metal to nonmetal), forming ions. In covalent bonding, atoms share electrons (nonmetal to nonmetal). Ioni compounds are typically crystalline with high melting points.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0171",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy is conserved: it transforms but the total stays the same. For instance, an electri heater converts electrical energy to thermal energy. No energy is lost, only transformed.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0008",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Conservation of mass means the number of molecules stays the same.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0127",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes can only be inherited from the mother, not the father.",
+    "label": "contradictory",
+    "score": 0.6,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0038",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "It means you have the same amount of stuff before and after a reaction.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0037",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes determine what you look like. They're made of DNA.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0151",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "Energy can be created from nothing if enough force is applied.",
+    "label": "contradictory",
+    "score": 0.9,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0159",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law: V = IR. Voltage is proportional to current times resistance. For constant R, more voltage means more current. For constant V, more resistance means less current.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0099",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "Ohm's law: V = IR. Voltage is proportional to current times resistance. For constant R, more voltage means more current. For constant V, more resistance means less current.",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0056",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "One moves perpendicular and the other parallel to the wave direction.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0035",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH is a linear scale where each unit is the same change.",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0138",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass in equals mass out. That's why equations need to be balanced.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0098",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Some mass is always lost...",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0004",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem only includes living organisms, not non-living things.",
+    "label": "contradictory",
+    "score": 0.3,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0115",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH is a linear scale where each unit is the same change.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0116",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Sound is longitudinal and light is transverse.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0140",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "Mitosis is only in plants and meiosis is only in animals.",
+    "label": "contradictory",
+    "score": 0.6,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0194",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is a community of organisms and their surroundings.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0108",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Conservation of mass means the number of molecules stays the same.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0177",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a type of cell that reproduces to create traits.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0036",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "Transverse waves have particle motion perpendicular to wave direction (like light, ripples). Longitudinal waves have parallel particle motion with compression and rarefactions (like sound). Both transfer energy, not matter.",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0197",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "Genes determine what you look like. They're made of DNA.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0064",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "In an ecosystem, energy is created by decomposers and consumed by producers.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0034",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "Ecosystems are the same as habitats — just the physical place where organisms live.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0048",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass is conserved in chemical reactions. Nothing is created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0068",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass is conserved in chemical reactions. Nothing is created or destroyed.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0028",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass in equals mass out. That's why equations need to be balanced.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0026",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "They differ in the direction particles move compared to the wave.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0188",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Conservation of mass means total mass of reactants equals total mass of products in a chemical reaction. Atoms are rearranged, not created or destroyed, so chemical equations must be balanced to reflect this.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0088",
+    "question": "What is the law of conservation of mass in chemical reactions?",
+    "reference": "The law of conservation of mass states that in a chemical reaction, the total mass of reactants equals the total mass of products. Matter is neither created nor destroyed during a chemical reaction — atoms are simply rearranged to form new substances. This means chemical equations must be balanced.",
+    "student": "Mass in equals mass out. That's why equations need to be balanced.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Chemistry — Reactions"
+  },
+  {
+    "id": "stem_0045",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "pH measures H+ ion concentration on a 0-14 logarithmic scale. pH 7 is neutral, below 7 is acidic (high H+), above 7 is basic (low H+). Each pH unit represents a 10x change in H+ concentration.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0165",
+    "question": "What is pH and how does it relate to acidity?",
+    "reference": "pH is a logarithmic scale from 0 to 14 that measures the concentration of hydrogen ions (H+) in a solution. pH 7 is neutral, below 7 is acidic (more H+ ions), and above 7 is basic/alkaline (fewer H+ ions). Each unit change represents a tenfold change in H+ concentration.",
+    "student": "It measures how acidic a solution is.",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Chemistry — Acids and Bases"
+  },
+  {
+    "id": "stem_0189",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "V = IR. Voltage equals current times resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0199",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "V = IR. Voltage equals current times resistance.",
+    "label": "partially_correct_incomplete",
+    "score": 3.0,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0152",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds are stronger than covalent bonds in all cases.",
+    "label": "contradictory",
+    "score": 0.6,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0084",
+    "question": "What is an ecosystem and what are its main components?",
+    "reference": "An ecosystem is a community of living organisms interacting with each other and their non-living environment. Its main components are biotic factors (living things: producers, consumers, decomposers) and abiotic factors (non-living: sunlight, water, temperature, soil, air). Energy flows through food chains/webs and nutrients are recycled.",
+    "student": "An ecosystem is the interaction between living (biotic) and non-living (abiotic) components. Biotic: plants (producers), animals (consumers), fungi/bacteria (decomposers). Abiotic: light, water, temperature, minerals. Energy flows and nutrients cycle.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Biology — Ecology"
+  },
+  {
+    "id": "stem_0111",
+    "question": "State the first law of thermodynamics and give an example.",
+    "reference": "The first law of thermodynamics states that energy cannot be created or destroyed, only transformed from one form to another. The total energy of an isolated system remains constant. For example, in a car engine, chemical energy from fuel is converted to thermal energy and then to mechanical energy (kinetic energy of the car).",
+    "student": "It says energy is conserved in a closed system.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Physics — Thermodynamics"
+  },
+  {
+    "id": "stem_0097",
+    "question": "What is a gene and how does it determine traits?",
+    "reference": "A gene is a segment of DNA that contains instructions for making a specific protein. Genes are located on chromosomes and come in different versions called alleles. Proteins produced by genes control cell functions and determine observable traits (phenotype). The combination of alleles (genotype) inherited from both parents determines which traits are expressed.",
+    "student": "A gene is a type of cell that reproduces to create traits.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Biology — Genetics"
+  },
+  {
+    "id": "stem_0142",
+    "question": "Explain the difference between ionic and covalent bonds.",
+    "reference": "Ionic bonds form when one atom transfers electrons to another, creating oppositely charged ions that attract each other (typically between metals and nonmetals). Covalent bonds form when atoms share electron pairs (typically between nonmetals). Ionic compounds have high melting points and conduct electricity when dissolved, while covalent compounds generally have lower melting points.",
+    "student": "Ionic bonds only exist between two nonmetal atoms.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Chemistry — Chemical Bonding"
+  },
+  {
+    "id": "stem_0039",
+    "question": "What is Ohm's law and how are voltage, current, and resistance related?",
+    "reference": "Ohm's law states that the voltage (V) across a conductor is directly proportional to the current (I) flowing through it, with resistance (R) as the constant of proportionality: V = IR. This means increasing voltage increases current (for constant resistance), and increasing resistance decreases current (for constant voltage).",
+    "student": "The formula is V = IR and it describes how electricity flows.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Physics — Electricity"
+  },
+  {
+    "id": "stem_0150",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "They are both cell division but meiosis has two stages.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Biology — Cell Division"
+  },
+  {
+    "id": "stem_0166",
+    "question": "What is the difference between longitudinal and transverse waves?",
+    "reference": "In transverse waves, particle displacement is perpendicular to the direction of wave propagation (e.g., light waves, water surface waves). In longitudinal waves, particle displacement is parallel to the wave direction, creating compressions and rarefactions (e.g., sound waves). Both types transfer energy without transferring matter.",
+    "student": "They differ in the direction particles move compared to the wave.",
+    "label": "partially_correct_incomplete",
+    "score": 3.0,
+    "context": "Physics — Waves"
+  },
+  {
+    "id": "stem_0060",
+    "question": "Explain the difference between mitosis and meiosis.",
+    "reference": "Mitosis produces two identical diploid daughter cells for growth and repair, while meiosis produces four genetically unique haploid cells (gametes) for sexual reproduction. Meiosis involves two divisions and crossing over, resulting in genetic diversity.",
+    "student": "They are both cell division but meiosis has two stages.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Biology — Cell Division"
+  }
+]

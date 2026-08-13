@@ -1,0 +1,1352 @@
+[
+  {
+    "id": "cs_0089",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Linked lists are always faster than arrays for all operations.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0105",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Array elements are stored consecutively in memory, giving constant-time random access. Linked list nodes are scattered in memory, connected by pointers. Arrays are better for access, linked lists for frequent insertions and deletions.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0130",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(log n) because it halves the search space each step. After each comparison with the middle element, half the remaining elements are eliminated, so it takes at most log2(n) steps.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0036",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "Breadth-First Search explores the graph layer by layer. Using a queue, it starts at the source node, processes each vertex by visiting its adjacent unvisited nodes and adding them to the queue. This gives O(V+E) complexity where V is vertices and E is edges.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0065",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Both have O(1) access time but arrays use more memory.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0092",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS traverses a graph level-by-level using a FIFO queue. Starting from the source, it visits all vertices at distance 1, then distance 2, etc. Each vertex is dequeued, marked visited, and its unvisited neighbors are enqueued. Runs in O(V+E).",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0022",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort always runs in O(n log n) regardless of the input.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0143",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "Binary search tree stores data in a tree with an ordering rule.",
+    "label": "partially_correct_incomplete",
+    "score": 2.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0102",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort picks a pivot, partitions elements into those smaller and larger than the pivot, then recursively sorts both partitions. Average case is O(n log n) since partitioning is O(n) and recursion depth averages O(log n).",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0020",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0093",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is when a function calls itself repeatedly.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0139",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables are the same as arrays but with strin keys.",
+    "label": "contradictory",
+    "score": 1.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0111",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST guarantees O(log n) operations in all cases without balancing.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0016",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is a FIFO data structure where elements are processed in order of arrival.",
+    "label": "contradictory",
+    "score": 0.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0132",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "It explores the graph breadth-first using a queue data structure.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0126",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort selects a pivot and rearranges the array into two groups — less than pivot and greater than pivot. Each group is sorted recursively. On average this takes O(n log n) time because the array roughly halves each level.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0053",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is when a function calls itself to break a problem into smaller parts. It needs a base case to stop the recursion and a recursive case where the function calls itself with reduced input moving toward the base case.",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0075",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Collisions never happen if you use a good hash function.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0066",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(1) because it always finds the element immediately.",
+    "label": "contradictory",
+    "score": 1.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0069",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is when a function calls itself to break a problem into smaller parts. It needs a base case to stop the recursion and a recursive case where the function calls itself with reduced input moving toward the base case.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0037",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means running the same function on different threads simultaneously.",
+    "label": "contradictory",
+    "score": 1.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0142",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort picks a pivot, partitions elements into those smaller and larger than the pivot, then recursively sorts both partitions. Average case is O(n log n) since partitioning is O(n) and recursion depth averages O(log n).",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0131",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "A hash table stores key-value pairs and uses a function to find where to store them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0009",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Linked lists are always faster than arrays for all operations.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0148",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS checks all nodes at the same distance before moving further away.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0026",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(log n) because it splits the data.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0047",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "A BST is a tree where each node has up to 2 children, with left subtree values less than the node and right subtree values greater. Average operations are O(log n) but degrade to O(n) if the tree becomes unbalanced.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0032",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack follows Last-In-First-Out principle. You push elements onto the top and pop them from the top. Operations like push, pop, peek are all constant time O(1).",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0108",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 3.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0128",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack follows Last-In-First-Out principle. You push elements onto the top and pop them from the top. Operations like push, pop, peek are all constant time O(1).",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0133",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means running the same function on different threads simultaneously.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0043",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It's a key-value data structure using hashing for O(1) average operations. A hash function maps keys to array positions. Collision resolution uses either chaining with linked lists or open addressing with probing techniques.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0030",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort works by merging sorted subarrays together after splitting them.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0104",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is like a list but you can only access the top element.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0147",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Collisions never happen if you use a good hash function.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0070",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort uses a pivot to split the array and sort each half. It's O(n log n).",
+    "label": "partially_correct_incomplete",
+    "score": 2.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0118",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort selects a pivot and rearranges the array into two groups — less than pivot and greater than pivot. Each group is sorted recursively. On average this takes O(n log n) time because the array roughly halves each level.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0125",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means running the same function on different threads simultaneously.",
+    "label": "contradictory",
+    "score": 0.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0005",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is the same as iteration but always uses more memory.",
+    "label": "contradictory",
+    "score": 1.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0127",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST has the property that left children are less than the parent.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0091",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "A hash table is like a dictionary. The...",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0045",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means a function invokes itself to solve subproblems. The base case defines when to stop, and the recursive case reduces the problem size with each call. Both are required — missing the base case leads to infinite recursion.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0041",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Array is faster for accessing elements, linked list is better for inserting.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0044",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS starts at the source vertex and explores all neighbors before moving to the next level. It uses a queue: enqueue the source, then repeatedly dequeue a vertex, visit it, and enqueue its unvisited neighbors. Time complexity is O(V+E).",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0076",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0058",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(log n) because it halves the search space each step. After each comparison with the middle element, half the remaining elements are eliminated, so it takes at most log2(n) steps.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0061",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is when a function calls itself to break a problem into smaller parts. It needs a base case to stop the recursion and a recursive case where the function calls itself with reduced input moving toward the base case.",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0029",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means running the same...",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0107",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables use a hash function to convert keys into indices for near-constant-time access. Collisions happen when different keys produce the same index. They're resolved by chaining (each bucket holds a linked list) or open addressing (finding the next empty slot).",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0034",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "O(log n) — each iteration divides the sorted array in half by checking the middle element. Since the problem size reduces by half each step, the number of steps is logarithmic in n.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0085",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion breaks big problems into smaller ones by self-calling.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0002",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is fast because it goes to the middle first.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0146",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "The time complexity is O(log n). Binary search works by comparing the target with the middle element and discarding half the array each time. This halving process means we need log2(n) comparisons in the worst case.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0057",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "The key difference is memory layout: arrays are contiguous (fast access O(1), slow insert O(n)), while linked lists are non-contiguous nodes connected by pointers (slow access O(n), fast insert O(1) at known position).",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0080",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack works like a pile of plates — you can only add or remove from the top. This LIFO behavior makes push and pop O(1) operations. It also supports peek to view the top element.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0056",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack follows Last-In-First-Out principle. You push elements onto the top and pop them from the top. Operations like push, pop, peek are all constant time O(1).",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0097",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays store data next to each other, linked lists use pointers.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0086",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort picks a pivot, partitions elements into those smaller and larger than the pivot, then recursively sorts both partitions. Average case is O(n log n) since partitioning is O(n) and recursion depth averages O(log n).",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0088",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack works like a pile of plates — you can only add or remove from the top. This LIFO behavior makes push and pop O(1) operations. It also supports peek to view the top element.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0064",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is a LIFO data structure where elements are added and removed from the top only. Push adds, pop removes, and both are O(1) operations.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0079",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "In a BST, the left subtree contains values greater than the root.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0116",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0033",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Array elements are stored consecutively in memory, giving constant-time random access. Linked list nodes are scattered in memory, connected by pointers. Arrays are better for access, linked lists for frequent insertions and deletions.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0081",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays and linked lists are the same thing but with different syntax.",
+    "label": "contradictory",
+    "score": 1.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0059",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables use a hash function to convert keys into indices for near-constant-time access. Collisions happen when different keys produce the same index. They're resolved by chaining (each bucket holds a linked list) or open addressing (finding the next empty slot).",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0121",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "The key difference is memory layout: arrays are contiguous (fast access O(1), slow insert O(n)), while linked lists are non-contiguous nodes connected by pointers (slow access O(n), fast insert O(1) at known position).",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0103",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST has the property that left children are less than the parent.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0098",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "The time complexity is O(log n). Binary search works by comparing the target with the middle element and discarding half the array each time. This halving process means we need log2(n) comparisons in the worst case.",
+    "label": "correct",
+    "score": 4.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0063",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "A BST organizes data so left is smaller and right is bigger.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0120",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack works like a queue — first in, first out.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0048",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack works like a pile of plates — you can only add or remove from the top. This LIFO behavior makes push and pop O(1) operations. It also supports peek to view the top element.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0137",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays use pointers to connect elements while linked lists store data contiguously.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0013",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means a function invokes itself to solve subproblems. The base case defines when to stop, and the recursive case reduces the problem size with each call. Both are required — missing the base case leads to infinite recursion.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0074",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "O(log n) — each iteration divides the sorted array in half by checking the middle element. Since the problem size reduces by half each step, the number of steps is logarithmic in n.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0055",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST has the property that left children are less than the parent.",
+    "label": "partially_correct_incomplete",
+    "score": 3.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0019",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It uses hashing to store data. When two things go to the same place, it chains them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0000",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is a tree structure where each node has two children.",
+    "label": "contradictory",
+    "score": 1.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0025",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays store data next to each other, linked lists use pointers.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0119",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "Binary search tree maintains the invariant: left subtree values < node value < right subtree values. This property enables efficient O(log n) operations on average because each comparison eliminates half the remaining nodes.",
+    "label": "correct",
+    "score": 5.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0006",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "It's a divide-and-conquer algorithm: choose a pivot element, partition the array so all smaller elements are left and larger are right, then recursively sort each side. Average time complexity is O(n log n), worst case O(n²) with bad pivot choices.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0014",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort works by merging sorted subarrays together after splitting them.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0124",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "Breadth-First Search explores the graph layer by layer. Using a queue, it starts at the source node, processes each vertex by visiting its adjacent unvisited nodes and adding them to the queue. This gives O(V+E) complexity where V is vertices and E is edges.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0083",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "A hash table maps keys to values via a hash function that computes array indices, giving O(1) average lookup. When two keys map to the same index (collision), it uses chaining (linked lists at each slot) or open addressing (linear/quadratic probing).",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0004",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS randomly selects the next vertex to visit from the graph.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0134",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort compares every pair of elements and swaps them if needed, like bubble sort but faster.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0123",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "A hash table stores key-value pairs and uses a function to find where to store them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0049",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays store data next to each other, linked lists use pointers.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0082",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(1) because it always finds the element immediately.",
+    "label": "contradictory",
+    "score": 0.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0071",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "Binary search tree stores data in a tree with an ordering rule.",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0052",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS randomly selects the next...",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0109",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "A recursive function solves problems by calling itself with smaller inputs. Two essential components: the base case (stopping condition) and the recursive case (self-call with simpler input). Without a base case, it causes infinite recursion and stack overflow.",
+    "label": "correct",
+    "score": 4.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0101",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is when a function calls itself repeatedly.",
+    "label": "partially_correct_incomplete",
+    "score": 3.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0010",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "It's O(n²) because it compares every pair of elements.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0023",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST guarantees O(log n) operations in all cases without balancing.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0129",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Linked lists are always faster than arrays for all operations.",
+    "label": "contradictory",
+    "score": 0.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0018",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "It's logarithmic time because it doesn't chec every element.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0012",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0136",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is like a list but...",
+    "label": "partially_correct_incomplete",
+    "score": 2.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0073",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Linked lists don't need contiguous memory unlike arrays.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0042",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "The time complexity is O(n log n) because it sorts and then searches.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0140",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS traverses a graph level-by-level using a FIFO queue. Starting from the source, it visits all vertices at distance 1, then distance 2, etc. Each vertex is dequeued, marked visited, and its unvisited neighbors are enqueued. Runs in O(V+E).",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0008",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack works like a pile of plates — you can only add or remove from the top. This LIFO behavior makes push and pop O(1) operations. It also supports peek to view the top element.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0112",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack follows Last-In-First-Out principle. You push elements onto the top and pop them from the top. Operations like push, pop, peek are all constant time O(1).",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0051",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It's a key-value data structure using hashing for O(1) average operations. A hash function maps keys to array positions. Collision resolution uses either chaining with linked lists or open addressing with probing techniques.",
+    "label": "correct",
+    "score": 5.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0077",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "A recursive function keeps calling itself until some condition is met.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0100",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS goes level by level through the graph starting from a node.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0087",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST has the property that left children are less than the parent.",
+    "label": "partially_correct_incomplete",
+    "score": 2.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0031",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "Binary search tree stores data in a tree with an ordering rule.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0149",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "It's a technique where functions call themselves. You need a base case.",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0145",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "The key difference is memory layout: arrays are contiguous (fast access O(1), slow insert O(n)), while linked lists are non-contiguous nodes connected by pointers (slow access O(n), fast insert O(1) at known position).",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0095",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "A BST is the same as a heap data structure.",
+    "label": "contradictory",
+    "score": 1.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0024",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is a tree structure where each node has two children.",
+    "label": "contradictory",
+    "score": 0.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0094",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort compares every pair of elements and swaps them if needed, like bubble sort but faster.",
+    "label": "contradictory",
+    "score": 0.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0060",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "Breadth-First Search explores the graph layer by layer. Using a queue, it starts at the source node, processes each vertex by visiting its adjacent unvisited nodes and adding them to the queue. This gives O(V+E) complexity where V is vertices and E is edges.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0027",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It's a key-value data structure using hashing for O(1) average operations. A hash function maps keys to array positions. Collision resolution uses either chaining with linked lists or open addressing with probing techniques.",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0122",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "O(log n) — each iteration divides the sorted array in half by checking the middle element. Since the problem size reduce by half each step, the number of steps is logarithmic in n.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0138",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search has O(n) tim complexity because it checks each element.",
+    "label": "contradictory",
+    "score": 1.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0099",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It use hashing to store data. When two things go to the same place, it chains them.",
+    "label": "partially_correct_incomplete",
+    "score": 2.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0015",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "Binary search tree maintains the invariant: left subtree values < node value < right subtree values. This property enables efficient O(log n) operations on average because each comparison eliminates half the remaining nodes.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0072",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is where you add and remove elements from one end.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0090",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "O(log n) — each iteration divides the sorted array in half by checking the middle element. Since the problem size reduces by half each step, the number of steps is logarithmic in n.",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0035",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "A hash table is like a dictionary. The hash function is used to find the index.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0115",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables are the same as arrays but with string keys.",
+    "label": "contradictory",
+    "score": 0.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0117",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion means a function invokes itself to solve subproblems. The base case defines when to stop, and the recursive case reduces the problem size with each call. Both are required — missing the base case leads to infinite recursion.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0096",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack works like a pile of plates — you can only add or remove from the top. This LIFO behavior makes push and pop O(1) operations. It also supports peek to view the top element.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0050",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "The time complexity is O(log n). Binary search works by comparing the target with the middle element and discarding half the array each time. This halving process means we need log2(n) comparisons in the worst case.",
+    "label": "correct",
+    "score": 4.6,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0135",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "A BST organizes data so left is smaller and right is bigger.",
+    "label": "partially_correct_incomplete",
+    "score": 3.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0068",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS visits all neighbors first before going deeper. It uses a queue.",
+    "label": "partially_correct_incomplete",
+    "score": 2.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0114",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "O(log n) — each iteration divides the sorted array in hal by checking the middle element. Since the problem size reduces by half each step, the number of steps is logarithmic in n.",
+    "label": "correct",
+    "score": 4.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0054",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "It partitions the array around a pivot element recursively.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0110",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort is a fast sorting algorithm that divides and conquers. Average is n log n.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0038",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort picks a pivot, partitions elements into those smaller and larger than the pivot, then recursively sorts...",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0078",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort uses a pivot to split the array and sort each half. It's O(n log n).",
+    "label": "partially_correct_incomplete",
+    "score": 2.7,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0003",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables give fast lookup using a hash function. Collisions are handled somehow.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0062",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "It's a divide-and-conquer algorithm: choose a pivot element, partition the array so all smaller elements are left and larger are right, then recursively sort each side. Average time complexity is O(n log n), worst case O(n²) with bad pivot choices.",
+    "label": "correct",
+    "score": 4.2,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0113",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Both have O(1) access time but arrays use more memory.",
+    "label": "contradictory",
+    "score": 0.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0144",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "A stack is a LIFO data structure where elements are added and removed from the top only. Push adds, pop removes, and both are O(1) operations.",
+    "label": "correct",
+    "score": 4.9,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0028",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS traverses a graph level-by-level using a FIFO queue. Starting from the source, it visits all vertices at distance 1, then distance 2, etc. Each vertex is dequeued, marked visited, and its unvisited neighbors are enqueued. Runs in O(V+E).",
+    "label": "correct",
+    "score": 4.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0011",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "Hash tables use a hash function to convert keys into indices for near-constant-time access. Collisions happen when different keys produce the same index. They're resolved by chaining (each bucket holds a linked list) or open addressing (finding the next empty slot).",
+    "label": "correct",
+    "score": 4.0,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0007",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "A BST is a binary tree where left children are smaller and right children are larger than the parent. This ordering allows O(log n) average search, insert, and delete by eliminating half the tree at each step.",
+    "label": "correct",
+    "score": 4.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0084",
+    "question": "Explain how BFS (Breadth-First Search) traverses a graph.",
+    "reference": "BFS explores a graph level by level starting from a source vertex. It uses a queue data structure: the source is enqueued first, then while the queue is not empty, it dequeues a vertex, marks it as visited, and enqueues all unvisited adjacent vertices. This ensures vertices are visited in order of their distance from the source. BFS has O(V+E) time complexity.",
+    "student": "BFS visits all neighbors first before going deeper. It uses a queue.",
+    "label": "partially_correct_incomplete",
+    "score": 3.4,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0067",
+    "question": "What is a hash table and how does it handle collisions?",
+    "reference": "A hash table is a data structure that maps keys to values using a hash function. The hash function converts keys into array indices for O(1) average-case lookup. Collisions occur when two keys hash to the same index. Common collision resolution methods include chaining (storing multiple elements in a linked list at each index) and open addressing (probing for the next available slot).",
+    "student": "It uses hashing to store data. When two things go to the same place, it chains them.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0040",
+    "question": "What is a stack data structure and how does it work?",
+    "reference": "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. Elements can only be added (push) or removed (pop) from the top. Common operations include push, pop, peek, and isEmpty, all running in O(1) time.",
+    "student": "Stack works like a queue — first in, first out.",
+    "label": "contradictory",
+    "score": 0.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0039",
+    "question": "What is a binary search tree (BST) and its key property?",
+    "reference": "A binary search tree is a binary tree where each node has at most two children, and for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater. This ordering property enables efficient O(log n) average-case search, insertion, and deletion operations.",
+    "student": "BST has the property that left children are less than the parent.",
+    "label": "partially_correct_incomplete",
+    "score": 3.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0141",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion is a loop that...",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0021",
+    "question": "What is recursion and what are its essential components?",
+    "reference": "Recursion is a programming technique where a function calls itself to solve smaller subproblems. Every recursive function must have two essential components: a base case (termination condition that stops recursion) and a recursive case (the function calling itself with a smaller/simpler input that progresses toward the base case).",
+    "student": "Recursion breaks big problems into smaller ones by self-calling.",
+    "label": "partially_correct_incomplete",
+    "score": 2.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0017",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Arrays have fixed size and linked lists can grow dynamically.",
+    "label": "partially_correct_incomplete",
+    "score": 2.8,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0106",
+    "question": "What is the time complexity of binary search and why?",
+    "reference": "Binary search has O(log n) time complexity because it divides the search space in half with each comparison. Starting from the middle element, it eliminates half of the remaining elements by comparing with the target, resulting in at most log2(n) comparisons for n elements.",
+    "student": "Binary search is O(log n) because it splits the data.",
+    "label": "partially_correct_incomplete",
+    "score": 2.3,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0046",
+    "question": "Describe how quicksort works and its average time complexity.",
+    "reference": "Quicksort is a divide-and-conquer sorting algorithm. It works by selecting a pivot element, partitioning the array into elements less than and greater than the pivot, then recursively sorting the two partitions. The average time complexity is O(n log n) because each partition step takes O(n) and the recursion depth is O(log n) on average.",
+    "student": "Quicksort picks a pivot, partitions elements into those smaller and larger than the pivot, then recursively sorts both partitions. Average case is O(n log n) since partitioning is O(n) and recursion depth averages O(log n).",
+    "label": "correct",
+    "score": 4.5,
+    "context": "Computer Science — Data Structures & Algorithms"
+  },
+  {
+    "id": "cs_0001",
+    "question": "Explain the difference between an array and a linked list.",
+    "reference": "An array stores elements in contiguous memory locations allowing O(1) random access by index, but insertion/deletion in the middle requires O(n) shifting. A linked list stores elements in nodes connected by pointers, allowing O(1) insertion/deletion at known positions but requiring O(n) for access since elements must be traversed sequentially.",
+    "student": "Linked lists are always faster than arrays for all operations.",
+    "label": "contradictory",
+    "score": 1.1,
+    "context": "Computer Science — Data Structures & Algorithms"
+  }
+]
