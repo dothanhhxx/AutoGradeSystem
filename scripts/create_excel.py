@@ -1,5 +1,9 @@
-import pandas as pd
 import json
+from pathlib import Path
+
+import pandas as pd
+
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / 'data' / 'outputs'
 
 # Test cases from the notebook
 test_cases = [
@@ -36,7 +40,7 @@ test_cases = [
 ]
 
 # Load grading results
-with open('grading_results.json', 'r', encoding='utf-8') as f:
+with open(OUTPUT_DIR / 'grading_results.json', 'r', encoding='utf-8') as f:
     grading_results = json.load(f)
 
 # Create data for Excel
@@ -67,7 +71,7 @@ for i, (test_case, result) in enumerate(zip(test_cases, grading_results), 1):
 df = pd.DataFrame(data)
 
 # Save to Excel
-excel_path = 'grading_samples.xlsx'
+excel_path = OUTPUT_DIR / 'grading_samples.xlsx'
 df.to_excel(excel_path, index=False, engine='openpyxl')
 
 print(f"Excel file created: {excel_path}")

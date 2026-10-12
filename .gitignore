@@ -32,3 +32,8 @@ venv/
 
 # AI Agent instructions and localized context
 AGENTS.md
+agency-agents/
+
+# Generated caches / build output
+experiments/cache/
+frontend/dist/

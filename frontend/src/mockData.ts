@@ -142,8 +142,8 @@ export function simulateGrading(
   }
 
   // Basic keyword analysis
-  const refWords = reference.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").split(/\s+/);
-  const stuWords = student.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").split(/\s+/);
+  const refWords = reference.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").split(/\s+/);
+  const stuWords = student.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").split(/\s+/);
   
   // Extract key vocabulary (excluding short common words)
   const stopWords = new Set(["the", "a", "an", "is", "are", "was", "were", "of", "to", "and", "in", "that", "it", "for", "with", "by", "on", "as", "at", "by", "an", "this"]);
@@ -166,7 +166,7 @@ export function simulateGrading(
   // Semantic Similarity Simulation based on keyword overlap and string matching
   const commonWordsCount = stuWords.filter(w => refWords.includes(w)).length;
   const jaccard = commonWordsCount / (new Set([...refWords, ...stuWords]).size || 1);
-  let semantic_score = Math.min(1.0, Math.max(0.1, jaccard * 1.5 + coverage_score * 0.4));
+  const semantic_score = Math.min(1.0, Math.max(0.1, jaccard * 1.5 + coverage_score * 0.4));
 
   // Grammar Simulation: Check capitalization and common errors
   let grammar_score = 0.95;
@@ -236,7 +236,7 @@ export function simulateGrading(
 
   // Assign tags
   const tags: string[] = [];
-  let correctness = "Partially Correct";
+  let correctness: string;
 
   if (contradiction > 0.6) {
     correctness = "Incorrect";
@@ -272,8 +272,8 @@ export function simulateGrading(
   }
 
   // Explanations & Suggestions
-  let explanation = "";
-  let suggestion = "";
+  let explanation: string;
+  let suggestion: string;
 
   if (correctness === "Correct") {
     explanation = "Excellent response! The student's answer accurately captures the core concepts and meaning of the reference answer, demonstrating a high-level understanding.";

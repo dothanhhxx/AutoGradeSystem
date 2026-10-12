@@ -159,8 +159,9 @@ def create_improved_assign_tags_step2():
 
 if __name__ == "__main__":
     import sys
+    from pathlib import Path
     
-    notebook_path = "hybrid_asag_grader.ipynb"
+    notebook_path = str(Path(__file__).resolve().parent.parent / "notebooks" / "hybrid_asag_grader.ipynb")
     
     print("=" * 60)
     print("PRODUCTION FIXES FOR HYBRID ASAG GRADER")

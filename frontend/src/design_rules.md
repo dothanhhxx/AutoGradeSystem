@@ -1,41 +1,65 @@
-# Project-Specific Design Rules (Light Theme Edition)
+# Project Design Rules (Magnific Aesthetic Edition)
 
-These design rules establish the visual standards for the HybridASAG Grader Web UI. Following these rules is mandatory to maintain absolute visual consistency across all components and views.
+These design rules define the visual and architectural standards for the AutoGradeSystem Web Application, inspired by the clean, cinematic design language of Magnific.
 
 ---
 
-## 1. Typography & Hierarchy
-- **Font Family**: Inter, Outfit, or standard clean system sans-serif.
-- **Font Weights (Exactly 2)**:
-  - `font-normal` (400) - For body text, descriptions, table cells, and regular labels.
-  - `font-semibold` (600) - For headings, titles, active tabs, buttons, and important scores.
-  - *No other font weights (e.g. 300, 500, 700, 800) are allowed.*
-- **Text Colors (Exactly 2)**:
-  - **Primary Text**: `text-slate-800` (e.g. `#1e293b` for high contrast, clean readability).
-  - **Muted Text**: `text-slate-500` (e.g. `#64748b` for secondary descriptions and labels).
-  - *Exceptions are only permitted for functional semantic status/error badges.*
+## 1. Design Principles & Layout Composition
+- **Copy the visual design language & layout principles, NOT product functionality.**
+- **Reference A (Cinematic Presentation)**: Used for high-impact overview & pipeline spotlight banners:
+  - Dark container backdrop (`#181113`) with subtle vignette overlays and high-contrast typography.
+  - Large, bold headlines and clear hierarchy.
+  - Pill badges and high-contrast action triggers (solid white and outlined pills).
+- **Reference B (Application Dashboard)**:
+  - Ultra-slim vertical icon sidebar on the left (`w-16` / `w-20`) with prominent accent action pill (`#F04F9B`).
+  - Compact top header with breadcrumb trail (`AutoGrade System > ...`) and real-time environment status.
+  - Generous card proportions, rounded corners (`rounded-2xl` and `rounded-3xl`), and subtle 1px border ring (`border-border`).
+- **Reference C (Workspace & Editor)**:
+  - Central two-column workspace for grading inputs and evaluation results.
+  - Floating bottom capsule / control dock (`rounded-full`, glassmorphism backdrop-blur, subtle shadow).
+  - Clear separation between inputs and model diagnostic results.
 
-## 2. Color Palette & Backgrounds
-- **Primary Background**: `bg-slate-50` (soft, clean off-white canvas) with optional very light gradients (e.g., slate/indigo tint).
-- **Surface / Card Background**: Pure white `bg-white` with rounded corners (`rounded-2xl`), a light border (`border-slate-200/80`), and a subtle shadow (`shadow-sm hover:shadow-md transition-shadow`).
-- **Interactive States**: Hover state changes use clean background transition shifts (`hover:bg-slate-50`) and soft shadows.
-- **Borders**: Thin, clean divisions using `border-slate-100` or `border-slate-200`.
+---
 
-## 3. Status & Error Badges (Distinct Colors)
-To ensure error types are visually distinguishable at a glance, we use a distinct, soft pastel color palette for each status and issue label:
-- **Correct**: Soft emerald background (`bg-emerald-50`), green-600 text, emerald-200 border.
-- **Partially Correct**: Soft amber background (`bg-amber-50`), amber-600 text, amber-200 border.
-- **Incorrect**: Soft rose background (`bg-rose-50`), rose-600 text, rose-200 border.
-- **Missing Concepts**: Soft blue background (`bg-blue-50`), blue-600 text, blue-200 border.
-- **Factual Error**: Soft red background (`bg-red-50`), red-600 text, red-200 border.
-- **Logical Error**: Soft purple background (`bg-purple-50`), purple-600 text, purple-200 border.
-- **Vague Expression**: Soft slate background (`bg-slate-100`), slate-600 text, slate-300 border.
-- **Grammar Error**: Soft orange background (`bg-orange-50`), orange-600 text, orange-200 border.
-- **Off-Topic**: Soft fuchsia background (`bg-fuchsia-50`), fuchsia-600 text, fuchsia-200 border.
-- **Incomplete**: Soft yellow background (`bg-yellow-50`), yellow-600 text, yellow-200 border.
+## 2. Strict Typography Rules
+- **Font Family**: `Inter`, `-apple-system`, `BlinkMacSystemFont`, `sans-serif`. Monospace numbers use `JetBrains Mono`.
+- **Exactly Two Font Weights**:
+  - `font-normal` (400) — Body text, descriptions, table cells, secondary labels.
+  - `font-semibold` (600) — Headings, titles, active tabs, buttons, metric numbers, and badges.
+  - *No other font weights (300, 500, 700, 800) are permitted.*
+- **Exactly Two General Text Colors**:
+  - **Primary Text**: `#18181B` (`text-foreground` or `text-[#18181B]`).
+  - **Muted Text**: `#71717A` (`text-muted-foreground` or `text-[#71717A]`).
+  - *(Exceptions allowed only for functional semantic status badges and metric indicators).*
 
-## 4. Icons & Visual Weights
-- **Icon stroke-width** MUST adapt to adjacent text:
-  - Adjacent to `font-normal` text: Use Lucide's default `strokeWidth={1.5}` or `strokeWidth={2}`.
-  - Adjacent to `font-semibold` text: Use `strokeWidth={2.5}` to match the visual weight.
-- **Spacing**: Maintain a consistent `gap-2` between icons and adjacent text labels.
+---
+
+## 3. Color System & Design Tokens
+- **Primary Background**: `#FFFFFF`
+- **Secondary / Canvas Background**: `#F7F7F8`
+- **Dark Hero / Accent Canvas**: `#181113`
+- **Border**: `#E5E7EB` (`border-border`)
+- **Signature Pink Accent**: `#F04F9B` (Magnific brand accent for hero pill badge, primary action highlight)
+- **Tech Blue Accent**: `#5268F5` (Secondary highlights, export actions)
+- **Status & Diagnostic Badges**:
+  - Correct: `bg-emerald-50 text-emerald-700 border-emerald-200`
+  - Partially Correct: `bg-amber-50 text-amber-700 border-amber-200`
+  - Incorrect: `bg-rose-50 text-rose-700 border-rose-200`
+  - Missing Concepts: `bg-sky-50 text-sky-700 border-sky-200`
+  - Logical / Factual Error: `bg-red-50 text-red-700 border-red-200`
+  - Grammar Error: `bg-orange-50 text-orange-700 border-orange-200`
+
+---
+
+## 4. Component Library Standard (shadcn/ui)
+- Use standard shadcn/ui components (`Button`, `Card`, `Badge`, `Tabs`, `Table`, `Input`, `Textarea`, `Slider`, `Progress`, `Alert`, `Empty`, `Tooltip`, etc.) as first-class primitives.
+- Prefer standard variants (`variant="outline"`, `variant="ghost"`, `variant="secondary"`) and compose rather than reinventing custom divs.
+- Icon stroke width adapts to adjacent text:
+  - Adjacent to `font-normal`: `strokeWidth={1.5}` or `strokeWidth={2}`.
+  - Adjacent to `font-semibold`: `strokeWidth={2.5}`.
+
+---
+
+## 5. Global Consistency Over Local Optimizations
+- Maintain identical spacing intervals (multiples of 4px / 8px: `gap-2`, `gap-3`, `gap-4`, `p-6`).
+- Floating dock maintains fixed pill radius (`rounded-full`) across all workspace views.

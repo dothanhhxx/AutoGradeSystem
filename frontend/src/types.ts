@@ -75,3 +75,42 @@ export interface SystemThresholds {
   contradiction_moderate: number;
   formality_poor: number;
 }
+
+export type TabId = 'dashboard' | 'single' | 'batch' | 'settings' | 'research';
+
+export interface HealthStatus {
+  status: string;
+  device: string;
+  models_loaded: boolean;
+}
+
+export interface ResearchConfig {
+  semantic_model?: string;
+  keybert_model?: string;
+  formality_model?: string;
+  grammar_model?: string;
+  logic_model?: string;
+  reasoning_model?: string;
+  use_4bit_quantization?: boolean;
+  skip_llm?: boolean;
+  device?: string;
+}
+
+export interface AblationRow {
+  Variant: string;
+  Accuracy: string;
+  'Macro F1': string;
+  QWK: string;
+  'Δ F1'?: string;
+  'Δ QWK'?: string;
+  'Sig.'?: string;
+  [key: string]: string | undefined;
+}
+
+export interface SessionStats {
+  totalGraded: number;
+  averageGrade: number;
+  correctCount: number;
+  partialCount: number;
+  incorrectCount: number;
+}

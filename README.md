@@ -119,10 +119,25 @@ AutoGradeSystem/
 │   └── run_llm_benchmark.py← Script chạy LLM Benchmark (simulated / real mode)
 │
 ├── evaluation/
-│   └── evaluation_framework.py ← DataLoader (SemEval), ASAGSample, metrics
+│   ├── evaluation_framework.py ← DataLoader (SemEval), ASAGSample, metrics
+│   ├── run_evaluation.ipynb / simulated_results.ipynb
+│   ├── data/               ← Dataset đánh giá (JSON)
+│   └── evaluation_results/ ← Bảng, hình, kết quả đánh giá
+│
+├── notebooks/
+│   └── hybrid_asag_grader.ipynb ← Notebook pipeline chấm điểm gốc
+│
+├── scripts/                ← Script tiện ích (chạy từ bất kỳ thư mục nào)
+│   ├── create_excel.py     ← Xuất data/outputs/grading_results.json → grading_samples.xlsx
+│   └── production_fixes.py ← Áp dụng các bản vá production vào notebook
+│
+├── data/
+│   └── outputs/            ← Kết quả chấm mẫu (grading_results.json, grading_samples.xlsx)
+│
+├── docs/                   ← Tài liệu pipeline, kiến trúc hệ thống (drawio/excalidraw)
 │
 ├── experiments/            ← Thư mục kết quả thí nghiệm (tự động tạo)
-│   ├── cache/              ← Feature cache (.pkl)
+│   ├── cache/              ← Feature cache (.pkl, được gitignore)
 │   └── results/
 │       ├── ablation/       ← CSV + LaTeX từ Ablation Study
 │       ├── optimizer/      ← Trọng số tối ưu từ ML (ml_weights.json)

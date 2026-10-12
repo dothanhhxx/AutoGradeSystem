@@ -728,6 +728,7 @@ class EvaluationMetrics:
         
         if test_type == 'mcnemar':
             # McNemar's test for paired nominal data
+            # pyrefly: ignore [missing-import]
             from statsmodels.stats.contingency_tables import mcnemar
             
             # Build contingency table

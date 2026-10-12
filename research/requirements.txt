@@ -1,0 +1,10 @@
+# Extra dependencies for research/, evaluation/ and scripts/
+# Install after app/requirements.txt:
+#   pip install -r research/requirements.txt
+pandas
+scikit-learn
+statsmodels
+matplotlib
+seaborn
+tqdm
+openpyxl

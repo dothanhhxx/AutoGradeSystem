@@ -1,34 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import {
   Play,
-  Activity,
-  Settings,
-  BookOpen,
   Layers,
+  Settings,
   XCircle,
-  RefreshCw,
   Sliders,
-  Info,
   Download,
   Shield,
   Database,
-  Cpu,
   ChevronRight,
-  Award,
   CheckCircle2,
   AlertOctagon,
   HelpCircle,
-  Edit3,
-  AlignLeft,
-  Settings2,
-  Zap,
-  BarChart2,
-  Brain,
+  Info,
   Sparkles,
   FlaskConical,
   Table2,
+  LayoutDashboard,
+  Wand2,
+  Copy,
+  Check,
+  FileSpreadsheet,
+  Radio,
+  ExternalLink,
+  Plus,
+  RotateCcw,
+  FileDown,
+  ArrowRight,
 } from 'lucide-react';
-import type { GradingResult, Weights, BatchItem, SystemThresholds } from './types';
+
+import type {
+  GradingResult,
+  Weights,
+  BatchItem,
+  SystemThresholds,
+  TabId,
+  HealthStatus,
+  ResearchConfig,
+  AblationRow,
+  SessionStats,
+} from './types';
+
 import {
   DEFAULT_WEIGHTS,
   WEIGHT_PRESETS,
@@ -37,394 +49,338 @@ import {
   calculateLocalGrade,
 } from './mockData';
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// shadcn/ui components
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Spinner } from '@/components/ui/spinner';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table';
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyMedia,
+} from '@/components/ui/empty';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
-const getScoreColor = (score: number) => {
-  if (score >= 80) return { stroke: 'stroke-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-500' };
-  if (score >= 55) return { stroke: 'stroke-amber-500', text: 'text-amber-600', bg: 'bg-amber-500' };
-  return { stroke: 'stroke-rose-500', text: 'text-rose-600', bg: 'bg-rose-500' };
+// ─── Score Helpers ────────────────────────────────────────────────────────────
+
+const getScoreBadgeVariant = (score: number): { label: string; className: string } => {
+  if (score >= 80) {
+    return {
+      label: 'Excellent',
+      className: 'bg-emerald-50 text-emerald-700 border-emerald-200 border',
+    };
+  }
+  if (score >= 55) {
+    return {
+      label: 'Partially Correct',
+      className: 'bg-amber-50 text-amber-700 border-amber-200 border',
+    };
+  }
+  return {
+    label: 'Needs Work',
+    className: 'bg-rose-50 text-rose-700 border-rose-200 border',
+  };
 };
 
-const getScoreLabel = (score: number) => {
-  if (score >= 80) return { label: 'Excellent', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
-  if (score >= 55) return { label: 'Partial', color: 'text-amber-700 bg-amber-50 border-amber-200' };
-  return { label: 'Needs Work', color: 'text-rose-700 bg-rose-50 border-rose-200' };
-};
-
-const getBadgeStyle = (tag: string) => {
+const getTagBadgeStyle = (tag: string): string => {
   switch (tag) {
-    case 'Correct':           return 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400';
-    case 'Partially Correct': return 'bg-amber-100 text-amber-900 border-2 border-amber-400';
-    case 'Incorrect':         return 'bg-rose-100 text-rose-900 border-2 border-rose-400';
-    case 'Missing Concepts':  return 'bg-sky-100 text-sky-900 border-2 border-sky-400';
-    case 'Factual Error':     return 'bg-red-100 text-red-900 border-2 border-red-400';
-    case 'Logical Error':     return 'bg-purple-100 text-purple-900 border-2 border-purple-400';
-    case 'Vague Expression':  return 'bg-slate-200 text-slate-800 border-2 border-slate-400';
-    case 'Grammar Error':     return 'bg-orange-100 text-orange-900 border-2 border-orange-400';
-    case 'Off-Topic':         return 'bg-fuchsia-100 text-fuchsia-900 border-2 border-fuchsia-400';
-    case 'Incomplete':        return 'bg-yellow-100 text-yellow-900 border-2 border-yellow-400';
-    default:                  return 'bg-slate-100 text-slate-700 border-2 border-slate-300';
+    case 'Correct':
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 border';
+    case 'Partially Correct':
+      return 'bg-amber-50 text-amber-700 border-amber-200 border';
+    case 'Incorrect':
+      return 'bg-rose-50 text-rose-700 border-rose-200 border';
+    case 'Missing Concepts':
+      return 'bg-sky-50 text-sky-700 border-sky-200 border';
+    case 'Factual Error':
+    case 'Logical Error':
+      return 'bg-red-50 text-red-700 border-red-200 border';
+    case 'Grammar Error':
+      return 'bg-orange-50 text-orange-700 border-orange-200 border';
+    case 'Off-Topic':
+      return 'bg-purple-50 text-purple-700 border-purple-200 border';
+    default:
+      return 'bg-[#F7F7F8] text-[#71717A] border-[#E5E7EB] border';
   }
 };
 
 const getTagIcon = (tag: string) => {
   switch (tag) {
-    case 'Correct':           return <CheckCircle2 className="w-3 h-3 text-emerald-700 flex-shrink-0" strokeWidth={2.5} />;
-    case 'Partially Correct': return <Info className="w-3 h-3 text-amber-700 flex-shrink-0" strokeWidth={2.5} />;
-    case 'Incorrect':         return <XCircle className="w-3 h-3 text-rose-700 flex-shrink-0" strokeWidth={2.5} />;
+    case 'Correct':
+      return <CheckCircle2 className="size-3 text-emerald-700 shrink-0" strokeWidth={2.5} />;
+    case 'Partially Correct':
+      return <Info className="size-3 text-amber-700 shrink-0" strokeWidth={2.5} />;
+    case 'Incorrect':
+      return <XCircle className="size-3 text-rose-700 shrink-0" strokeWidth={2.5} />;
     case 'Factual Error':
-    case 'Logical Error':     return <AlertOctagon className="w-3 h-3 text-red-700 flex-shrink-0" strokeWidth={2.5} />;
-    default:                  return <HelpCircle className="w-3 h-3 text-slate-500 flex-shrink-0" strokeWidth={2} />;
+    case 'Logical Error':
+      return <AlertOctagon className="size-3 text-red-700 shrink-0" strokeWidth={2.5} />;
+    default:
+      return <HelpCircle className="size-3 text-[#71717A] shrink-0" strokeWidth={2} />;
   }
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Circular Score Ring ──────────────────────────────────────────────────────
 
-/** Circular SVG score ring */
-function ScoreRing({ score, size = 96 }: { score: number; size?: number }) {
-  const c = getScoreColor(score);
+function ScoreGauge({ score, size = 110 }: { score: number; size?: number }) {
   const circ = 283;
-  const offset = circ - (circ * score) / 100;
+  const offset = circ - (circ * Math.min(100, Math.max(0, score))) / 100;
+  const strokeColor =
+    score >= 80 ? '#10B981' : score >= 55 ? '#F59E0B' : '#EF4444';
+
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg className="w-full h-full" viewBox="0 0 36 36">
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg className="size-full" viewBox="0 0 36 36">
         <path
-          strokeWidth="2.5" fill="none" stroke="#e2e8f0"
+          strokeWidth="2.5"
+          fill="none"
+          stroke="#E5E7EB"
           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
         />
         <path
-          className={`progress-circle ${c.stroke}`}
-          strokeWidth="2.5" strokeLinecap="round" fill="none"
+          className="progress-circle"
+          strokeWidth="2.8"
+          strokeLinecap="round"
+          fill="none"
+          stroke={strokeColor}
           style={{ '--offset': offset } as React.CSSProperties}
           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
         />
       </svg>
-      <div className={`absolute inset-0 flex flex-col items-center justify-center ${c.text}`}>
-        <span className="text-lg font-semibold tabular-nums leading-none">{Math.round(score)}</span>
-        <span className="text-[9px] text-slate-500 leading-none mt-0.5">/ 100</span>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-2xl font-semibold tabular-nums text-[#18181B] leading-none">
+          {Math.round(score)}
+        </span>
+        <span className="text-[10px] font-normal text-[#71717A] leading-none mt-1">/ 100</span>
       </div>
     </div>
   );
 }
 
-/** Horizontal metric bar */
-function MetricBar({
-  label, value, color,
-}: { label: string; value: number; color: string }) {
+// ─── Feature Breakdown Progress Bar ───────────────────────────────────────────
+
+function FeatureBar({
+  label,
+  value,
+  colorHex,
+  weightPct,
+  warningBadge,
+}: {
+  label: string;
+  value: number;
+  colorHex: string;
+  weightPct?: number;
+  warningBadge?: string;
+}) {
+  const pct = Math.round(Math.min(100, Math.max(0, value * 100)));
   return (
-    <div className="space-y-1.5">
-      <div className="flex justify-between items-center">
-        <span className="text-xs text-slate-500">{label}</span>
-        <span className="text-xs font-semibold text-slate-800 tabular-nums">{Math.round(value)}%</span>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex justify-between items-center text-xs">
+        <div className="flex items-center gap-1.5">
+          <span className="font-normal text-[#71717A]">{label}</span>
+          {weightPct !== undefined && (
+            <span className="text-[10px] font-normal text-[#71717A] bg-[#F7F7F8] px-1.5 py-0.2 rounded border border-[#E5E7EB]">
+              {weightPct}% wt
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {warningBadge && (
+            <span className="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+              {warningBadge}
+            </span>
+          )}
+          <span className="font-semibold text-[#18181B] tabular-nums">{pct}%</span>
+        </div>
       </div>
-      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-2 w-full rounded-full bg-[#F7F7F8] overflow-hidden border border-[#E5E7EB]">
         <div
-          className={`h-full rounded-full metric-bar-fill ${color}`}
-          style={{ width: `${value}%` }}
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${pct}%`, backgroundColor: colorHex }}
         />
       </div>
     </div>
   );
 }
 
-/** Tag badge chip */
-function Badge({ tag }: { tag: string }) {
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold ${getBadgeStyle(tag)}`}>
-      {getTagIcon(tag)}
-      {tag}
-    </span>
-  );
-}
-
-/** Empty state placeholder */
-function EmptyState({ icon: Icon, title, body }: { icon: React.ElementType; title: string; body: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-14 space-y-3">
-      <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-slate-400" strokeWidth={1.5} />
-      </div>
-      <p className="text-sm font-semibold text-slate-800">{title}</p>
-      <p className="text-xs text-slate-500 max-w-xs leading-relaxed">{body}</p>
-    </div>
-  );
-}
-
-/** Section card wrapper */
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`bg-white rounded-2xl border border-slate-200/80 shadow-sm ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-/** Section title row inside a card */
-function CardHeader({ icon: Icon, title, right }: {
-  icon: React.ElementType; title: string; right?: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
-      <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center">
-          <Icon className="w-3.5 h-3.5 text-slate-500" strokeWidth={2} />
-        </div>
-        <span className="text-sm font-semibold text-slate-800">{title}</span>
-      </div>
-      {right && <div>{right}</div>}
-    </div>
-  );
-}
-
-// ─── Stats Card ───────────────────────────────────────────────────────────────
-
-function StatCard({
-  label, value, sub, accent,
-}: { label: string; value: string | number; sub: string; accent: string }) {
-  return (
-    <Card className="card-hover p-6">
-      <p className={`text-[10px] font-semibold uppercase tracking-widest ${accent}`}>{label}</p>
-      <p className="text-3xl font-semibold text-slate-800 mt-1.5 tabular-nums">{value}</p>
-      <p className="text-xs text-slate-500 mt-1">{sub}</p>
-    </Card>
-  );
-}
-
-// ─── Weight Sliders Panel ─────────────────────────────────────────────────────
-
-function WeightsPanel({
-  weights, activePreset, onPresetChange, onWeightChange,
-}: {
-  weights: Weights;
-  activePreset: string;
-  onPresetChange: (p: string) => void;
-  onWeightChange: (k: keyof Weights, v: number) => void;
-}) {
-  const total = Object.values(weights).reduce((a, b) => a + b, 0);
-  const isBalanced = Math.abs(total - 1) < 0.01;
-
-  const presets = [
-    { key: 'balanced', label: 'Balanced' },
-    { key: 'content_focused', label: 'Content' },
-    { key: 'academic_writing', label: 'Academic' },
-    { key: 'logic_heavy', label: 'Logic' },
-    { key: 'quick_check', label: 'Quick' },
-  ];
-
-  const sliders: { key: keyof Weights; label: string; color: string }[] = [
-    { key: 'semantic',  label: 'Semantic Similarity', color: 'bg-indigo-500' },
-    { key: 'coverage',  label: 'Keyword Coverage',    color: 'bg-sky-500' },
-    { key: 'formality', label: 'Formality',           color: 'bg-slate-500' },
-    { key: 'grammar',   label: 'Grammar',             color: 'bg-orange-500' },
-    { key: 'logic',     label: 'Logical Coherence',   color: 'bg-purple-500' },
-  ];
-
-  return (
-    <Card>
-      <CardHeader icon={Settings2} title="Weights Configuration" />
-      <div className="p-5 space-y-5">
-        {/* Preset pills */}
-        <div className="flex flex-wrap gap-1.5">
-          {presets.map((p) => (
-            <button
-              key={p.key}
-              onClick={() => onPresetChange(p.key)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
-                activePreset === p.key
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-          {activePreset === 'custom' && (
-            <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-100 text-violet-700 border border-violet-200">
-              Custom
-            </span>
-          )}
-        </div>
-
-        {/* Sliders */}
-        <div className="space-y-4">
-          {sliders.map(({ key, label, color }) => (
-            <div key={key} className="space-y-1.5">
-              <div className="flex justify-between text-xs">
-                <span className="text-slate-600 font-semibold">{label}</span>
-                <span className="font-semibold text-slate-800 tabular-nums">{Math.round(weights[key] * 100)}%</span>
-              </div>
-              <input
-                type="range" min="0" max="1" step="0.05"
-                value={weights[key]}
-                onChange={(e) => onWeightChange(key, parseFloat(e.target.value))}
-                className="w-full"
-                style={{ background: `linear-gradient(to right, ${color === 'bg-indigo-500' ? '#6366f1' : color === 'bg-sky-500' ? '#0ea5e9' : color === 'bg-slate-500' ? '#64748b' : color === 'bg-orange-500' ? '#f97316' : '#a855f7'} ${weights[key] * 100}%, #e2e8f0 ${weights[key] * 100}%)` }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Total indicator */}
-        <div className={`flex items-center gap-2 text-xs px-3 py-2.5 rounded-xl border ${
-          isBalanced
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            : 'bg-amber-50 border-amber-200 text-amber-700'
-        }`}>
-          <Info className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
-          <span>
-            Total: <span className="font-semibold tabular-nums">{Math.round(total * 100)}%</span>
-            {isBalanced ? ' · Weights auto-normalize on evaluation.' : ' · Weights will be normalized automatically.'}
-          </span>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-// ─── Single Result Panel ──────────────────────────────────────────────────────
-
-function ResultPanel({ result }: { result: GradingResult }) {
-  const score = result.metrics.final_grade;
-  const sl = getScoreLabel(score);
-
-  return (
-    <div className="space-y-4 animate-fade-up">
-      {/* Score hero card */}
-      <Card className="p-6">
-        <div className="flex items-center gap-6">
-          <ScoreRing score={score} size={88} />
-          <div className="flex-1 space-y-2.5">
-            <div className="flex items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-lg border text-xs font-semibold ${sl.color}`}>
-                {sl.label}
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 leading-relaxed">Weighted composite score across 5 NLP criteria.</p>
-            <div className="flex flex-wrap gap-1.5">
-              {result.feedback.tags.map((tag, i) => <Badge key={i} tag={tag} />)}
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Metric bars */}
-      <Card>
-        <CardHeader icon={BarChart2} title="Feature Breakdown" />
-        <div className="p-5 space-y-3.5">
-          <MetricBar label="Semantic Similarity" value={result.metrics.semantic_score * 100}  color="bg-indigo-500" />
-          <MetricBar label="Keyword Coverage"    value={result.metrics.coverage_score * 100}   color="bg-sky-500" />
-          <MetricBar label="Formality"           value={result.metrics.formality_score * 100} color="bg-slate-400" />
-          <MetricBar label="Grammar"             value={result.metrics.grammar_score * 100}    color="bg-orange-500" />
-          <MetricBar label="Logical Coherence"   value={result.metrics.logic_score * 100}      color="bg-purple-500" />
-        </div>
-      </Card>
-
-      {/* LLM Feedback */}
-      <Card>
-        <CardHeader icon={Brain} title="AI Feedback" />
-        <div className="p-5 space-y-4">
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Explanation</p>
-            <p className="text-xs text-slate-700 leading-relaxed">{result.feedback.explanation}</p>
-          </div>
-          <div className="space-y-1.5 pt-3 border-t border-slate-100">
-            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Recommendation</p>
-            <p className="text-xs text-slate-700 leading-relaxed">{result.feedback.suggestion}</p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Missing keywords */}
-      {result.metrics.missing_keywords?.length > 0 && (
-        <Card>
-          <div className="p-5 space-y-2.5">
-            <p className="text-[10px] font-semibold text-rose-600 uppercase tracking-widest">Missing Keywords</p>
-            <div className="flex flex-wrap gap-1.5">
-              {result.metrics.missing_keywords.map((kw, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-[10px] font-semibold">
-                  {kw}
-                </span>
-              ))}
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* NLI details */}
-      {result.metrics.logic_details && (
-        <Card>
-          <div className="p-5 space-y-2.5">
-            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">NLI Probabilities</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs text-slate-600">
-              {Object.entries(result.metrics.logic_details).map(([k, v]) =>
-                v !== undefined ? (
-                  <div key={k} className="flex justify-between border-b border-slate-100 pb-1.5">
-                    <span className="capitalize">{k.replace(/_/g, ' ')}</span>
-                    <span className="font-semibold tabular-nums text-slate-800">{Math.round((v as number) * 100)}%</span>
-                  </div>
-                ) : null
-              )}
-            </div>
-          </div>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-// ─── Main App ─────────────────────────────────────────────────────────────────
+// ─── Main Application ─────────────────────────────────────────────────────────
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'single' | 'batch' | 'settings' | 'research'>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [isLive, setIsLive] = useState<boolean>(false);
-  const [apiUrl, setApiUrl] = useState<string>('http://localhost:8000');
-  const [healthStatus, setHealthStatus] = useState<{ status: string; device: string; models_loaded: boolean } | null>(null);
+  const [apiUrl, setApiUrl] = useState<string>('http://127.0.0.1:8000');
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>({
+    status: 'healthy',
+    device: 'Client Sim',
+    models_loaded: true,
+  });
 
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [activePreset, setActivePreset] = useState<string>('balanced');
   const [thresholds] = useState<SystemThresholds>(DEFAULT_THRESHOLDS);
 
-  const [singleContext, setSingleContext]   = useState<string>('Photosynthesis is the process by which plants make food.');
-  const [singleQuestion, setSingleQuestion] = useState<string>('Explain the process of photosynthesis.');
-  const [singleReference, setSingleReference] = useState<string>('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-  const [singleStudent, setSingleStudent]   = useState<string>('Plants use sunlight and water to make food and release oxygen.');
-  const [singleResult, setSingleResult]     = useState<GradingResult | null>(null);
-  const [isGradingSingle, setIsGradingSingle] = useState<boolean>(false);
-  const [singleError, setSingleError]       = useState<string | null>(null);
-
-  const [batchQuestion, setBatchQuestion]   = useState<string>('Explain the process of photosynthesis.');
-  const [batchReference, setBatchReference] = useState<string>('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-  const [batchRawInput, setBatchRawInput]   = useState<string>(
-    `Student A: Plants use light to make food.\nStudent B: Animals eat plants to get energy.\nStudent C: Plants use sunlight, water, carbon dioxide to produce glucose and oxygen via chlorophyll.\nStudent D: It is a process.`
+  // Single Grader state
+  const [singleContext, setSingleContext] = useState<string>(
+    'Photosynthesis is the process by which green plants and some organisms use sunlight to synthesize nutrients from carbon dioxide and water.'
   );
-  const [batchItems, setBatchItems]           = useState<BatchItem[]>([]);
-  const [isGradingBatch, setIsGradingBatch]   = useState<boolean>(false);
+  const [singleQuestion, setSingleQuestion] = useState<string>(
+    'Explain the process of photosynthesis and its primary biological importance.'
+  );
+  const [singleReference, setSingleReference] = useState<string>(
+    'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll. It provides chemical energy for plants and oxygen for aerobic respiration.'
+  );
+  const [singleStudent, setSingleStudent] = useState<string>(
+    'Plants use sunlight, CO2, and water to make glucose and oxygen through chlorophyll. This process provides food and releases oxygen into the atmosphere.'
+  );
+  const [singleResult, setSingleResult] = useState<GradingResult | null>(null);
+  const [isGradingSingle, setIsGradingSingle] = useState<boolean>(false);
+  const [singleError, setSingleError] = useState<string | null>(null);
+
+  // Batch Grader state
+  const [batchQuestion, setBatchQuestion] = useState<string>(
+    'Explain the process of photosynthesis and its primary biological importance.'
+  );
+  const [batchReference, setBatchReference] = useState<string>(
+    'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll. It produces food and oxygen.'
+  );
+  const [batchRawInput, setBatchRawInput] = useState<string>(
+    `Alice: Plants use sunlight, carbon dioxide, and water to make glucose and release oxygen via chlorophyll.\nBob: Plants require sunlight and water to produce food. They release oxygen gas into the air.\nCharlie: Animals eat plants to absorb solar energy directly from chlorophyll pigments.\nDavid: Sunlight and water create green leaves.`
+  );
+  const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
+  const [isGradingBatch, setIsGradingBatch] = useState<boolean>(false);
   const [selectedBatchItem, setSelectedBatchItem] = useState<BatchItem | null>(null);
 
-  const [stats, setStats] = useState({
-    totalGraded: 4, averageGrade: 64.63, correctCount: 1, partialCount: 2, incorrectCount: 1,
+  // Research state
+  const [researchConfig, setResearchConfig] = useState<ResearchConfig | null>(null);
+  const [ablationResults, setAblationResults] = useState<AblationRow[]>([]);
+  const [ablationLatex, setAblationLatex] = useState<string>('');
+  const [isRunningAblation, setIsRunningAblation] = useState<boolean>(false);
+  const [ablationCachePath, setAblationCachePath] = useState<string>('./cache/features.pkl');
+  const [ablationError, setAblationError] = useState<string | null>(null);
+  const [ablationSeed, setAblationSeed] = useState<number>(42);
+  const [copiedLatex, setCopiedLatex] = useState<boolean>(false);
+
+  // Stats
+  const [stats, setStats] = useState<SessionStats>({
+    totalGraded: 4,
+    averageGrade: 78.5,
+    correctCount: 2,
+    partialCount: 1,
+    incorrectCount: 1,
   });
 
-  useEffect(() => {
-    if (isLive) checkHealth();
-    else setHealthStatus({ status: 'healthy', device: 'Client Sim', models_loaded: true });
-  }, [isLive, apiUrl]);
-
+  // Health check
   const checkHealth = async () => {
     try {
       const res = await fetch(`${apiUrl}/health`);
-      if (res.ok) setHealthStatus(await res.json());
-      else setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
+      if (res.ok) {
+        const data: HealthStatus = await res.json();
+        setHealthStatus(data);
+      } else {
+        setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
+      }
     } catch {
       setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
     }
   };
 
-  const handlePresetChange = (name: string) => {
-    setActivePreset(name);
-    if (WEIGHT_PRESETS[name]) {
-      setWeights(WEIGHT_PRESETS[name]);
-      if (singleResult) recalculateSingle(WEIGHT_PRESETS[name]);
+  useEffect(() => {
+    let active = true;
+    if (isLive) {
+      fetch(`${apiUrl}/health`)
+        .then((res) => (res.ok ? res.json() : { status: 'offline', device: 'None', models_loaded: false }))
+        .then((data: HealthStatus) => {
+          if (active) setHealthStatus(data);
+        })
+        .catch(() => {
+          if (active) setHealthStatus({ status: 'offline', device: 'None', models_loaded: false });
+        });
+    }
+    return () => {
+      active = false;
+    };
+  }, [isLive, apiUrl]);
+
+  useEffect(() => {
+    let active = true;
+    if (activeTab === 'research' && isLive) {
+      fetch(`${apiUrl}/research/config`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (active && data) setResearchConfig(data);
+        })
+        .catch(() => {
+          if (active) setResearchConfig(null);
+        });
+    }
+    return () => {
+      active = false;
+    };
+  }, [activeTab, isLive, apiUrl]);
+
+  // Recalculate helper
+  const recalculateSingle = async (nw: Weights) => {
+    if (!singleResult) return;
+    if (isLive) {
+      try {
+        const res = await fetch(`${apiUrl}/grade/recalculate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ metrics: singleResult.metrics, weights: nw }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setSingleResult((prev) =>
+            prev ? { ...prev, metrics: { ...prev.metrics, final_grade: data.new_grade } } : null
+          );
+        }
+      } catch {
+        const g = calculateLocalGrade(singleResult.metrics, nw);
+        setSingleResult((prev) =>
+          prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null
+        );
+      }
+    } else {
+      const g = calculateLocalGrade(singleResult.metrics, nw);
+      setSingleResult((prev) =>
+        prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null
+      );
+    }
+  };
+
+  const handlePresetChange = (presetName: string) => {
+    setActivePreset(presetName);
+    if (WEIGHT_PRESETS[presetName]) {
+      const nw = WEIGHT_PRESETS[presetName];
+      setWeights(nw);
+      if (singleResult) recalculateSingle(nw);
     }
   };
 
@@ -435,937 +391,1842 @@ export default function App() {
     if (singleResult) recalculateSingle(nw);
   };
 
-  const recalculateSingle = async (nw: Weights) => {
-    if (!singleResult) return;
-    if (isLive) {
-      try {
-        const res = await fetch(`${apiUrl}/grade/recalculate`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ metrics: singleResult.metrics, weights: nw }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: data.new_grade } } : null);
-        }
-      } catch {
-        const g = calculateLocalGrade(singleResult.metrics, nw);
-        setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null);
-      }
-    } else {
-      const g = calculateLocalGrade(singleResult.metrics, nw);
-      setSingleResult(prev => prev ? { ...prev, metrics: { ...prev.metrics, final_grade: g } } : null);
-    }
+  const updateStats = (score: number, tags: string[]) => {
+    setStats((prev) => {
+      const nt = prev.totalGraded + 1;
+      return {
+        totalGraded: nt,
+        averageGrade:
+          Math.round(((prev.averageGrade * prev.totalGraded + score) / nt) * 100) / 100,
+        correctCount: prev.correctCount + (tags.includes('Correct') ? 1 : 0),
+        partialCount: prev.partialCount + (tags.includes('Partially Correct') ? 1 : 0),
+        incorrectCount:
+          prev.incorrectCount +
+          (!tags.includes('Correct') && !tags.includes('Partially Correct') ? 1 : 0),
+      };
+    });
   };
 
-  const handleGradeSingle = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGradeSingle = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!singleQuestion.trim() || !singleReference.trim() || !singleStudent.trim()) return;
+
     setIsGradingSingle(true);
     setSingleError(null);
+
     if (isLive) {
       try {
         const res = await fetch(`${apiUrl}/grade`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ context: singleContext, question: singleQuestion, reference: singleReference, student: singleStudent, weights }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            context: singleContext,
+            question: singleQuestion,
+            reference: singleReference,
+            student: singleStudent,
+            weights,
+          }),
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.success) { setSingleResult(data.data); updateStats(data.data.metrics.final_grade, data.data.feedback.tags); }
-          else setSingleError(data.error || 'Unknown error.');
+          if (data.success) {
+            setSingleResult(data.data);
+            updateStats(data.data.metrics.final_grade, data.data.feedback.tags);
+          } else {
+            setSingleError(data.error || 'Evaluation failed on server.');
+          }
         } else {
-          const e2 = await res.json().catch(() => ({}));
-          setSingleError(e2.error || `Server error ${res.status}`);
+          const errData = await res.json().catch(() => ({}));
+          setSingleError(errData.detail || `Server error (${res.status})`);
         }
-      } catch { setSingleError('Cannot reach backend. Switch to Simulated Mode or start uvicorn.'); }
-      finally { setIsGradingSingle(false); }
+      } catch {
+        setSingleError('Cannot connect to Live API. Check if uvicorn is running on port 8000.');
+      } finally {
+        setIsGradingSingle(false);
+      }
     } else {
       setTimeout(() => {
         try {
-          const r = simulateGrading(singleContext, singleQuestion, singleReference, singleStudent, weights);
-          setSingleResult(r); updateStats(r.metrics.final_grade, r.feedback.tags);
-        } catch (err: any) { setSingleError(err.message || 'Simulation error'); }
-        finally { setIsGradingSingle(false); }
-      }, 800);
+          const r = simulateGrading(
+            singleContext,
+            singleQuestion,
+            singleReference,
+            singleStudent,
+            weights
+          );
+          setSingleResult(r);
+          updateStats(r.metrics.final_grade, r.feedback.tags);
+        } catch {
+          setSingleError('Simulation evaluation failed.');
+        } finally {
+          setIsGradingSingle(false);
+        }
+      }, 650);
     }
-  };
-
-  const updateStats = (score: number, tags: string[]) => {
-    setStats(prev => {
-      const nt = prev.totalGraded + 1;
-      return {
-        totalGraded:    nt,
-        averageGrade:   Math.round(((prev.averageGrade * prev.totalGraded + score) / nt) * 100) / 100,
-        correctCount:   prev.correctCount   + (tags.includes('Correct') ? 1 : 0),
-        partialCount:   prev.partialCount   + (tags.includes('Partially Correct') ? 1 : 0),
-        incorrectCount: prev.incorrectCount + (!tags.includes('Correct') && !tags.includes('Partially Correct') ? 1 : 0),
-      };
-    });
   };
 
   const handleGradeBatch = async () => {
     if (!batchRawInput.trim()) return;
     setIsGradingBatch(true);
     setSelectedBatchItem(null);
-    const lines = batchRawInput.split('\n').filter(l => l.trim());
+
+    const lines = batchRawInput.split('\n').filter((l) => l.trim());
     const items: BatchItem[] = lines.map((line, idx) => {
-      let id = `Student ${idx + 1}`, student = line;
+      let id = `Student ${idx + 1}`;
+      let student = line;
       const ci = line.indexOf(':');
-      if (ci > 0 && ci < 30) { id = line.substring(0, ci).trim(); student = line.substring(ci + 1).trim(); }
-      return { id, context: '', question: batchQuestion, reference: batchReference, student, status: 'grading' };
+      if (ci > 0 && ci < 30) {
+        id = line.substring(0, ci).trim();
+        student = line.substring(ci + 1).trim();
+      }
+      return {
+        id,
+        context: '',
+        question: batchQuestion,
+        reference: batchReference,
+        student,
+        status: 'grading',
+      };
     });
     setBatchItems(items);
 
     if (isLive) {
       try {
         const res = await fetch(`${apiUrl}/grade/batch`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: items.map(i => ({ context: i.context, question: i.question, reference: i.reference, student: i.student })), weights }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: items.map((i) => ({
+              context: i.context,
+              question: i.question,
+              reference: i.reference,
+              student: i.student,
+            })),
+            weights,
+          }),
         });
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.data.results) {
-            setBatchItems(prev => prev.map((item, idx) => ({ ...item, status: 'success', result: data.data.results[idx] })));
-          } else throw new Error(data.message);
-        } else throw new Error(`HTTP ${res.status}`);
-      } catch (err: any) {
-        setBatchItems(prev => prev.map(item => ({ ...item, status: 'failed', error: err.message })));
-      } finally { setIsGradingBatch(false); }
+            setBatchItems((prev) =>
+              prev.map((item, idx) => ({
+                ...item,
+                status: 'success',
+                result: data.data.results[idx],
+              }))
+            );
+          } else {
+            throw new Error(data.message || 'Batch evaluation error');
+          }
+        } else {
+          throw new Error(`HTTP ${res.status}`);
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Batch grading error';
+        setBatchItems((prev) => prev.map((item) => ({ ...item, status: 'failed', error: msg })));
+      } finally {
+        setIsGradingBatch(false);
+      }
     } else {
       for (let i = 0; i < items.length; i++) {
-        await new Promise(r => setTimeout(r, 320));
+        await new Promise((r) => setTimeout(r, 280));
         const res = simulateGrading('', items[i].question, items[i].reference, items[i].student, weights);
-        setBatchItems(prev => { const u = [...prev]; u[i] = { ...u[i], status: 'success', result: res }; return u; });
+        setBatchItems((prev) => {
+          const u = [...prev];
+          u[i] = { ...u[i], status: 'success', result: res };
+          return u;
+        });
       }
       setIsGradingBatch(false);
     }
   };
 
-  const handleLoadSample = (topic: 'photosynthesis' | 'watercycle') => {
-    if (topic === 'photosynthesis') {
-      setBatchQuestion('Explain the process of photosynthesis.');
-      setBatchReference('Photosynthesis converts sunlight, CO2, and water into glucose and oxygen using chlorophyll.');
-      setBatchRawInput(`Alice: Plants use sunlight, carbon dioxide, and water to make glucose and release oxygen via chlorophyll.\nBob: Plants require sunlight and water to produce food. They release oxygen gas.\nCharlie: Animals eat grass and plants to acquire chemical energy which was generated by sun.\nDavid: water and sun`);
+  const [pingLatency, setPingLatency] = useState<number | null>(null);
+
+  const testPing = async () => {
+    const t0 = performance.now();
+    await checkHealth();
+    const t1 = performance.now();
+    setPingLatency(Math.round(t1 - t0));
+  };
+
+  const handleClearWorkspace = () => {
+    setSingleContext('');
+    setSingleQuestion('');
+    setSingleReference('');
+    setSingleStudent('');
+    setSingleResult(null);
+    setSingleError(null);
+  };
+
+  const handleInspectBatchInWorkspace = (item: BatchItem) => {
+    setSingleQuestion(item.question);
+    setSingleReference(item.reference);
+    setSingleStudent(item.student);
+    setSingleContext(item.context || '');
+    if (item.result) {
+      setSingleResult(item.result);
     } else {
+      setSingleResult(null);
+    }
+    setActiveTab('single');
+  };
+
+  const handleNormalizeWeights = () => {
+    setActivePreset('balanced');
+    setWeights(DEFAULT_WEIGHTS);
+    if (singleResult) recalculateSingle(DEFAULT_WEIGHTS);
+  };
+
+  const downloadLatex = () => {
+    if (!ablationLatex) return;
+    const blob = new Blob([ablationLatex], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ablation_study_table.tex';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleLoadSample = (
+    topic: 'photosynthesis' | 'watercycle' | 'contradiction' | 'informal'
+  ) => {
+    if (topic === 'photosynthesis') {
+      setSingleQuestion('Explain the process of photosynthesis and its primary biological importance.');
+      setSingleReference(
+        'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll. It provides chemical energy for plants and oxygen for aerobic respiration.'
+      );
+      setSingleStudent(
+        'Plants use sunlight, CO2, and water to make glucose and oxygen through chlorophyll. This process provides food and releases oxygen into the atmosphere.'
+      );
+      setBatchQuestion('Explain the process of photosynthesis.');
+      setBatchReference(
+        'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll.'
+      );
+      setBatchRawInput(
+        `Alice: Plants use sunlight, carbon dioxide, and water to make glucose and release oxygen via chlorophyll.\nBob: Plants require sunlight and water to produce food. They release oxygen gas.\nCharlie: Animals eat plants to absorb chemical energy created by chloroplasts.\nDavid: Green plants grow with sunlight.`
+      );
+    } else if (topic === 'watercycle') {
+      setSingleQuestion('Describe the water cycle and explain how solar heat drives it.');
+      setSingleReference(
+        'The water cycle describes the continuous movement of water on, above, and below Earth surface. Solar radiation evaporates water from oceans, creating vapor that condenses into clouds and falls as precipitation.'
+      );
+      setSingleStudent(
+        'Water evaporates from oceans due to solar heat, condenses to form clouds in the sky, and then precipitates back to the surface as rain.'
+      );
       setBatchQuestion('Describe the water cycle.');
-      setBatchReference('The water cycle is the continuous process where water evaporates from the Earth, condenses into clouds, and falls as precipitation.');
-      setBatchRawInput(`John: Water evaporates from oceans, forms clouds in the sky, and then rains back down to Earth.\nSarah: The water cycle involves evaporation of water, condensation into clouds, and precipitation like rain.\nKevin: Water goes up to the sky because of heat. This happens many times.\nEmma: Rain falls from clouds.`);
+      setBatchReference(
+        'The water cycle is the continuous movement where water evaporates, condenses into clouds, and falls as precipitation.'
+      );
+      setBatchRawInput(
+        `John: Water evaporates from oceans, condenses into clouds, and precipitates back to Earth.\nSarah: Evaporation, condensation, and precipitation drive continuous hydrological movement.\nKevin: Water heats up and goes up then rains many times.\nEmma: Rain comes from clouds in the sky.`
+      );
+    } else if (topic === 'contradiction') {
+      setSingleQuestion('Explain the process of photosynthesis and its primary biological importance.');
+      setSingleReference(
+        'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll. It provides chemical energy for plants and oxygen for aerobic respiration.'
+      );
+      setSingleStudent(
+        'Animals eat plants to perform photosynthesis and destroy oxygen gas instead of releasing it into the atmosphere.'
+      );
+    } else if (topic === 'informal') {
+      setSingleQuestion('Explain the process of photosynthesis and its primary biological importance.');
+      setSingleReference(
+        'Photosynthesis converts sunlight, carbon dioxide, and water into glucose and oxygen using chlorophyll. It provides chemical energy for plants and oxygen for aerobic respiration.'
+      );
+      setSingleStudent(
+        'plants do stuff with the sun and water to make food bro, it gives energy to things and smells like leaves.'
+      );
     }
   };
 
   const handleExportCSV = () => {
     if (!batchItems.length) return;
     let csv = 'data:text/csv;charset=utf-8,Student,Answer,Grade,Correctness,Explanation\n';
-    batchItems.forEach(item => {
+    batchItems.forEach((item) => {
       const ans = `"${item.student.replace(/"/g, '""')}"`;
       const grade = item.result?.metrics.final_grade ?? 'N/A';
       const tag = item.result?.feedback.tags[0] ?? 'N/A';
-      const exp = item.result ? `"${item.result.feedback.explanation.replace(/"/g, '""')}"` : 'N/A';
+      const exp = item.result
+        ? `"${item.result.feedback.explanation.replace(/"/g, '""')}"`
+        : 'N/A';
       csv += `${item.id},${ans},${grade},${tag},${exp}\n`;
     });
     const link = document.createElement('a');
     link.setAttribute('href', encodeURI(csv));
     link.setAttribute('download', 'grading_results.csv');
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-  };
-
-  // ─── Research tab state ────────────────────────────────────────────────────
-  const [researchConfig, setResearchConfig] = useState<any>(null);
-  const [ablationResults, setAblationResults] = useState<any[]>([]);
-  const [ablationLatex, setAblationLatex] = useState<string>('');
-  const [isRunningAblation, setIsRunningAblation] = useState<boolean>(false);
-  const [ablationCachePath, setAblationCachePath] = useState<string>('./cache/features.pkl');
-  const [ablationError, setAblationError] = useState<string | null>(null);
-  const [ablationSeed, setAblationSeed] = useState<number>(42);
-
-  const fetchResearchConfig = async () => {
-    if (!isLive) return;
-    try {
-      const res = await fetch(`${apiUrl}/research/config`);
-      if (res.ok) setResearchConfig(await res.json());
-    } catch { setResearchConfig(null); }
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleRunAblation = async () => {
     setIsRunningAblation(true);
     setAblationError(null);
     setAblationResults([]);
+
     if (!isLive) {
-      // Demo mode: show simulated table
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise((r) => setTimeout(r, 1000));
       setAblationResults([
-        { Variant: 'Full Model',          'Accuracy': '0.742', 'Macro F1': '0.718', 'QWK': '0.701', 'Δ F1': '—',     'Δ QWK': '—',     'Sig.': '' },
-        { Variant: 'FM-S (−Semantic)',    'Accuracy': '0.611', 'Macro F1': '0.589', 'QWK': '0.562', 'Δ F1': '-0.129', 'Δ QWK': '-0.139', 'Sig.': '***' },
-        { Variant: 'FM-C (−Coverage)',    'Accuracy': '0.698', 'Macro F1': '0.674', 'QWK': '0.651', 'Δ F1': '-0.044', 'Δ QWK': '-0.050', 'Sig.': '*' },
-        { Variant: 'FM-F (−Formality)',   'Accuracy': '0.751', 'Macro F1': '0.726', 'QWK': '0.709', 'Δ F1': '+0.008', 'Δ QWK': '+0.008', 'Sig.': 'ns' },
-        { Variant: 'FM-G (−Grammar)',     'Accuracy': '0.729', 'Macro F1': '0.703', 'QWK': '0.685', 'Δ F1': '-0.015', 'Δ QWK': '-0.016', 'Sig.': 'ns' },
-        { Variant: 'FM-L (−Logic)',       'Accuracy': '0.684', 'Macro F1': '0.661', 'QWK': '0.637', 'Δ F1': '-0.057', 'Δ QWK': '-0.064', 'Sig.': '**' },
-        { Variant: 'FM-LLM (−Synthesis)', 'Accuracy': '0.719', 'Macro F1': '0.695', 'QWK': '0.673', 'Δ F1': '-0.023', 'Δ QWK': '-0.028', 'Sig.': '*' },
+        {
+          Variant: 'Full Model (Proposed)',
+          Accuracy: '0.742',
+          'Macro F1': '0.718',
+          QWK: '0.701',
+          'Δ F1': '—',
+          'Δ QWK': '—',
+          'Sig.': '',
+        },
+        {
+          Variant: 'FM-S (−Semantic)',
+          Accuracy: '0.611',
+          'Macro F1': '0.589',
+          QWK: '0.562',
+          'Δ F1': '-0.129',
+          'Δ QWK': '-0.139',
+          'Sig.': '***',
+        },
+        {
+          Variant: 'FM-C (−Coverage)',
+          Accuracy: '0.698',
+          'Macro F1': '0.674',
+          QWK: '0.651',
+          'Δ F1': '-0.044',
+          'Δ QWK': '-0.050',
+          'Sig.': '*',
+        },
+        {
+          Variant: 'FM-F (−Formality)',
+          Accuracy: '0.751',
+          'Macro F1': '0.726',
+          QWK: '0.709',
+          'Δ F1': '+0.008',
+          'Δ QWK': '+0.008',
+          'Sig.': 'ns',
+        },
+        {
+          Variant: 'FM-G (−Grammar)',
+          Accuracy: '0.729',
+          'Macro F1': '0.703',
+          QWK: '0.685',
+          'Δ F1': '-0.015',
+          'Δ QWK': '-0.016',
+          'Sig.': 'ns',
+        },
+        {
+          Variant: 'FM-L (−Logic/NLI)',
+          Accuracy: '0.684',
+          'Macro F1': '0.661',
+          QWK: '0.637',
+          'Δ F1': '-0.057',
+          'Δ QWK': '-0.064',
+          'Sig.': '**',
+        },
+        {
+          Variant: 'FM-LLM (−Synthesis)',
+          Accuracy: '0.719',
+          'Macro F1': '0.695',
+          QWK: '0.673',
+          'Δ F1': '-0.023',
+          'Δ QWK': '-0.028',
+          'Sig.': '*',
+        },
       ]);
-      setAblationLatex(`% Demo LaTeX — run Live API for real results\n\\begin{table}...\n\\end{table}`);
+      setAblationLatex(
+        `% Ablation Study Results — AutoGradeSystem\n\\begin{table}[t]\n\\centering\n\\caption{Ablation Study Results with Wilcoxon Signed-Rank Tests}\n\\begin{tabular}{lcccccc}\n\\toprule\nModel Variant & Acc & F1 & QWK & $\\Delta$F1 & $\\Delta$QWK & Sig. \\\\\n\\midrule\nFull Model & 0.742 & 0.718 & 0.701 & --- & --- & --- \\\\\nFM-S & 0.611 & 0.589 & 0.562 & -0.129 & -0.139 & $^{***}$ \\\\\nFM-C & 0.698 & 0.674 & 0.651 & -0.044 & -0.050 & $^{*}$ \\\\\nFM-L & 0.684 & 0.661 & 0.637 & -0.057 & -0.064 & $^{**}$ \\\\\n\\bottomrule\n\\end{tabular}\n\\end{table}`
+      );
       setIsRunningAblation(false);
       return;
     }
+
     try {
       const res = await fetch(`${apiUrl}/research/ablation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cache_path: ablationCachePath, random_seed: ablationSeed }),
+        body: JSON.stringify({
+          cache_path: ablationCachePath,
+          random_seed: ablationSeed,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
           setAblationResults(data.results_table);
           setAblationLatex(data.latex_snippet);
-        } else setAblationError(data.error || 'Unknown error');
+        } else {
+          setAblationError(data.error || 'Ablation experiment failed.');
+        }
       } else {
         const e = await res.json().catch(() => ({}));
-        setAblationError(e.detail || `Server error ${res.status}`);
+        setAblationError(e.detail || `Server error (${res.status})`);
       }
-    } catch { setAblationError('Cannot reach backend.'); }
-    finally { setIsRunningAblation(false); }
+    } catch {
+      setAblationError('Failed to communicate with research backend endpoint.');
+    } finally {
+      setIsRunningAblation(false);
+    }
   };
 
-  useEffect(() => { if (activeTab === 'research') fetchResearchConfig(); }, [activeTab, isLive]);
+  const copyLatex = () => {
+    if (!ablationLatex) return;
+    navigator.clipboard.writeText(ablationLatex);
+    setCopiedLatex(true);
+    setTimeout(() => setCopiedLatex(false), 2000);
+  };
 
-  // ─── Nav items ────────────────────────────────────────────────────────────
-
-  const navItems = [
-    { id: 'dashboard', label: 'Overview',      icon: Activity },
-    { id: 'single',    label: 'Single Grader', icon: Play },
-    { id: 'batch',     label: 'Batch Grader',  icon: Layers },
-    { id: 'research',  label: 'Research',      icon: FlaskConical },
-    { id: 'settings',  label: 'Settings',      icon: Settings },
-  ] as const;
-
-  // ─── Render ───────────────────────────────────────────────────────────────
+  // ─── Sidebar Navigation Items ───────────────────────────────────────────────
+  const navTabs: { id: TabId; label: string; icon: React.ElementType }[] = [
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+    { id: 'single', label: 'Single Grader', icon: Wand2 },
+    { id: 'batch', label: 'Batch Grader', icon: Layers },
+    { id: 'research', label: 'Research Lab', icon: FlaskConical },
+    { id: 'settings', label: 'System Settings', icon: Settings },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans antialiased select-none">
-
-      {/* ══ HEADER ══════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/70 shadow-sm">
-        <div className="flex items-center justify-between px-6 py-3.5">
-
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
-              <Award className="w-4 h-4 text-white" strokeWidth={2.5} />
-            </div>
-            <div>
-              <h1 className="text-sm font-semibold text-slate-800 leading-tight">HybridASAG Grader</h1>
-              <p className="text-[10px] text-slate-500 leading-tight">Short Answer Evaluation</p>
+    <TooltipProvider>
+      <div className="min-h-screen bg-[#F7F7F8] text-[#18181B] flex flex-row font-sans antialiased selection:bg-[#F04F9B]/20">
+        
+        {/* ══════════════════════════════════════════════════════════════════════
+            SLIM VERTICAL SIDEBAR (Magnific Reference B)
+        ══════════════════════════════════════════════════════════════════════ */}
+        <aside className="w-16 md:w-20 bg-white border-r border-[#E5E7EB] flex flex-col items-center py-5 shrink-0 z-30 select-none">
+          
+          {/* Brand Monogram */}
+          <div className="mb-6 flex flex-col items-center gap-1">
+            <div className="size-10 rounded-2xl bg-[#181113] flex items-center justify-center shadow-sm relative group cursor-pointer">
+              <span className="text-white font-semibold text-base tracking-tighter">AG</span>
+              <span className="absolute -bottom-1 -right-1 size-3 rounded-full bg-[#F04F9B] border-2 border-white" />
             </div>
           </div>
 
-          {/* Right controls */}
-          <div className="flex items-center gap-4">
-
-            {/* Mode toggle */}
-            <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-0.5">
+          {/* Quick Action Pill Button (Magnific '+' Action) */}
+          <Tooltip>
+            <TooltipTrigger asChild>
               <button
-                onClick={() => setIsLive(false)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-                  !isLive ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
+                onClick={() => setActiveTab('single')}
+                className="size-10 rounded-2xl bg-[#F04F9B] text-white flex items-center justify-center hover:opacity-90 transition-all shadow-sm mb-6 active:scale-95 cursor-pointer"
+                aria-label="New Evaluation"
               >
-                Simulated
+                <Plus className="size-5" strokeWidth={2.5} />
               </button>
-              <button
-                onClick={() => setIsLive(true)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
-                  isLive ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Live API
-              </button>
-            </div>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <span className="text-xs font-semibold">New Evaluation</span>
+            </TooltipContent>
+          </Tooltip>
 
-            {/* Health status */}
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className={`animate-pulse-dot absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  healthStatus?.status === 'healthy' ? 'bg-emerald-400' : 'bg-rose-400'
-                }`} />
-                <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                  healthStatus?.status === 'healthy' ? 'bg-emerald-500' : 'bg-rose-500'
-                }`} />
-              </span>
-              <span className="text-xs text-slate-500">
-                {isLive ? healthStatus?.status ?? 'connecting…' : 'Simulated'}
-              </span>
-            </div>
+          <Separator className="w-8 mb-4 bg-[#E5E7EB]" />
 
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-1 overflow-hidden">
-
-        {/* ══ SIDEBAR ═════════════════════════════════════════════════════════ */}
-        <nav className="w-56 bg-slate-900 border-r border-slate-800 flex flex-col py-5 px-3">
-          <div className="space-y-1">
-            {navItems.map(({ id, label, icon: Icon }) => {
+          {/* Nav Icons Stack */}
+          <nav className="flex flex-col items-center gap-2 flex-1 w-full px-2">
+            {navTabs.map(({ id, label, icon: Icon }) => {
               const active = activeTab === id;
               return (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  className={`relative w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${
-                    active
-                      ? 'bg-slate-800 text-white'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                  }`}
-                >
-                  {active && <span className="nav-active-indicator" />}
-                  <Icon className={`w-4 h-4 ${active ? 'text-indigo-400' : 'text-slate-500'}`} strokeWidth={active ? 2.5 : 2} />
-                  {label}
-                </button>
+                <Tooltip key={id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setActiveTab(id)}
+                      className={`relative size-10 md:size-11 rounded-2xl flex items-center justify-center transition-all cursor-pointer ${
+                        active
+                          ? 'bg-[#18181B] text-white shadow-sm'
+                          : 'text-[#71717A] hover:text-[#18181B] hover:bg-[#F7F7F8]'
+                      }`}
+                      aria-label={label}
+                    >
+                      <Icon
+                        className="size-5"
+                        strokeWidth={active ? 2.5 : 2}
+                      />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <span className="text-xs font-semibold">{label}</span>
+                  </TooltipContent>
+                </Tooltip>
               );
             })}
+          </nav>
+
+          {/* Bottom Diagnostics / Status */}
+          <div className="mt-auto flex flex-col items-center gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className={`size-3 rounded-full border-2 border-white cursor-pointer ${
+                    healthStatus?.status === 'healthy' ? 'bg-emerald-500' : 'bg-rose-500'
+                  }`}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <span className="text-xs font-normal">
+                  Backend: {healthStatus?.status ?? 'Connecting...'} ({healthStatus?.device ?? 'None'})
+                </span>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href={`${apiUrl}/docs`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="size-9 rounded-xl flex items-center justify-center text-[#71717A] hover:text-[#18181B] hover:bg-[#F7F7F8] transition-colors"
+                  aria-label="API Swagger Docs"
+                >
+                  <ExternalLink className="size-4" strokeWidth={2} />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <span className="text-xs font-normal">Open Swagger API Docs</span>
+              </TooltipContent>
+            </Tooltip>
           </div>
+        </aside>
 
-          {/* System info */}
-          <div className="mt-auto mx-1 bg-slate-950 rounded-xl p-3.5 border border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-slate-500">
-              <Cpu className="w-3.5 h-3.5" strokeWidth={1.5} />
-              <span className="text-[10px] font-semibold">{healthStatus?.device || 'Detecting…'}</span>
+        {/* ══════════════════════════════════════════════════════════════════════
+            MAIN CONTENT AREA
+        ══════════════════════════════════════════════════════════════════════ */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+          
+          {/* ── Compact Header (Magnific Reference B & C) ────────────────────── */}
+          <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] px-6 py-3.5 flex items-center justify-between">
+            
+            {/* Breadcrumb Context */}
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-[#18181B] tracking-tight">AutoGrade</span>
+              <span className="text-[#71717A] font-normal">/</span>
+              <span className="font-semibold text-[#71717A] capitalize">
+                {activeTab === 'dashboard'
+                  ? 'Overview & Architecture'
+                  : activeTab === 'single'
+                  ? 'Workspace · Single Evaluation'
+                  : activeTab === 'batch'
+                  ? 'Multi-Student Assessment'
+                  : activeTab === 'research'
+                  ? 'Research Lab · Ablation Study'
+                  : 'System Settings'}
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-slate-500">
-              <Database className="w-3.5 h-3.5" strokeWidth={1.5} />
-              <span className="text-[10px] font-semibold">Models: {healthStatus?.models_loaded ? 'Ready' : 'Unloaded'}</span>
+
+            {/* Header Right Controls */}
+            <div className="flex items-center gap-3">
+              
+              {/* Live / Simulated Toggle */}
+              <div className="flex items-center bg-[#F7F7F8] border border-[#E5E7EB] rounded-full p-0.5">
+                <button
+                  onClick={() => setIsLive(false)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
+                    !isLive
+                      ? 'bg-white text-[#18181B] shadow-xs'
+                      : 'text-[#71717A] hover:text-[#18181B]'
+                  }`}
+                >
+                  Simulated
+                </button>
+                <button
+                  onClick={() => setIsLive(true)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
+                    isLive
+                      ? 'bg-[#18181B] text-white shadow-xs'
+                      : 'text-[#71717A] hover:text-[#18181B]'
+                  }`}
+                >
+                  Live API
+                </button>
+              </div>
+
+              {/* Status Badge */}
+              <Badge
+                variant="outline"
+                className={`text-xs px-2.5 py-1 font-semibold rounded-full ${
+                  isLive
+                    ? healthStatus?.status === 'healthy'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-[#F7F7F8] text-[#71717A] border-[#E5E7EB]'
+                }`}
+              >
+                <Radio className="size-3 shrink-0" strokeWidth={2.5} />
+                <span>{isLive ? `Live · ${healthStatus?.device ?? 'CPU'}` : 'Simulated'}</span>
+              </Badge>
+
+              {/* Quick Sample Trigger */}
+              <div className="hidden sm:flex items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleLoadSample('photosynthesis')}
+                  className="rounded-full text-xs font-semibold text-[#18181B] border-[#E5E7EB] hover:bg-[#F7F7F8]"
+                >
+                  Photosynthesis Sample
+                </Button>
+              </div>
             </div>
-          </div>
-        </nav>
+          </header>
 
-        {/* ══ MAIN CONTENT ════════════════════════════════════════════════════ */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 p-8">
+          {/* ── Main Tab Contents ────────────────────────────────────────────── */}
+          <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto pb-36">
 
-          {/* ── TAB: DASHBOARD ───────────────────────────────────────────── */}
-          {activeTab === 'dashboard' && (
-            <div className="max-w-5xl mx-auto space-y-8 animate-fade-up">
+            {/* ══════════════════════════════════════════════════════════════════
+                TAB: DASHBOARD / OVERVIEW (Reference A & B)
+            ══════════════════════════════════════════════════════════════════ */}
+            {activeTab === 'dashboard' && (
+              <div className="flex flex-col gap-8 animate-fade-up">
 
-              {/* Page header */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Performance Overview</h2>
-                  <p className="text-sm text-slate-500 mt-1">Aggregated metrics from the current session.</p>
-                </div>
-                {!isLive && (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl">
-                    <Zap className="w-3.5 h-3.5 text-amber-600" strokeWidth={2.5} />
-                    <span className="text-xs font-semibold text-amber-700">Demo Mode — simulated grading</span>
+                {/* ── Reference A: Premium Cinematic Presentation Hero ───────── */}
+                <div className="relative rounded-3xl overflow-hidden bg-[#181113] text-white p-8 md:p-12 border border-[#2A2024] shadow-md">
+                  {/* Atmospheric Glow */}
+                  <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-[#F04F9B]/15 blur-3xl pointer-events-none" />
+                  <div className="absolute bottom-0 left-1/3 -mb-20 w-80 h-80 rounded-full bg-[#5268F5]/10 blur-3xl pointer-events-none" />
+
+                  <div className="relative z-10 max-w-2xl flex flex-col gap-4">
+                    {/* Pill Tag */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 w-fit">
+                      <span className="size-2 rounded-full bg-[#F04F9B]" />
+                      <span className="text-xs font-semibold text-white/90">
+                        Hybrid ASAG Architecture · 5 Lightweight Models + Qwen2.5
+                      </span>
+                    </div>
+
+                    {/* Headline */}
+                    <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-white leading-tight">
+                      The automated grading platform for high-precision short answers.
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p className="text-sm md:text-base font-normal text-white/70 leading-relaxed">
+                      DeBERTa NLI logical verification, SimCSE semantic similarity, and KeyBERT coverage combined into transparent, explainable feedback.
+                    </p>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <Button
+                        onClick={() => setActiveTab('single')}
+                        className="rounded-full bg-white text-[#181113] hover:bg-white/90 font-semibold px-6 py-2.5 h-auto text-sm shadow-sm"
+                      >
+                        <Play className="size-4 shrink-0 fill-current" strokeWidth={2.5} />
+                        Start Evaluating
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setActiveTab('research')}
+                        className="rounded-full bg-transparent text-white border-white/20 hover:bg-white/10 font-semibold px-6 py-2.5 h-auto text-sm"
+                      >
+                        <FlaskConical className="size-4 shrink-0" strokeWidth={2.5} />
+                        Explore Research Lab
+                      </Button>
+                    </div>
                   </div>
-                )}
-              </div>
 
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatCard label="Total Graded"   value={stats.totalGraded}              sub="Sessions evaluated"  accent="text-indigo-600" />
-                <StatCard label="Average Grade"  value={`${stats.averageGrade}%`}        sub="Weighted composite"  accent="text-sky-600" />
-                <StatCard label="Correct"        value={stats.correctCount}             sub={`Pass rate ${Math.round((stats.correctCount / stats.totalGraded) * 100 || 0)}%`} accent="text-emerald-600" />
-                <StatCard label="Incorrect"      value={stats.incorrectCount}           sub="Capped / penalized"  accent="text-rose-600" />
-              </div>
+                  {/* Right side floating metrics badge */}
+                  <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-normal text-white/60">
+                    <div>
+                      <p className="font-semibold text-white text-base">5 Models</p>
+                      <p className="text-xs text-white/60">Parallel CPU Inference</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white text-base">&lt; 50ms</p>
+                      <p className="text-xs text-white/60">Average Latency</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white text-base">0.742 Acc</p>
+                      <p className="text-xs text-white/60">SemEval Benchmark</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white text-base">4-bit NF4</p>
+                      <p className="text-xs text-white/60">Quantized Synthesis</p>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Pipeline diagram */}
-              <Card>
-                <CardHeader icon={BookOpen} title="Hybrid ASAG Pipeline" />
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                {/* ── Reference B: Application Dashboard Cards Grid ─────────── */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-[#18181B] tracking-tight">
+                      Evaluation Metrics
+                    </h2>
+                    <span className="text-xs font-normal text-[#71717A]">
+                      Aggregated active session
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs">
+                      <CardContent className="p-5 flex flex-col gap-1">
+                        <span className="text-xs font-normal text-[#71717A]">Total Evaluated</span>
+                        <span className="text-3xl font-semibold tabular-nums text-[#18181B]">
+                          {stats.totalGraded}
+                        </span>
+                        <span className="text-[11px] font-normal text-[#71717A]">Active runs</span>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs">
+                      <CardContent className="p-5 flex flex-col gap-1">
+                        <span className="text-xs font-normal text-[#71717A]">Average Grade</span>
+                        <span className="text-3xl font-semibold tabular-nums text-[#18181B]">
+                          {stats.averageGrade}%
+                        </span>
+                        <Progress value={stats.averageGrade} className="h-1.5 mt-1" />
+                      </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs">
+                      <CardContent className="p-5 flex flex-col gap-1">
+                        <span className="text-xs font-normal text-[#71717A]">Pass Rate</span>
+                        <span className="text-3xl font-semibold tabular-nums text-emerald-600">
+                          {Math.round((stats.correctCount / (stats.totalGraded || 1)) * 100)}%
+                        </span>
+                        <span className="text-[11px] font-normal text-[#71717A]">
+                          {stats.correctCount} Correct tags
+                        </span>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs">
+                      <CardContent className="p-5 flex flex-col gap-1">
+                        <span className="text-xs font-normal text-[#71717A]">Penalized / Capped</span>
+                        <span className="text-3xl font-semibold tabular-nums text-rose-600">
+                          {stats.incorrectCount}
+                        </span>
+                        <span className="text-[11px] font-normal text-[#71717A]">
+                          Logic contradiction
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* ── 5-Model Pipeline Showcase Bento ──────────────────────── */}
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-lg font-semibold text-[#18181B] tracking-tight">
+                    Pipeline Architecture
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[
-                      { n: '1', title: 'Semantic',   model: 'SimCSE · RoBERTa-Large', color: 'indigo' },
-                      { n: '2', title: 'Coverage',   model: 'KeyBERT · MiniLM',        color: 'sky' },
-                      { n: '3', title: 'Writing',    model: 'CoLA + RoBERTa',           color: 'orange' },
-                      { n: '4', title: 'Logic NLI',  model: 'DeBERTa v3-Base',          color: 'purple' },
-                      { n: '5', title: 'Reasoning',  model: 'Qwen2.5-3B-Instruct',      color: 'slate' },
-                    ].map((step, i, arr) => (
-                      <React.Fragment key={step.n}>
-                        <div className={`p-4 rounded-2xl border bg-${step.color}-50/80 border-${step.color}-200 border-t-4 border-t-${step.color}-500 space-y-1.5`}>
-                          <span className={`text-[10px] font-semibold text-${step.color}-700 uppercase tracking-wider`}>Step {step.n}</span>
-                          <p className={`text-sm font-semibold text-${step.color}-900`}>{step.title}</p>
-                          <p className={`text-[10px] text-${step.color}-700`}>{step.model}</p>
-                        </div>
-                        {i < arr.length - 1 && (
-                          <div className="hidden md:flex items-center justify-center text-slate-300">
-                            <ChevronRight className="w-4 h-4" strokeWidth={2} />
+                      {
+                        step: '01',
+                        name: 'Semantic Similarity',
+                        model: 'princeton-nlp/sup-simcse-roberta-large',
+                        desc: 'Sentence embedding cosine similarity with human grading alignment.',
+                        badge: 'Embedding',
+                        color: '#5268F5',
+                      },
+                      {
+                        step: '02',
+                        name: 'Keyword Coverage',
+                        model: 'all-MiniLM-L6-v2 · KeyBERT',
+                        desc: 'N-gram key concept extraction ensuring domain vocabulary is covered.',
+                        badge: 'Vocabulary',
+                        color: '#0EA5E9',
+                      },
+                      {
+                        step: '03',
+                        name: 'Academic Formality',
+                        model: 'cointegrated/roberta-base-formality',
+                        desc: 'Evaluates tone formality, rejecting casual chat or slang answers.',
+                        badge: 'Style',
+                        color: '#64748B',
+                      },
+                      {
+                        step: '04',
+                        name: 'Grammar & CoLA',
+                        model: 'textattack/roberta-base-CoLA',
+                        desc: 'Linguistic acceptability check flagging syntactic and capitalization errors.',
+                        badge: 'Syntax',
+                        color: '#F97316',
+                      },
+                      {
+                        step: '05',
+                        name: 'Logical Coherence (NLI)',
+                        model: 'cross-encoder/nli-deberta-v3-base',
+                        desc: 'Bidirectional entailment & contradiction check to prevent hallucinated facts.',
+                        badge: 'Logic',
+                        color: '#A855F7',
+                      },
+                      {
+                        step: '06',
+                        name: 'Feedback Synthesis',
+                        model: 'Qwen/Qwen2.5-3B-Instruct',
+                        desc: 'Synthesizes scores into pedagogical explanations and actionable advice.',
+                        badge: 'Reasoning',
+                        color: '#F04F9B',
+                      },
+                    ].map((item) => (
+                      <Card
+                        key={item.step}
+                        className="rounded-2xl border-[#E5E7EB] bg-white p-5 flex flex-col justify-between hover:border-[#18181B] transition-all group"
+                      >
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold tabular-nums text-[#71717A]">
+                              {item.step}
+                            </span>
+                            <Badge
+                              variant="outline"
+                              className="rounded-full text-[10px] font-semibold"
+                              style={{ borderColor: item.color, color: item.color }}
+                            >
+                              {item.badge}
+                            </Badge>
                           </div>
-                        )}
-                      </React.Fragment>
+                          <h3 className="text-sm font-semibold text-[#18181B] mt-1">
+                            {item.name}
+                          </h3>
+                          <p className="text-xs font-normal text-[#71717A] leading-relaxed">
+                            {item.desc}
+                          </p>
+                        </div>
+                        <div className="mt-4 pt-3 border-t border-[#E5E7EB] text-[10px] font-normal text-[#71717A] truncate font-mono">
+                          {item.model}
+                        </div>
+                      </Card>
                     ))}
                   </div>
                 </div>
-              </Card>
-
-            </div>
-          )}
-
-          {/* ── TAB: SINGLE GRADER ──────────────────────────────────────── */}
-          {activeTab === 'single' && (
-            <div className="max-w-6xl mx-auto animate-fade-up">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Grade Student Answer</h2>
-                <p className="text-sm text-slate-500 mt-1">Single short-answer evaluation with custom criterion weights.</p>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-                {/* Left: Form + Weights */}
-                <div className="lg:col-span-7 space-y-5">
-
-                  {/* Input form */}
-                  <Card>
-                    <CardHeader icon={AlignLeft} title="Grader Inputs" />
-                    <form onSubmit={handleGradeSingle} className="p-5 space-y-4">
-                      {[
-                        { label: 'Context', value: singleContext,   set: setSingleContext,   req: false, placeholder: 'Background context (optional)…', rows: 1 },
-                        { label: 'Question', value: singleQuestion, set: setSingleQuestion,  req: true,  placeholder: 'e.g. Explain photosynthesis.',   rows: 1 },
-                        { label: 'Reference Answer', value: singleReference, set: setSingleReference, req: true, placeholder: 'Golden standard answer…', rows: 2 },
-                        { label: 'Student Answer',   value: singleStudent,   set: setSingleStudent,   req: true, placeholder: 'Student response to grade…', rows: 3 },
-                      ].map(({ label, value, set, req, placeholder, rows }) => (
-                        <div key={label} className="space-y-1.5">
-                          <label className="text-xs font-semibold text-slate-600">
-                            {label}{req && <span className="text-rose-500 ml-0.5">*</span>}
-                          </label>
-                          {rows === 1 ? (
-                            <input
-                              type="text" value={value} required={req} placeholder={placeholder}
-                              onChange={(e) => set(e.target.value)}
-                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all"
-                            />
-                          ) : (
-                            <textarea
-                              rows={rows} value={value} required={req} placeholder={placeholder}
-                              onChange={(e) => set(e.target.value)}
-                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none"
-                            />
-                          )}
-                        </div>
-                      ))}
-
-                      {singleError && (
-                        <div className="flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 animate-fade-in">
-                          <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
-                          {singleError}
-                        </div>
-                      )}
-
-                      <button
-                        type="submit" disabled={isGradingSingle}
-                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm cursor-pointer"
-                      >
-                        {isGradingSingle ? (
-                          <><RefreshCw className="w-4 h-4 animate-spin" strokeWidth={2.5} /> Evaluating…</>
-                        ) : (
-                          <><Play className="w-4 h-4" strokeWidth={2.5} /> Run Evaluator</>
-                        )}
-                      </button>
-                    </form>
-                  </Card>
-
-                  {/* Weights */}
-                  <WeightsPanel
-                    weights={weights} activePreset={activePreset}
-                    onPresetChange={handlePresetChange} onWeightChange={handleWeightChange}
-                  />
-                </div>
-
-                {/* Right: Results */}
-                <div className="lg:col-span-5">
-                  {singleResult ? (
-                    <ResultPanel result={singleResult} />
-                  ) : (
-                    <Card>
-                      <EmptyState
-                        icon={Sliders}
-                        title="Ready for Evaluation"
-                        body="Submit a student answer on the left to view detailed model scores, tags, and AI feedback."
-                      />
-                    </Card>
-                  )}
-                </div>
 
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── TAB: BATCH GRADER ───────────────────────────────────────── */}
-          {activeTab === 'batch' && (
-            <div className="max-w-6xl mx-auto animate-fade-up">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight">Batch Evaluation</h2>
-                  <p className="text-sm text-slate-500 mt-1">Grade multiple student responses at once.</p>
-                </div>
-                <div className="flex gap-2">
-                  {(['photosynthesis', 'watercycle'] as const).map(t => (
-                    <button
-                      key={t}
-                      onClick={() => handleLoadSample(t)}
-                      className="text-xs font-semibold text-slate-600 hover:text-indigo-700 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
+            {/* ══════════════════════════════════════════════════════════════════
+                TAB: SINGLE GRADER (Reference C: Workspace & Floating Dock)
+            ══════════════════════════════════════════════════════════════════ */}
+            {activeTab === 'single' && (
+              <div className="flex flex-col gap-6 animate-fade-up pb-28">
+
+                {/* Workspace Heading */}
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#18181B] tracking-tight">
+                      Grader Workspace
+                    </h2>
+                    <p className="text-xs font-normal text-[#71717A] mt-0.5">
+                      Enter the target question and student response to perform comprehensive 5-criterion grading.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-normal text-[#71717A] mr-1 hidden sm:inline">Benchmarks:</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleLoadSample('photosynthesis')}
+                      className="rounded-full text-xs font-semibold hover:border-[#18181B]"
                     >
-                      {t === 'photosynthesis' ? '🌿 Photosynthesis' : '💧 Water Cycle'}
-                    </button>
-                  ))}
+                      🌿 Photosynthesis
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleLoadSample('watercycle')}
+                      className="rounded-full text-xs font-semibold hover:border-[#18181B]"
+                    >
+                      💧 Water Cycle
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleLoadSample('contradiction')}
+                      className="rounded-full text-xs font-semibold text-rose-700 bg-rose-50/50 border-rose-200 hover:bg-rose-50"
+                    >
+                      ⚠️ Contradiction Test
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleLoadSample('informal')}
+                      className="rounded-full text-xs font-semibold text-amber-700 bg-amber-50/50 border-amber-200 hover:bg-amber-50"
+                    >
+                      ✍️ Slang Test
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-                {/* Input panel */}
-                <div className="lg:col-span-5">
-                  <Card>
-                    <CardHeader icon={Edit3} title="Batch Configuration" />
-                    <div className="p-5 space-y-4">
-                      {[
-                        { label: 'Question Title', value: batchQuestion, set: setBatchQuestion, rows: 1, placeholder: 'e.g. Explain photosynthesis.' },
-                        { label: 'Reference Answer', value: batchReference, set: setBatchReference, rows: 2, placeholder: 'Golden standard answer…' },
-                      ].map(({ label, value, set, rows, placeholder }) => (
-                        <div key={label} className="space-y-1.5">
-                          <label className="text-xs font-semibold text-slate-600">{label}</label>
-                          {rows === 1 ? (
-                            <input type="text" value={value} placeholder={placeholder} onChange={(e) => set(e.target.value)}
-                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all" />
-                          ) : (
-                            <textarea rows={rows} value={value} placeholder={placeholder} onChange={(e) => set(e.target.value)}
-                              className="w-full text-sm bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none" />
-                          )}
+                {/* Two Column Layout: Form & Real-time Canvas */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                  
+                  {/* Left: Input Form Card */}
+                  <div className="lg:col-span-7 flex flex-col gap-5">
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs">
+                      <CardHeader className="pb-3 border-b border-[#E5E7EB]">
+                        <CardTitle className="text-sm font-semibold text-[#18181B]">
+                          Input Prompt & Student Response
+                        </CardTitle>
+                        <CardDescription className="text-xs font-normal text-[#71717A]">
+                          Provide reference benchmarks to grade student submissions against.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-5 flex flex-col gap-4">
+                        
+                        {/* Context */}
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-semibold text-[#18181B]">
+                              Background Context <span className="text-[#71717A] font-normal">(Optional)</span>
+                            </Label>
+                            {singleContext && (
+                              <button
+                                type="button"
+                                onClick={() => setSingleContext('')}
+                                className="text-[11px] font-normal text-[#71717A] hover:text-rose-600 transition-colors cursor-pointer"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+                          <Textarea
+                            rows={2}
+                            value={singleContext}
+                            onChange={(e) => setSingleContext(e.target.value)}
+                            placeholder="Optional textbook passage, chapter context, or background..."
+                            className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
+                          />
                         </div>
-                      ))}
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-600">
-                          Student Answers <span className="text-slate-400 font-normal">(format: Name: answer, one per line)</span>
-                        </label>
-                        <textarea rows={7} value={batchRawInput} onChange={(e) => setBatchRawInput(e.target.value)}
-                          placeholder="Student A: Plants absorb sunlight…"
-                          className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all resize-none font-mono leading-relaxed" />
-                      </div>
+                        {/* Question */}
+                        <div className="flex flex-col gap-1.5">
+                          <Label className="text-xs font-semibold text-[#18181B]">
+                            Target Question <span className="text-rose-500 font-semibold">*</span>
+                          </Label>
+                          <Textarea
+                            rows={2}
+                            value={singleQuestion}
+                            onChange={(e) => setSingleQuestion(e.target.value)}
+                            placeholder="e.g. Explain photosynthesis and its primary biological importance..."
+                            className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
+                            required
+                          />
+                        </div>
 
-                      <button
-                        onClick={handleGradeBatch}
-                        disabled={isGradingBatch || !batchRawInput.trim()}
-                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
-                      >
-                        {isGradingBatch ? (
-                          <><RefreshCw className="w-4 h-4 animate-spin" strokeWidth={2.5} /> Grading in progress…</>
-                        ) : (
-                          <><Play className="w-4 h-4" strokeWidth={2.5} /> Evaluate Batch</>
+                        {/* Reference Answer */}
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-semibold text-[#18181B]">
+                              Golden Reference Answer <span className="text-rose-500 font-semibold">*</span>
+                            </Label>
+                            <span className="text-[10px] font-normal text-[#71717A]">
+                              {singleReference.trim().split(/\s+/).filter(Boolean).length} words
+                            </span>
+                          </div>
+                          <Textarea
+                            rows={3}
+                            value={singleReference}
+                            onChange={(e) => setSingleReference(e.target.value)}
+                            placeholder="Ideal instructor model answer..."
+                            className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
+                            required
+                          />
+                        </div>
+
+                        {/* Student Answer */}
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-semibold text-[#18181B]">
+                              Student Submission <span className="text-rose-500 font-semibold">*</span>
+                            </Label>
+                            <span className="text-[10px] font-normal text-[#71717A]">
+                              {singleStudent.trim().split(/\s+/).filter(Boolean).length} words · {singleStudent.length} chars
+                            </span>
+                          </div>
+                          <Textarea
+                            rows={4}
+                            value={singleStudent}
+                            onChange={(e) => setSingleStudent(e.target.value)}
+                            placeholder="Student answer to grade..."
+                            className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
+                            required
+                          />
+                        </div>
+
+                        {singleError && (
+                          <Alert variant="destructive" className="rounded-xl">
+                            <XCircle className="size-4" strokeWidth={2.5} />
+                            <AlertTitle className="text-xs font-semibold">Evaluation Error</AlertTitle>
+                            <AlertDescription className="text-xs font-normal">{singleError}</AlertDescription>
+                          </Alert>
                         )}
-                      </button>
-                    </div>
-                  </Card>
-                </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                {/* Results */}
-                <div className="lg:col-span-7 space-y-5">
-                  {batchItems.length > 0 ? (
-                    <div className="animate-fade-up space-y-5">
-
-                      {/* Table header controls */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-slate-500">{batchItems.length} records</span>
-                        <button
-                          onClick={handleExportCSV}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
-                        >
-                          <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
-                          Export CSV
-                        </button>
-                      </div>
-
-                      {/* Table */}
-                      <Card className="overflow-hidden">
-                        <table className="w-full text-left text-xs">
-                          <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200">
-                              {['Student', 'Answer', 'Grade', 'Status', ''].map(h => (
-                                <th key={h} className="px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">{h}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {batchItems.map((item) => {
-                              const grade = item.result?.metrics.final_grade;
-                              const tag   = item.result?.feedback.tags[0] || '';
-                              const rowBg = item.status === 'success' && grade !== undefined
-                                ? grade >= 80 ? 'bg-emerald-50/50 hover:bg-emerald-50'
-                                : grade >= 55 ? 'bg-amber-50/50 hover:bg-amber-50'
-                                : 'bg-rose-50/50 hover:bg-rose-50'
-                                : 'bg-white hover:bg-slate-50';
-                              const isSelected = selectedBatchItem?.id === item.id;
-                              return (
-                                <tr key={item.id}
-                                  className={`border-b border-slate-100 transition-colors cursor-pointer ${rowBg} ${isSelected ? 'ring-2 ring-inset ring-indigo-300' : ''}`}
-                                  onClick={() => item.result && setSelectedBatchItem(item)}
+                  {/* Right: Results Canvas */}
+                  <div className="lg:col-span-5 flex flex-col gap-5">
+                    {singleResult ? (
+                      <div className="flex flex-col gap-4 animate-fade-up">
+                        
+                        {/* Score Hero Card */}
+                        <Card className="rounded-2xl border-[#E5E7EB] bg-white p-6 shadow-xs">
+                          <div className="flex items-center gap-6">
+                            <ScoreGauge score={singleResult.metrics.final_grade} size={100} />
+                            <div className="flex flex-col gap-2 flex-1">
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  className={`rounded-full text-xs font-semibold ${
+                                    getScoreBadgeVariant(singleResult.metrics.final_grade).className
+                                  }`}
                                 >
-                                  <td className="px-4 py-3 font-semibold text-slate-800 whitespace-nowrap">{item.id}</td>
-                                  <td className="px-4 py-3 text-slate-500 max-w-[160px] truncate">{item.student}</td>
-                                  <td className="px-4 py-3 font-semibold tabular-nums text-slate-800 text-right whitespace-nowrap">
-                                    {item.status === 'grading'
-                                      ? <RefreshCw className="w-3.5 h-3.5 animate-spin ml-auto text-slate-400" />
-                                      : item.status === 'success' ? `${grade}%`
-                                      : <span className="text-rose-500">Err</span>}
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    {item.status === 'success' && tag && <Badge tag={tag} />}
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    {item.result && (
-                                      <ChevronRight className={`w-3.5 h-3.5 ml-auto transition-colors ${isSelected ? 'text-indigo-500' : 'text-slate-300'}`} strokeWidth={2.5} />
-                                    )}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </Card>
-
-                      {/* Detail panel */}
-                      {selectedBatchItem?.result && (
-                        <div className="animate-fade-up">
-                          <Card>
-                            <CardHeader
-                              icon={Sparkles}
-                              title={`Detail: ${selectedBatchItem.id}`}
-                              right={
-                                <div className="flex items-center gap-2">
-                                  <Badge tag={selectedBatchItem.result.feedback.tags[0]} />
-                                  <span className="text-sm font-semibold text-slate-800 tabular-nums">
-                                    {selectedBatchItem.result.metrics.final_grade}%
-                                  </span>
-                                </div>
-                              }
-                            />
-                            <div className="p-5 space-y-5">
-                              <div className="grid grid-cols-2 gap-4 text-xs">
-                                <div className="space-y-1.5">
-                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Explanation</p>
-                                  <p className="text-slate-700 leading-relaxed">{selectedBatchItem.result.feedback.explanation}</p>
-                                </div>
-                                <div className="space-y-1.5">
-                                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Recommendation</p>
-                                  <p className="text-slate-700 leading-relaxed">{selectedBatchItem.result.feedback.suggestion}</p>
-                                </div>
+                                  {getScoreBadgeVariant(singleResult.metrics.final_grade).label}
+                                </Badge>
                               </div>
-
-                              <div className="grid grid-cols-5 gap-2 pt-4 border-t border-slate-100">
-                                {[
-                                  { label: 'Semantic',  value: selectedBatchItem.result.metrics.semantic_score,  color: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
-                                  { label: 'Coverage',  value: selectedBatchItem.result.metrics.coverage_score,   color: 'text-sky-700 bg-sky-50 border-sky-200' },
-                                  { label: 'Formality', value: selectedBatchItem.result.metrics.formality_score, color: 'text-slate-700 bg-slate-50 border-slate-200' },
-                                  { label: 'Grammar',   value: selectedBatchItem.result.metrics.grammar_score,   color: 'text-orange-700 bg-orange-50 border-orange-200' },
-                                  { label: 'Logic',     value: selectedBatchItem.result.metrics.logic_score,     color: 'text-purple-700 bg-purple-50 border-purple-200' },
-                                ].map(({ label, value, color }) => (
-                                  <div key={label} className={`p-3 rounded-xl border text-center ${color}`}>
-                                    <p className="text-[9px] font-semibold uppercase tracking-wide">{label}</p>
-                                    <p className="text-base font-semibold tabular-nums mt-0.5">{Math.round(value * 100)}%</p>
-                                  </div>
+                              <p className="text-xs font-normal text-[#71717A] leading-relaxed">
+                                Weighted composite across 5 NLP criteria.
+                              </p>
+                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                {singleResult.feedback.tags.map((tag, i) => (
+                                  <Badge
+                                    key={i}
+                                    variant="outline"
+                                    className={`rounded-full text-[10px] font-semibold flex items-center gap-1 ${getTagBadgeStyle(
+                                      tag
+                                    )}`}
+                                  >
+                                    {getTagIcon(tag)}
+                                    {tag}
+                                  </Badge>
                                 ))}
                               </div>
                             </div>
+                          </div>
+                        </Card>
+
+                        {/* Feature Breakdown Progress Bars */}
+                        <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-3.5">
+                          <h3 className="text-xs font-semibold text-[#18181B] uppercase tracking-wider">
+                            Criterion Breakdown
+                          </h3>
+                          <FeatureBar
+                            label="Semantic Similarity"
+                            value={singleResult.metrics.semantic_score}
+                            colorHex="#5268F5"
+                            weightPct={Math.round(weights.semantic * 100)}
+                          />
+                          <FeatureBar
+                            label="Keyword Coverage"
+                            value={singleResult.metrics.coverage_score}
+                            colorHex="#0EA5E9"
+                            weightPct={Math.round(weights.coverage * 100)}
+                          />
+                          <FeatureBar
+                            label="Academic Formality"
+                            value={singleResult.metrics.formality_score}
+                            colorHex="#64748B"
+                            weightPct={Math.round(weights.formality * 100)}
+                          />
+                          <FeatureBar
+                            label="Grammar & Fluency"
+                            value={singleResult.metrics.grammar_score}
+                            colorHex="#F97316"
+                            weightPct={Math.round(weights.grammar * 100)}
+                          />
+                          <FeatureBar
+                            label="Logical Coherence (NLI)"
+                            value={singleResult.metrics.logic_score}
+                            colorHex="#A855F7"
+                            weightPct={Math.round(weights.logic * 100)}
+                            warningBadge={
+                              singleResult.metrics.logic_details &&
+                              Math.max(
+                                singleResult.metrics.logic_details.contradiction || 0,
+                                singleResult.metrics.logic_details.backward_contradiction || 0
+                              ) > 0.6
+                                ? 'Penalty (-40% Cap)'
+                                : undefined
+                            }
+                          />
+                        </Card>
+
+                        {/* AI Feedback Card */}
+                        <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-3">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="size-4 text-[#F04F9B]" strokeWidth={2.5} />
+                            <h3 className="text-xs font-semibold text-[#18181B] uppercase tracking-wider">
+                              AI Diagnostic Feedback
+                            </h3>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="text-[10px] font-semibold uppercase text-[#71717A] tracking-wider">
+                              Explanation
+                            </span>
+                            <p className="text-xs font-normal text-[#18181B] leading-relaxed">
+                              {singleResult.feedback.explanation}
+                            </p>
+                          </div>
+                          <Separator className="bg-[#E5E7EB]" />
+                          <div className="flex flex-col gap-1.5">
+                            <span className="text-[10px] font-semibold uppercase text-[#71717A] tracking-wider">
+                              Recommendation
+                            </span>
+                            <p className="text-xs font-normal text-[#18181B] leading-relaxed">
+                              {singleResult.feedback.suggestion}
+                            </p>
+                          </div>
+                        </Card>
+
+                        {/* Missing Keywords (if any) */}
+                        {singleResult.metrics.missing_keywords?.length > 0 && (
+                          <Card className="rounded-2xl border-rose-200 bg-rose-50/50 p-4">
+                            <span className="text-[10px] font-semibold uppercase text-rose-700 tracking-wider">
+                              Missing Vocabulary
+                            </span>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {singleResult.metrics.missing_keywords.map((kw, i) => (
+                                <Badge
+                                  key={i}
+                                  variant="outline"
+                                  className="rounded-full text-[10px] font-semibold bg-white text-rose-700 border-rose-200"
+                                >
+                                  {kw}
+                                </Badge>
+                              ))}
+                            </div>
                           </Card>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <Card>
-                      <EmptyState
-                        icon={Layers}
-                        title="No batch results yet"
-                        body="Load a sample template or enter student answers on the left, then click Evaluate Batch."
-                      />
-                    </Card>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── TAB: SETTINGS ───────────────────────────────────────────── */}
-          {activeTab === 'settings' && (
-            <div className="max-w-3xl mx-auto animate-fade-up space-y-6">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-slate-800 tracking-tight">System Configuration</h2>
-                <p className="text-sm text-slate-500 mt-1">Configure backend endpoints and review scoring thresholds.</p>
-              </div>
-
-              {/* API URL */}
-              <Card>
-                <CardHeader icon={Database} title="FastAPI Connection" />
-                <div className="p-5">
-                  <div className="flex gap-3 items-end">
-                    <div className="flex-1 space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-600">Server Endpoint URL</label>
-                      <input
-                        type="text" value={apiUrl} onChange={(e) => setApiUrl(e.target.value)}
-                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 font-mono transition-all"
-                      />
-                    </div>
-                    <button
-                      onClick={checkHealth}
-                      className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer whitespace-nowrap"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" strokeWidth={2} />
-                      Test Connection
-                    </button>
+                        )}
+                      </div>
+                    ) : (
+                      <Card className="rounded-2xl border-[#E5E7EB] bg-white p-8">
+                        <Empty>
+                          <EmptyHeader>
+                            <EmptyMedia variant="icon">
+                              <Wand2 className="size-6 text-[#71717A]" strokeWidth={1.5} />
+                            </EmptyMedia>
+                            <EmptyTitle className="text-sm font-semibold text-[#18181B]">
+                              Ready for Evaluation
+                            </EmptyTitle>
+                            <EmptyDescription className="text-xs font-normal text-[#71717A]">
+                              Review the prompt on the left and click &apos;Run Evaluator&apos; in the floating toolbar below to inspect model scores.
+                            </EmptyDescription>
+                          </EmptyHeader>
+                        </Empty>
+                      </Card>
+                    )}
                   </div>
                 </div>
-              </Card>
 
-              {/* Weights */}
-              <WeightsPanel
-                weights={weights} activePreset={activePreset}
-                onPresetChange={handlePresetChange} onWeightChange={handleWeightChange}
-              />
+                {/* ── Reference C: Floating Capsule Control Dock ────────────── */}
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-fit max-w-[95vw]">
+                  <div className="bg-white/95 backdrop-blur-xl border border-[#E5E7EB] rounded-full px-4 py-2 shadow-2xl shadow-zinc-900/10 flex items-center gap-3">
+                    
+                    {/* Preset Segment Pills */}
+                    <div className="flex items-center gap-1 bg-[#F7F7F8] p-1 rounded-full border border-[#E5E7EB]">
+                      {['balanced', 'content_focused', 'logic_heavy', 'quick_check'].map((pKey) => {
+                        const active = activePreset === pKey;
+                        const label =
+                          pKey === 'balanced'
+                            ? 'Balanced'
+                            : pKey === 'content_focused'
+                            ? 'Content'
+                            : pKey === 'logic_heavy'
+                            ? 'Logic'
+                            : 'Quick';
+                        return (
+                          <button
+                            key={pKey}
+                            onClick={() => handlePresetChange(pKey)}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                              active
+                                ? 'bg-white text-[#18181B] shadow-xs'
+                                : 'text-[#71717A] hover:text-[#18181B]'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
 
-              {/* Thresholds */}
-              <Card>
-                <CardHeader icon={Shield} title="Active Grading Thresholds" right={<span className="text-[10px] text-slate-400 font-semibold">config.py</span>} />
-                <div className="p-5">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                    <Separator orientation="vertical" className="h-6 bg-[#E5E7EB]" />
+
+                    {/* Reset Button */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={handleClearWorkspace}
+                          className="size-8 rounded-full flex items-center justify-center text-[#71717A] hover:text-[#18181B] hover:bg-[#F7F7F8] transition-colors cursor-pointer"
+                          aria-label="Reset workspace inputs"
+                        >
+                          <RotateCcw className="size-3.5" strokeWidth={2} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        <span className="text-xs font-normal">Clear workspace inputs</span>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Primary Run Action Pill */}
+                    <Button
+                      onClick={() => handleGradeSingle()}
+                      disabled={isGradingSingle}
+                      className="rounded-full bg-[#18181B] hover:bg-[#181113] text-white font-semibold text-xs px-5 py-2 h-auto cursor-pointer shadow-sm active:scale-95 transition-all"
+                    >
+                      {isGradingSingle ? (
+                        <>
+                          <Spinner className="size-3.5 mr-1.5" />
+                          Evaluating...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="size-3.5 mr-1.5 fill-current" strokeWidth={2.5} />
+                          Run Evaluator
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════════════
+                TAB: BATCH GRADER (Reference B: Application Data Dashboard)
+            ══════════════════════════════════════════════════════════════════ */}
+            {activeTab === 'batch' && (
+              <div className="flex flex-col gap-6 animate-fade-up">
+
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#18181B] tracking-tight">
+                      Batch Student Assessment
+                    </h2>
+                    <p className="text-xs font-normal text-[#71717A] mt-0.5">
+                      Process multiple student responses simultaneously with uniform rubrics.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleLoadSample('photosynthesis')}
+                      className="rounded-full text-xs font-semibold"
+                    >
+                      Load Sample Data
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleExportCSV}
+                      disabled={!batchItems.length}
+                      className="rounded-full text-xs font-semibold"
+                    >
+                      <Download className="size-3.5 mr-1.5" strokeWidth={2} />
+                      Export CSV
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                  
+                  {/* Left: Batch Config */}
+                  <div className="lg:col-span-5 flex flex-col gap-4">
+                    <Card className="rounded-2xl border-[#E5E7EB] bg-white shadow-xs p-5 flex flex-col gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label className="text-xs font-semibold text-[#18181B]">Question Title</Label>
+                        <Input
+                          value={batchQuestion}
+                          onChange={(e) => setBatchQuestion(e.target.value)}
+                          className="rounded-xl border-[#E5E7EB] text-xs font-normal"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1.5">
+                        <Label className="text-xs font-semibold text-[#18181B]">Reference Answer</Label>
+                        <Textarea
+                          rows={2}
+                          value={batchReference}
+                          onChange={(e) => setBatchReference(e.target.value)}
+                          className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex justify-between items-center">
+                          <Label className="text-xs font-semibold text-[#18181B]">
+                            Student Responses
+                          </Label>
+                          <span className="text-[10px] font-normal text-[#71717A]">
+                            One per line (`Name: answer`)
+                          </span>
+                        </div>
+                        <Textarea
+                          rows={8}
+                          value={batchRawInput}
+                          onChange={(e) => setBatchRawInput(e.target.value)}
+                          className="rounded-xl border-[#E5E7EB] text-xs font-mono font-normal resize-none"
+                        />
+                      </div>
+
+                      <Button
+                        onClick={handleGradeBatch}
+                        disabled={isGradingBatch || !batchRawInput.trim()}
+                        className="rounded-full bg-[#18181B] hover:bg-[#181113] text-white font-semibold text-xs py-2.5 h-auto cursor-pointer"
+                      >
+                        {isGradingBatch ? (
+                          <>
+                            <Spinner className="size-3.5 mr-2" />
+                            Evaluating Batch...
+                          </>
+                        ) : (
+                          <>
+                            <Play className="size-3.5 mr-2 fill-current" strokeWidth={2.5} />
+                            Evaluate All Responses
+                          </>
+                        )}
+                      </Button>
+                    </Card>
+                  </div>
+
+                  {/* Right: Data Table & Inspection */}
+                  <div className="lg:col-span-7 flex flex-col gap-5">
+                    {batchItems.length > 0 ? (
+                      <div className="flex flex-col gap-4">
+                        <Card className="rounded-2xl border-[#E5E7EB] bg-white overflow-hidden shadow-xs">
+                          <Table>
+                            <TableHeader className="bg-[#F7F7F8]">
+                              <TableRow className="border-[#E5E7EB]">
+                                <TableHead className="text-xs font-semibold text-[#71717A]">Student</TableHead>
+                                <TableHead className="text-xs font-semibold text-[#71717A]">Response Preview</TableHead>
+                                <TableHead className="text-xs font-semibold text-[#71717A] text-right">Grade</TableHead>
+                                <TableHead className="text-xs font-semibold text-[#71717A]">Status Tag</TableHead>
+                                <TableHead className="w-10" />
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {batchItems.map((item) => {
+                                const grade = item.result?.metrics.final_grade;
+                                const tag = item.result?.feedback.tags[0] || '';
+                                const isSelected = selectedBatchItem?.id === item.id;
+                                return (
+                                  <TableRow
+                                    key={item.id}
+                                    onClick={() => item.result && setSelectedBatchItem(item)}
+                                    className={`border-[#E5E7EB] cursor-pointer transition-colors ${
+                                      isSelected ? 'bg-[#F7F7F8]' : 'hover:bg-[#F7F7F8]/50'
+                                    }`}
+                                  >
+                                    <TableCell className="text-xs font-semibold text-[#18181B]">
+                                      {item.id}
+                                    </TableCell>
+                                    <TableCell className="text-xs font-normal text-[#71717A] max-w-[200px] truncate">
+                                      {item.student}
+                                    </TableCell>
+                                    <TableCell className="text-xs font-semibold tabular-nums text-right text-[#18181B]">
+                                      {item.status === 'grading' ? (
+                                        <Spinner className="size-3 inline" />
+                                      ) : item.status === 'success' && grade !== undefined ? (
+                                        `${Math.round(grade)}%`
+                                      ) : (
+                                        <span className="text-rose-500 font-semibold">Err</span>
+                                      )}
+                                    </TableCell>
+                                    <TableCell>
+                                      {item.status === 'success' && tag && (
+                                        <Badge
+                                          variant="outline"
+                                          className={`rounded-full text-[10px] font-semibold ${getTagBadgeStyle(
+                                            tag
+                                          )}`}
+                                        >
+                                          {tag}
+                                        </Badge>
+                                      )}
+                                    </TableCell>
+                                    <TableCell>
+                                      <ChevronRight
+                                        className={`size-4 text-[#71717A] ${
+                                          isSelected ? 'text-[#18181B]' : ''
+                                        }`}
+                                        strokeWidth={2}
+                                      />
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </Card>
+
+                        {/* Selected Student Detail Card */}
+                        {selectedBatchItem?.result && (
+                          <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-4 animate-fade-up">
+                            <div className="flex flex-wrap items-center justify-between border-b border-[#E5E7EB] pb-3 gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-[#18181B]">
+                                  Inspection: {selectedBatchItem.id}
+                                </span>
+                                <Badge
+                                  className={`rounded-full text-[10px] font-semibold ${
+                                    getScoreBadgeVariant(selectedBatchItem.result.metrics.final_grade).className
+                                  }`}
+                                >
+                                  {Math.round(selectedBatchItem.result.metrics.final_grade)}%
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleInspectBatchInWorkspace(selectedBatchItem)}
+                                  className="rounded-full text-xs font-semibold h-7 px-3"
+                                >
+                                  Open in Workspace
+                                  <ArrowRight className="size-3 ml-1" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* 5-Criteria Mini Breakdown */}
+                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                              {[
+                                { name: 'Semantic', val: selectedBatchItem.result.metrics.semantic_score, color: '#5268F5' },
+                                { name: 'Coverage', val: selectedBatchItem.result.metrics.coverage_score, color: '#0EA5E9' },
+                                { name: 'Formality', val: selectedBatchItem.result.metrics.formality_score, color: '#64748B' },
+                                { name: 'Grammar', val: selectedBatchItem.result.metrics.grammar_score, color: '#F97316' },
+                                { name: 'Logic', val: selectedBatchItem.result.metrics.logic_score, color: '#A855F7' },
+                              ].map((c) => (
+                                <div key={c.name} className="p-2.5 rounded-xl bg-[#F7F7F8] border border-[#E5E7EB] flex flex-col gap-1">
+                                  <span className="text-[10px] font-semibold text-[#71717A] uppercase">{c.name}</span>
+                                  <span className="text-xs font-semibold tabular-nums text-[#18181B]">
+                                    {Math.round(c.val * 100)}%
+                                  </span>
+                                  <div className="h-1 w-full rounded-full bg-zinc-200 overflow-hidden">
+                                    <div className="h-full rounded-full" style={{ width: `${Math.round(c.val * 100)}%`, backgroundColor: c.color }} />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-normal">
+                              <div className="flex flex-col gap-1">
+                                <span className="font-semibold text-[#18181B]">Explanation</span>
+                                <p className="text-[#71717A] leading-relaxed">
+                                  {selectedBatchItem.result.feedback.explanation}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="font-semibold text-[#18181B]">Recommendation</span>
+                                <p className="text-[#71717A] leading-relaxed">
+                                  {selectedBatchItem.result.feedback.suggestion}
+                                </p>
+                              </div>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
+                    ) : (
+                      <Card className="rounded-2xl border-[#E5E7EB] bg-white p-8">
+                        <Empty>
+                          <EmptyHeader>
+                            <EmptyMedia variant="icon">
+                              <FileSpreadsheet className="size-6 text-[#71717A]" strokeWidth={1.5} />
+                            </EmptyMedia>
+                            <EmptyTitle className="text-sm font-semibold text-[#18181B]">
+                              No Batch Data
+                            </EmptyTitle>
+                            <EmptyDescription className="text-xs font-normal text-[#71717A]">
+                              Click &apos;Load Sample Data&apos; or type student answers on the left to execute multi-response evaluations.
+                            </EmptyDescription>
+                          </EmptyHeader>
+                        </Empty>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════════════
+                TAB: RESEARCH LAB (Reference B & C: Ablation & Models)
+            ══════════════════════════════════════════════════════════════════ */}
+            {activeTab === 'research' && (
+              <div className="flex flex-col gap-6 animate-fade-up">
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#18181B] tracking-tight flex items-center gap-2">
+                      <FlaskConical className="size-5 text-[#5268F5]" strokeWidth={2.5} />
+                      Research Lab & Ablation Benchmark
+                    </h2>
+                    <p className="text-xs font-normal text-[#71717A] mt-0.5">
+                      Verify individual component contributions via Wilcoxon signed-rank tests and export publication-ready LaTeX tables.
+                    </p>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className="rounded-full text-xs px-3 py-1 font-semibold"
+                  >
+                    {isLive ? 'Live Research API' : 'Simulated Research Mode'}
+                  </Badge>
+                </div>
+
+                {/* Active Architecture Summary */}
+                <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs">
+                  <h3 className="text-xs font-semibold text-[#18181B] uppercase tracking-wider mb-3">
+                    Active Grader Backbones
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
                     {[
                       {
-                        title: 'Semantic Classification',
-                        rows: [
-                          { label: 'Correct threshold',    val: `≥ ${thresholds.semantic_correct}` },
-                          { label: 'Partially correct',    val: `≥ ${thresholds.semantic_partial}` },
-                          { label: 'Off-topic cap',        val: `< ${thresholds.semantic_off_topic}` },
-                        ],
+                        name: 'Semantic',
+                        val: researchConfig?.semantic_model?.split('/').pop() || 'sup-simcse-roberta-large',
                       },
                       {
-                        title: 'Keyword Coverage',
-                        rows: [
-                          { label: 'Correct coverage',    val: `≥ ${thresholds.coverage_correct}` },
-                          { label: 'Good coverage',       val: `≥ ${thresholds.coverage_good}` },
-                          { label: 'Missing concepts',    val: `< ${thresholds.coverage_missing}` },
-                        ],
+                        name: 'Keyword',
+                        val: researchConfig?.keybert_model || 'all-MiniLM-L6-v2',
                       },
                       {
-                        title: 'Contradiction NLI',
-                        rows: [
-                          { label: 'High (cap 40)',       val: `≥ ${thresholds.contradiction_high}` },
-                          { label: 'Moderate (penalty)',  val: `≥ ${thresholds.contradiction_moderate}` },
-                          { label: 'Grammar accept.',     val: `≥ ${thresholds.grammar_good}` },
-                        ],
+                        name: 'Formality',
+                        val: researchConfig?.formality_model?.split('/').pop() || 'roberta-base-formality',
                       },
-                    ].map(({ title, rows }) => (
-                      <div key={title} className="space-y-2.5">
-                        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">{title}</p>
-                        {rows.map(({ label, val }) => (
-                          <div key={label} className="flex justify-between border-b border-slate-100 pb-1.5">
-                            <span className="text-slate-600">{label}</span>
-                            <span className="font-semibold tabular-nums text-slate-800 font-mono">{val}</span>
-                          </div>
-                        ))}
+                      {
+                        name: 'Grammar',
+                        val: researchConfig?.grammar_model?.split('/').pop() || 'roberta-base-CoLA',
+                      },
+                      {
+                        name: 'Logic NLI',
+                        val: researchConfig?.logic_model?.split('/').pop() || 'nli-deberta-v3-base',
+                      },
+                      {
+                        name: 'LLM Synth',
+                        val: researchConfig?.reasoning_model?.split('/').pop() || 'Qwen2.5-3B-Instruct',
+                      },
+                    ].map((m) => (
+                      <div
+                        key={m.name}
+                        className="p-3 rounded-xl bg-[#F7F7F8] border border-[#E5E7EB] flex flex-col gap-1"
+                      >
+                        <span className="text-[10px] font-semibold text-[#71717A] uppercase">
+                          {m.name}
+                        </span>
+                        <span className="text-xs font-semibold text-[#18181B] truncate font-mono">
+                          {m.val}
+                        </span>
                       </div>
                     ))}
                   </div>
-                </div>
-              </Card>
+                </Card>
 
-            </div>
-          )}
-
-          {/* ── TAB: RESEARCH ───────────────────────────────────────── */}
-          {activeTab === 'research' && (
-            <div className="max-w-5xl mx-auto space-y-6 animate-fade-up">
-
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-800 tracking-tight flex items-center gap-2">
-                    <FlaskConical className="w-5 h-5 text-violet-600" strokeWidth={2} />
-                    Research Lab
-                  </h2>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Ablation study, model comparison, and experiment tracking.
-                    {!isLive && <span className="ml-2 text-amber-600 font-semibold">Demo mode — switch to Live API for real results.</span>}
-                  </p>
-                </div>
-              </div>
-
-              {/* Model config card */}
-              <Card>
-                <CardHeader icon={Cpu} title="Active Model Configuration" right={
-                  isLive
-                    ? <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">Live</span>
-                    : <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200">Simulated</span>
-                } />
-                <div className="p-5">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    {(researchConfig ? [
-                      { label: 'Semantic',    value: researchConfig.semantic_model?.split('/').pop() || '—' },
-                      { label: 'Keywords',    value: researchConfig.keybert_model || '—' },
-                      { label: 'Formality',   value: researchConfig.formality_model?.split('/').pop() || '—' },
-                      { label: 'Grammar',     value: researchConfig.grammar_model?.split('/').pop() || '—' },
-                      { label: 'Logic/NLI',   value: researchConfig.logic_model?.split('/').pop() || '—' },
-                      { label: 'LLM Synth.',  value: researchConfig.reasoning_model?.split('/').pop() || '—' },
-                    ] : [
-                      { label: 'Semantic',    value: 'sup-simcse-roberta-large' },
-                      { label: 'Keywords',    value: 'all-MiniLM-L6-v2 (KeyBERT)' },
-                      { label: 'Formality',   value: 'roberta-base-formality' },
-                      { label: 'Grammar',     value: 'roberta-base-CoLA' },
-                      { label: 'Logic/NLI',   value: 'nli-deberta-v3-base' },
-                      { label: 'LLM Synth.',  value: 'Qwen2.5-3B-Instruct' },
-                    ]).map(({ label, value }) => (
-                      <div key={label} className="flex flex-col gap-0.5 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{label}</span>
-                        <span className="font-semibold text-slate-700 truncate">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {researchConfig && (
-                    <div className="mt-3 flex gap-2 flex-wrap">
-                      {researchConfig.use_4bit_quantization && (
-                        <span className="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2.5 py-1 rounded-lg border border-violet-200">
-                          4-bit NF4 quantization active
-                        </span>
-                      )}
-                      {researchConfig.skip_llm && (
-                        <span className="text-[10px] font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-lg border border-amber-200">
-                          FM-LLM mode (skip_llm=True)
-                        </span>
-                      )}
-                      <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200">
-                        Device: {researchConfig.device}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </Card>
-
-              {/* Ablation study runner */}
-              <Card>
-                <CardHeader icon={BarChart2} title="Ablation Study — Component Contribution" />
-                <div className="p-5 space-y-5">
-
-                  {/* Controls */}
+                {/* Ablation Runner Controls */}
+                <Card className="rounded-2xl border-[#E5E7EB] bg-white p-6 shadow-xs flex flex-col gap-5">
                   <div className="flex flex-wrap items-end gap-4">
-                    <div className="flex-1 min-w-48 space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-600">Feature Cache Path</label>
-                      <input
-                        type="text" value={ablationCachePath}
+                    <div className="flex-1 min-w-[200px] flex flex-col gap-1.5">
+                      <Label className="text-xs font-semibold text-[#18181B]">Feature Cache Path</Label>
+                      <Input
+                        value={ablationCachePath}
                         onChange={(e) => setAblationCachePath(e.target.value)}
                         placeholder="./cache/features.pkl"
-                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 font-mono text-slate-700 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-50 transition-all"
+                        className="rounded-xl border-[#E5E7EB] text-xs font-mono font-normal"
                       />
                     </div>
-                    <div className="w-28 space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-600">Random Seed</label>
-                      <input
-                        type="number" value={ablationSeed}
-                        onChange={(e) => setAblationSeed(parseInt(e.target.value))}
-                        className="w-full text-xs bg-white border border-slate-200 rounded-xl px-4 py-2.5 font-mono text-slate-700 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-50 transition-all"
+                    <div className="w-28 flex flex-col gap-1.5">
+                      <Label className="text-xs font-semibold text-[#18181B]">Seed</Label>
+                      <Input
+                        type="number"
+                        value={ablationSeed}
+                        onChange={(e) => setAblationSeed(parseInt(e.target.value) || 42)}
+                        className="rounded-xl border-[#E5E7EB] text-xs font-mono font-normal"
                       />
                     </div>
-                    <button
+                    <Button
                       onClick={handleRunAblation}
                       disabled={isRunningAblation}
-                      className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                      className="rounded-full bg-[#18181B] hover:bg-[#181113] text-white font-semibold text-xs px-6 py-2.5 h-auto cursor-pointer"
                     >
-                      {isRunningAblation
-                        ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" strokeWidth={2.5} /> Running…</>
-                        : <><FlaskConical className="w-3.5 h-3.5" strokeWidth={2.5} /> Run Ablation</>
-                      }
-                    </button>
+                      {isRunningAblation ? (
+                        <>
+                          <Spinner className="size-3.5 mr-2" />
+                          Running Ablation...
+                        </>
+                      ) : (
+                        <>
+                          <FlaskConical className="size-3.5 mr-2" strokeWidth={2.5} />
+                          Run Ablation Study
+                        </>
+                      )}
+                    </Button>
                   </div>
 
                   {ablationError && (
-                    <div className="flex items-start gap-2.5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
-                      <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
-                      {ablationError}
-                    </div>
+                    <Alert variant="destructive" className="rounded-xl">
+                      <XCircle className="size-4" strokeWidth={2.5} />
+                      <AlertTitle className="text-xs font-semibold">Error</AlertTitle>
+                      <AlertDescription className="text-xs font-normal">{ablationError}</AlertDescription>
+                    </Alert>
                   )}
 
-                  {/* Results table */}
+                  {/* Ablation Results Table */}
                   {ablationResults.length > 0 && (
-                    <div className="space-y-4 animate-fade-up">
-                      <div className="overflow-x-auto rounded-xl border border-slate-200">
-                        <table className="w-full text-xs text-left">
-                          <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200">
-                              {['Variant', 'Accuracy', 'Macro F1', 'QWK', 'Δ F1', 'Δ QWK', 'Sig.'].map(h => (
-                                <th key={h} className="px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">{h}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
+                    <div className="flex flex-col gap-4 animate-fade-up">
+                      <div className="rounded-2xl border border-[#E5E7EB] overflow-hidden">
+                        <Table>
+                          <TableHeader className="bg-[#F7F7F8]">
+                            <TableRow className="border-[#E5E7EB]">
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Variant</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Accuracy</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Macro F1</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">QWK</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Δ F1</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Δ QWK</TableHead>
+                              <TableHead className="text-xs font-semibold text-[#71717A]">Sig.</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
                             {ablationResults.map((row, i) => {
-                              const isFullModel = row['Variant'] === 'Full Model';
-                              const sig = row['Sig.'];
-                              const deltaF1 = parseFloat(row['Δ F1']);
-                              const deltaColor =
-                                row['Δ F1'] === '—' ? '' :
-                                deltaF1 > 0 ? 'text-emerald-600' :
-                                deltaF1 < -0.05 ? 'text-rose-600' : 'text-amber-600';
-                              const sigColor =
-                                sig === '***' ? 'text-rose-700 bg-rose-50 border-rose-200' :
-                                sig === '**'  ? 'text-orange-700 bg-orange-50 border-orange-200' :
-                                sig === '*'   ? 'text-amber-700 bg-amber-50 border-amber-200' :
-                                sig === 'ns'  ? 'text-slate-500 bg-slate-50 border-slate-200' : '';
+                              const isFull = row.Variant.includes('Full Model');
                               return (
-                                <tr key={i} className={`border-b border-slate-100 ${isFullModel ? 'bg-violet-50/40 font-semibold' : 'hover:bg-slate-50'} transition-colors`}>
-                                  <td className="px-4 py-3 text-slate-700">{row['Variant']}</td>
-                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['Accuracy']}</td>
-                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['Macro F1']}</td>
-                                  <td className="px-4 py-3 font-mono tabular-nums text-slate-700">{row['QWK']}</td>
-                                  <td className={`px-4 py-3 font-mono tabular-nums font-semibold ${deltaColor}`}>{row['Δ F1']}</td>
-                                  <td className={`px-4 py-3 font-mono tabular-nums font-semibold ${deltaColor}`}>{row['Δ QWK']}</td>
-                                  <td className="px-4 py-3">
-                                    {sig ? (
-                                      <span className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-bold border ${sigColor}`}>{sig}</span>
-                                    ) : null}
-                                  </td>
-                                </tr>
+                                <TableRow
+                                  key={i}
+                                  className={`border-[#E5E7EB] ${
+                                    isFull ? 'bg-[#F7F7F8] font-semibold' : 'hover:bg-[#F7F7F8]/50'
+                                  }`}
+                                >
+                                  <TableCell className="text-xs font-semibold text-[#18181B]">
+                                    {row.Variant}
+                                  </TableCell>
+                                  <TableCell className="text-xs font-mono font-normal text-[#18181B] tabular-nums">
+                                    {row.Accuracy}
+                                  </TableCell>
+                                  <TableCell className="text-xs font-mono font-normal text-[#18181B] tabular-nums">
+                                    {row['Macro F1']}
+                                  </TableCell>
+                                  <TableCell className="text-xs font-mono font-normal text-[#18181B] tabular-nums">
+                                    {row.QWK}
+                                  </TableCell>
+                                  <TableCell className="text-xs font-mono font-semibold text-rose-600 tabular-nums">
+                                    {row['Δ F1']}
+                                  </TableCell>
+                                  <TableCell className="text-xs font-mono font-semibold text-rose-600 tabular-nums">
+                                    {row['Δ QWK']}
+                                  </TableCell>
+                                  <TableCell>
+                                    {row['Sig.'] && (
+                                      <Badge
+                                        variant="outline"
+                                        className="rounded-full text-[10px] font-semibold bg-rose-50 text-rose-700 border-rose-200"
+                                      >
+                                        {row['Sig.']}
+                                      </Badge>
+                                    )}
+                                  </TableCell>
+                                </TableRow>
                               );
                             })}
-                          </tbody>
-                        </table>
+                          </TableBody>
+                        </Table>
                       </div>
 
-                      {/* Legend */}
-                      <div className="flex gap-3 flex-wrap text-[10px] text-slate-500">
-                        <span className="font-semibold text-slate-600">Significance (Wilcoxon + Bonferroni):</span>
-                        {[
-                          { label: '*** p<0.001', color: 'text-rose-700' },
-                          { label: '** p<0.01',   color: 'text-orange-700' },
-                          { label: '* p<0.05',    color: 'text-amber-700' },
-                          { label: 'ns not sig.', color: 'text-slate-500' },
-                        ].map(({ label, color }) => (
-                          <span key={label} className={`font-semibold ${color}`}>{label}</span>
-                        ))}
-                      </div>
-
-                      {/* LaTeX export */}
+                      {/* LaTeX Copy Panel */}
                       {ablationLatex && (
-                        <div className="space-y-2">
-                          <label className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
-                            <Table2 className="w-3.5 h-3.5" strokeWidth={2} />
-                            LaTeX Table (copy for paper)
-                          </label>
-                          <textarea
-                            readOnly value={ablationLatex}
-                            rows={6}
-                            className="w-full text-[11px] bg-slate-900 text-emerald-300 font-mono border border-slate-700 rounded-xl px-4 py-3 resize-none focus:outline-none"
+                        <Card className="rounded-2xl border-[#E5E7EB] bg-[#181113] p-5 text-white flex flex-col gap-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="text-xs font-semibold text-white/80 flex items-center gap-1.5">
+                              <Table2 className="size-3.5" strokeWidth={2} />
+                              LaTeX Table (Academic Publication Snippet)
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={downloadLatex}
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs font-semibold h-7"
+                              >
+                                <FileDown className="size-3 mr-1" strokeWidth={2} />
+                                Download .tex
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={copyLatex}
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs font-semibold h-7"
+                              >
+                                {copiedLatex ? (
+                                  <>
+                                    <Check className="size-3 mr-1" strokeWidth={2.5} /> Copied!
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="size-3 mr-1" strokeWidth={2} /> Copy LaTeX
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                          <Textarea
+                            readOnly
+                            rows={5}
+                            value={ablationLatex}
+                            className="rounded-xl bg-black/40 border-white/10 text-[11px] font-mono text-emerald-300 resize-none"
                           />
-                        </div>
+                          <div className="text-[10px] font-normal text-white/50 flex flex-wrap items-center gap-3 pt-1 border-t border-white/10">
+                            <span>Significance:</span>
+                            <span>*** p &lt; 0.001</span>
+                            <span>** p &lt; 0.01</span>
+                            <span>* p &lt; 0.05</span>
+                            <span>ns: not significant</span>
+                          </div>
+                        </Card>
                       )}
                     </div>
                   )}
+                </Card>
 
-                  {ablationResults.length === 0 && !isRunningAblation && (
-                    <EmptyState
-                      icon={BarChart2}
-                      title="No results yet"
-                      body="Click 'Run Ablation' to evaluate all 7 variants (FM, FM-S, FM-C, FM-F, FM-G, FM-L, FM-LLM) with Wilcoxon significance tests."
-                    />
-                  )}
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════════════
+                TAB: SYSTEM SETTINGS (Reference B)
+            ══════════════════════════════════════════════════════════════════ */}
+            {activeTab === 'settings' && (
+              <div className="flex flex-col gap-6 max-w-4xl mx-auto animate-fade-up">
+
+                <div>
+                  <h2 className="text-xl font-semibold text-[#18181B] tracking-tight">
+                    System Configuration
+                  </h2>
+                  <p className="text-xs font-normal text-[#71717A] mt-0.5">
+                    Adjust endpoint bindings, grading criterion weights, and threshold bounds.
+                  </p>
                 </div>
-              </Card>
 
-            </div>
-          )}
+                {/* API Binding */}
+                <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Database className="size-4 text-[#5268F5]" strokeWidth={2} />
+                    <h3 className="text-sm font-semibold text-[#18181B]">FastAPI Endpoint Connection</h3>
+                  </div>
+                  <div className="flex gap-3 items-end">
+                    <div className="flex-1 flex flex-col gap-1.5">
+                      <Label className="text-xs font-semibold text-[#18181B]">Server URL</Label>
+                      <Input
+                        value={apiUrl}
+                        onChange={(e) => setApiUrl(e.target.value)}
+                        className="rounded-xl border-[#E5E7EB] text-xs font-mono font-normal"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {pingLatency !== null && (
+                        <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                          ⚡ {pingLatency}ms
+                        </span>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={testPing}
+                        className="rounded-full text-xs font-semibold cursor-pointer"
+                      >
+                        Test Connection
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
 
-        </main>
+                {/* Weights Sliders */}
+                <Card className="rounded-2xl border-[#E5E7EB] bg-white p-6 shadow-xs flex flex-col gap-5">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[#E5E7EB] pb-3 gap-2">
+                    <div className="flex items-center gap-2">
+                      <Sliders className="size-4 text-[#18181B]" strokeWidth={2} />
+                      <h3 className="text-sm font-semibold text-[#18181B]">Criterion Scoring Weights</h3>
+                      {(() => {
+                        const sum = Math.round(
+                          (weights.semantic + weights.coverage + weights.formality + weights.grammar + weights.logic) * 100
+                        );
+                        return (
+                          <Badge
+                            variant="outline"
+                            className={`rounded-full text-[10px] font-semibold ${
+                              sum === 100
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-amber-50 text-amber-700 border-amber-200'
+                            }`}
+                          >
+                            Sum: {sum}%
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-[#71717A]">
+                        Preset: <span className="text-[#18181B] capitalize">{activePreset}</span>
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleNormalizeWeights}
+                        className="rounded-full text-xs font-semibold h-7 px-3"
+                      >
+                        Normalize (20% each)
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                      { key: 'semantic', label: 'Semantic Similarity', color: '#5268F5' },
+                      { key: 'coverage', label: 'Keyword Coverage', color: '#0EA5E9' },
+                      { key: 'formality', label: 'Academic Formality', color: '#64748B' },
+                      { key: 'grammar', label: 'Grammar & Fluency', color: '#F97316' },
+                      { key: 'logic', label: 'Logical Coherence (NLI)', color: '#A855F7' },
+                    ].map(({ key, label, color }) => {
+                      const k = key as keyof Weights;
+                      const val = Math.round(weights[k] * 100);
+                      return (
+                        <div key={key} className="flex flex-col gap-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-semibold text-[#18181B]">{label}</span>
+                            <span className="font-semibold tabular-nums text-[#18181B]">{val}%</span>
+                          </div>
+                          <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            value={weights[k]}
+                            onChange={(e) => handleWeightChange(k, parseFloat(e.target.value))}
+                            className="w-full cursor-pointer"
+                            style={{
+                              background: `linear-gradient(to right, ${color} ${val}%, #E5E7EB ${val}%)`,
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Card>
+
+                {/* Thresholds Reference */}
+                <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Shield className="size-4 text-[#18181B]" strokeWidth={2} />
+                    <h3 className="text-sm font-semibold text-[#18181B]">Scoring Thresholds Reference</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-normal text-[#71717A]">
+                    <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] flex flex-col gap-1">
+                      <span className="font-semibold text-[#18181B]">Semantic Pass</span>
+                      <span>Correct: ≥ {thresholds.semantic_correct}</span>
+                      <span>Partial: ≥ {thresholds.semantic_partial}</span>
+                    </div>
+                    <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] flex flex-col gap-1">
+                      <span className="font-semibold text-[#18181B]">Keyword Coverage</span>
+                      <span>Target: ≥ {thresholds.coverage_correct}</span>
+                      <span>Missing: &lt; {thresholds.coverage_missing}</span>
+                    </div>
+                    <div className="p-3 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB] flex flex-col gap-1">
+                      <span className="font-semibold text-[#18181B]">NLI Contradiction</span>
+                      <span>High Cap (40%): ≥ {thresholds.contradiction_high}</span>
+                      <span>Moderate: ≥ {thresholds.contradiction_moderate}</span>
+                    </div>
+                  </div>
+                </Card>
+
+              </div>
+            )}
+
+          </main>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
