@@ -27,6 +27,7 @@ import {
   RotateCcw,
   FileDown,
   ArrowRight,
+  Search,
 } from 'lucide-react';
 
 import type {
@@ -152,24 +153,51 @@ const getTagIcon = (tag: string) => {
 function ScoreGauge({ score, size = 110 }: { score: number; size?: number }) {
   const circ = 283;
   const offset = circ - (circ * Math.min(100, Math.max(0, score))) / 100;
-  const strokeColor =
-    score >= 80 ? '#10B981' : score >= 55 ? '#F59E0B' : '#EF4444';
+  const isHigh = score >= 80;
+  const isMid = score >= 55 && score < 80;
+  const gradId = isHigh ? 'scoreGradHigh' : isMid ? 'scoreGradMid' : 'scoreGradLow';
+  const glowColor = isHigh
+    ? 'rgba(16, 185, 129, 0.15)'
+    : isMid
+    ? 'rgba(245, 158, 11, 0.15)'
+    : 'rgba(239, 68, 68, 0.15)';
 
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
+    <div
+      className="relative shrink-0 rounded-full flex items-center justify-center p-1 transition-all duration-500"
+      style={{
+        width: size,
+        height: size,
+        boxShadow: `0 8px 24px -4px ${glowColor}`,
+      }}
+    >
       <svg className="size-full" viewBox="0 0 36 36">
+        <defs>
+          <linearGradient id="scoreGradHigh" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#34D399" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+          <linearGradient id="scoreGradMid" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FBBF24" />
+            <stop offset="100%" stopColor="#D97706" />
+          </linearGradient>
+          <linearGradient id="scoreGradLow" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FB7185" />
+            <stop offset="100%" stopColor="#E11D48" />
+          </linearGradient>
+        </defs>
         <path
           strokeWidth="2.5"
           fill="none"
-          stroke="#E5E7EB"
+          stroke="#F4F4F5"
           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
         />
         <path
           className="progress-circle"
-          strokeWidth="2.8"
+          strokeWidth="3"
           strokeLinecap="round"
           fill="none"
-          stroke={strokeColor}
+          stroke={`url(#${gradId})`}
           style={{ '--offset': offset } as React.CSSProperties}
           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
         />
@@ -262,6 +290,8 @@ export default function App() {
   const [singleResult, setSingleResult] = useState<GradingResult | null>(null);
   const [isGradingSingle, setIsGradingSingle] = useState<boolean>(false);
   const [singleError, setSingleError] = useState<string | null>(null);
+  const [activeBenchmark, setActiveBenchmark] = useState<string>('photosynthesis');
+  const [copiedFeedback, setCopiedFeedback] = useState<boolean>(false);
 
   // Batch Grader state
   const [batchQuestion, setBatchQuestion] = useState<string>(
@@ -276,6 +306,8 @@ export default function App() {
   const [batchItems, setBatchItems] = useState<BatchItem[]>([]);
   const [isGradingBatch, setIsGradingBatch] = useState<boolean>(false);
   const [selectedBatchItem, setSelectedBatchItem] = useState<BatchItem | null>(null);
+  const [batchFilter, setBatchFilter] = useState<'all' | 'correct' | 'partial' | 'incorrect'>('all');
+  const [batchSearch, setBatchSearch] = useState<string>('');
 
   // Research state
   const [researchConfig, setResearchConfig] = useState<ResearchConfig | null>(null);
@@ -557,6 +589,15 @@ export default function App() {
     setSingleStudent('');
     setSingleResult(null);
     setSingleError(null);
+    setActiveBenchmark('custom');
+  };
+
+  const handleCopyFeedback = () => {
+    if (!singleResult) return;
+    const content = `[AutoGrade Diagnostic Feedback]\nScore: ${Math.round(singleResult.metrics.final_grade)}/100\nTags: ${singleResult.feedback.tags.join(', ')}\n\nExplanation:\n${singleResult.feedback.explanation}\n\nRecommendation:\n${singleResult.feedback.suggestion}`;
+    navigator.clipboard.writeText(content);
+    setCopiedFeedback(true);
+    setTimeout(() => setCopiedFeedback(false), 2000);
   };
 
   const handleInspectBatchInWorkspace = (item: BatchItem) => {
@@ -569,6 +610,7 @@ export default function App() {
     } else {
       setSingleResult(null);
     }
+    setActiveBenchmark('custom');
     setActiveTab('single');
   };
 
@@ -591,9 +633,23 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadAblationJson = () => {
+    if (!ablationResults.length) return;
+    const blob = new Blob([JSON.stringify(ablationResults, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ablation_study_results.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleLoadSample = (
     topic: 'photosynthesis' | 'watercycle' | 'contradiction' | 'informal'
   ) => {
+    setActiveBenchmark(topic);
     if (topic === 'photosynthesis') {
       setSingleQuestion('Explain the process of photosynthesis and its primary biological importance.');
       setSingleReference(
@@ -1211,34 +1267,50 @@ export default function App() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs font-normal text-[#71717A] mr-1 hidden sm:inline">Benchmarks:</span>
                     <Button
-                      variant="outline"
+                      variant={activeBenchmark === 'photosynthesis' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => handleLoadSample('photosynthesis')}
-                      className="rounded-full text-xs font-semibold hover:border-[#18181B]"
+                      className={`rounded-full text-xs font-semibold ${
+                        activeBenchmark === 'photosynthesis'
+                          ? 'bg-[#18181B] text-white shadow-xs'
+                          : 'hover:border-[#18181B]'
+                      }`}
                     >
                       🌿 Photosynthesis
                     </Button>
                     <Button
-                      variant="outline"
+                      variant={activeBenchmark === 'watercycle' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => handleLoadSample('watercycle')}
-                      className="rounded-full text-xs font-semibold hover:border-[#18181B]"
+                      className={`rounded-full text-xs font-semibold ${
+                        activeBenchmark === 'watercycle'
+                          ? 'bg-[#18181B] text-white shadow-xs'
+                          : 'hover:border-[#18181B]'
+                      }`}
                     >
                       💧 Water Cycle
                     </Button>
                     <Button
-                      variant="outline"
+                      variant={activeBenchmark === 'contradiction' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => handleLoadSample('contradiction')}
-                      className="rounded-full text-xs font-semibold text-rose-700 bg-rose-50/50 border-rose-200 hover:bg-rose-50"
+                      className={`rounded-full text-xs font-semibold ${
+                        activeBenchmark === 'contradiction'
+                          ? 'bg-rose-700 hover:bg-rose-800 text-white shadow-xs'
+                          : 'text-rose-700 bg-rose-50/50 border-rose-200 hover:bg-rose-50'
+                      }`}
                     >
                       ⚠️ Contradiction Test
                     </Button>
                     <Button
-                      variant="outline"
+                      variant={activeBenchmark === 'informal' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => handleLoadSample('informal')}
-                      className="rounded-full text-xs font-semibold text-amber-700 bg-amber-50/50 border-amber-200 hover:bg-amber-50"
+                      className={`rounded-full text-xs font-semibold ${
+                        activeBenchmark === 'informal'
+                          ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-xs'
+                          : 'text-amber-700 bg-amber-50/50 border-amber-200 hover:bg-amber-50'
+                      }`}
                     >
                       ✍️ Slang Test
                     </Button>
@@ -1324,9 +1396,14 @@ export default function App() {
                         {/* Student Answer */}
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center justify-between">
-                            <Label className="text-xs font-semibold text-[#18181B]">
-                              Student Submission <span className="text-rose-500 font-semibold">*</span>
-                            </Label>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-semibold text-[#18181B]">
+                                Student Submission <span className="text-rose-500 font-semibold">*</span>
+                              </Label>
+                              <kbd className="text-[10px] font-mono font-normal text-[#71717A] bg-[#F7F7F8] px-1.5 py-0.5 rounded border border-[#E5E7EB]">
+                                Ctrl ↵
+                              </kbd>
+                            </div>
                             <span className="text-[10px] font-normal text-[#71717A]">
                               {singleStudent.trim().split(/\s+/).filter(Boolean).length} words · {singleStudent.length} chars
                             </span>
@@ -1335,7 +1412,13 @@ export default function App() {
                             rows={4}
                             value={singleStudent}
                             onChange={(e) => setSingleStudent(e.target.value)}
-                            placeholder="Student answer to grade..."
+                            onKeyDown={(e) => {
+                              if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                                e.preventDefault();
+                                handleGradeSingle();
+                              }
+                            }}
+                            placeholder="Student answer to grade... (Press Ctrl+Enter to evaluate)"
                             className="rounded-xl border-[#E5E7EB] text-xs font-normal resize-none"
                             required
                           />
@@ -1440,11 +1523,31 @@ export default function App() {
 
                         {/* AI Feedback Card */}
                         <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-3">
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="size-4 text-[#F04F9B]" strokeWidth={2.5} />
-                            <h3 className="text-xs font-semibold text-[#18181B] uppercase tracking-wider">
-                              AI Diagnostic Feedback
-                            </h3>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Sparkles className="size-4 text-[#F04F9B]" strokeWidth={2.5} />
+                              <h3 className="text-xs font-semibold text-[#18181B] uppercase tracking-wider">
+                                AI Diagnostic Feedback
+                              </h3>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleCopyFeedback}
+                              className="h-7 px-2 text-[11px] font-normal text-[#71717A] hover:text-[#18181B] rounded-lg transition-colors cursor-pointer"
+                            >
+                              {copiedFeedback ? (
+                                <>
+                                  <Check className="size-3 text-emerald-600 mr-1" strokeWidth={2.5} />
+                                  <span className="text-emerald-600 font-semibold">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="size-3 mr-1 text-[#71717A]" strokeWidth={2} />
+                                  Copy
+                                </>
+                              )}
+                            </Button>
                           </div>
                           <div className="flex flex-col gap-1.5">
                             <span className="text-[10px] font-semibold uppercase text-[#71717A] tracking-wider">
@@ -1570,7 +1673,10 @@ export default function App() {
                       ) : (
                         <>
                           <Play className="size-3.5 mr-1.5 fill-current" strokeWidth={2.5} />
-                          Run Evaluator
+                          <span>Run Evaluator</span>
+                          <kbd className="ml-2 px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] text-zinc-300 font-mono font-normal">
+                            Ctrl ↵
+                          </kbd>
                         </>
                       )}
                     </Button>
@@ -1680,142 +1786,208 @@ export default function App() {
 
                   {/* Right: Data Table & Inspection */}
                   <div className="lg:col-span-7 flex flex-col gap-5">
-                    {batchItems.length > 0 ? (
-                      <div className="flex flex-col gap-4">
-                        <Card className="rounded-2xl border-[#E5E7EB] bg-white overflow-hidden shadow-xs">
-                          <Table>
-                            <TableHeader className="bg-[#F7F7F8]">
-                              <TableRow className="border-[#E5E7EB]">
-                                <TableHead className="text-xs font-semibold text-[#71717A]">Student</TableHead>
-                                <TableHead className="text-xs font-semibold text-[#71717A]">Response Preview</TableHead>
-                                <TableHead className="text-xs font-semibold text-[#71717A] text-right">Grade</TableHead>
-                                <TableHead className="text-xs font-semibold text-[#71717A]">Status Tag</TableHead>
-                                <TableHead className="w-10" />
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {batchItems.map((item) => {
-                                const grade = item.result?.metrics.final_grade;
-                                const tag = item.result?.feedback.tags[0] || '';
-                                const isSelected = selectedBatchItem?.id === item.id;
+                    {batchItems.length > 0 ? (() => {
+                      const countAll = batchItems.length;
+                      const countCorrect = batchItems.filter((i) => i.result?.feedback.tags.includes('Correct')).length;
+                      const countPartial = batchItems.filter((i) => i.result?.feedback.tags.includes('Partially Correct')).length;
+                      const countIncorrect = batchItems.filter(
+                        (i) => i.result && !i.result.feedback.tags.includes('Correct') && !i.result.feedback.tags.includes('Partially Correct')
+                      ).length;
+
+                      const filteredBatchItems = batchItems.filter((item) => {
+                        if (batchSearch.trim()) {
+                          const q = batchSearch.toLowerCase();
+                          const matchId = item.id.toLowerCase().includes(q);
+                          const matchText = item.student.toLowerCase().includes(q);
+                          if (!matchId && !matchText) return false;
+                        }
+                        if (batchFilter === 'all') return true;
+                        if (!item.result) return true;
+                        const tags = item.result.feedback.tags;
+                        if (batchFilter === 'correct') return tags.includes('Correct');
+                        if (batchFilter === 'partial') return tags.includes('Partially Correct');
+                        if (batchFilter === 'incorrect') return !tags.includes('Correct') && !tags.includes('Partially Correct');
+                        return true;
+                      });
+
+                      return (
+                        <div className="flex flex-col gap-4">
+                          {/* Search & Filter Toolbar */}
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="flex items-center gap-1 bg-[#F7F7F8] p-1 rounded-full border border-[#E5E7EB]">
+                              {[
+                                { key: 'all' as const, label: 'All', count: countAll },
+                                { key: 'correct' as const, label: 'Correct', count: countCorrect },
+                                { key: 'partial' as const, label: 'Partial', count: countPartial },
+                                { key: 'incorrect' as const, label: 'Capped', count: countIncorrect },
+                              ].map((f) => {
+                                const active = batchFilter === f.key;
                                 return (
-                                  <TableRow
-                                    key={item.id}
-                                    onClick={() => item.result && setSelectedBatchItem(item)}
-                                    className={`border-[#E5E7EB] cursor-pointer transition-colors ${
-                                      isSelected ? 'bg-[#F7F7F8]' : 'hover:bg-[#F7F7F8]/50'
+                                  <button
+                                    key={f.key}
+                                    type="button"
+                                    onClick={() => setBatchFilter(f.key)}
+                                    className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                                      active
+                                        ? 'bg-white text-[#18181B] shadow-xs'
+                                        : 'text-[#71717A] hover:text-[#18181B]'
                                     }`}
                                   >
-                                    <TableCell className="text-xs font-semibold text-[#18181B]">
-                                      {item.id}
-                                    </TableCell>
-                                    <TableCell className="text-xs font-normal text-[#71717A] max-w-[200px] truncate">
-                                      {item.student}
-                                    </TableCell>
-                                    <TableCell className="text-xs font-semibold tabular-nums text-right text-[#18181B]">
-                                      {item.status === 'grading' ? (
-                                        <Spinner className="size-3 inline" />
-                                      ) : item.status === 'success' && grade !== undefined ? (
-                                        `${Math.round(grade)}%`
-                                      ) : (
-                                        <span className="text-rose-500 font-semibold">Err</span>
-                                      )}
-                                    </TableCell>
-                                    <TableCell>
-                                      {item.status === 'success' && tag && (
-                                        <Badge
-                                          variant="outline"
-                                          className={`rounded-full text-[10px] font-semibold ${getTagBadgeStyle(
-                                            tag
-                                          )}`}
-                                        >
-                                          {tag}
-                                        </Badge>
-                                      )}
-                                    </TableCell>
-                                    <TableCell>
-                                      <ChevronRight
-                                        className={`size-4 text-[#71717A] ${
-                                          isSelected ? 'text-[#18181B]' : ''
-                                        }`}
-                                        strokeWidth={2}
-                                      />
-                                    </TableCell>
-                                  </TableRow>
+                                    <span>{f.label}</span>
+                                    <span className="text-[10px] font-normal px-1.5 py-0.2 rounded-full bg-[#E5E7EB]/60 text-[#18181B]">
+                                      {f.count}
+                                    </span>
+                                  </button>
                                 );
                               })}
-                            </TableBody>
-                          </Table>
-                        </Card>
-
-                        {/* Selected Student Detail Card */}
-                        {selectedBatchItem?.result && (
-                          <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-4 animate-fade-up">
-                            <div className="flex flex-wrap items-center justify-between border-b border-[#E5E7EB] pb-3 gap-2">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold text-[#18181B]">
-                                  Inspection: {selectedBatchItem.id}
-                                </span>
-                                <Badge
-                                  className={`rounded-full text-[10px] font-semibold ${
-                                    getScoreBadgeVariant(selectedBatchItem.result.metrics.final_grade).className
-                                  }`}
-                                >
-                                  {Math.round(selectedBatchItem.result.metrics.final_grade)}%
-                                </Badge>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleInspectBatchInWorkspace(selectedBatchItem)}
-                                  className="rounded-full text-xs font-semibold h-7 px-3"
-                                >
-                                  Open in Workspace
-                                  <ArrowRight className="size-3 ml-1" />
-                                </Button>
-                              </div>
                             </div>
 
-                            {/* 5-Criteria Mini Breakdown */}
-                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                              {[
-                                { name: 'Semantic', val: selectedBatchItem.result.metrics.semantic_score, color: '#5268F5' },
-                                { name: 'Coverage', val: selectedBatchItem.result.metrics.coverage_score, color: '#0EA5E9' },
-                                { name: 'Formality', val: selectedBatchItem.result.metrics.formality_score, color: '#64748B' },
-                                { name: 'Grammar', val: selectedBatchItem.result.metrics.grammar_score, color: '#F97316' },
-                                { name: 'Logic', val: selectedBatchItem.result.metrics.logic_score, color: '#A855F7' },
-                              ].map((c) => (
-                                <div key={c.name} className="p-2.5 rounded-xl bg-[#F7F7F8] border border-[#E5E7EB] flex flex-col gap-1">
-                                  <span className="text-[10px] font-semibold text-[#71717A] uppercase">{c.name}</span>
-                                  <span className="text-xs font-semibold tabular-nums text-[#18181B]">
-                                    {Math.round(c.val * 100)}%
-                                  </span>
-                                  <div className="h-1 w-full rounded-full bg-zinc-200 overflow-hidden">
-                                    <div className="h-full rounded-full" style={{ width: `${Math.round(c.val * 100)}%`, backgroundColor: c.color }} />
-                                  </div>
-                                </div>
-                              ))}
+                            <div className="relative w-full sm:w-52">
+                              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
+                              <Input
+                                placeholder="Search submissions..."
+                                value={batchSearch}
+                                onChange={(e) => setBatchSearch(e.target.value)}
+                                className="h-8 pl-8 pr-3 text-xs rounded-full border-[#E5E7EB] bg-white font-normal"
+                              />
                             </div>
+                          </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-normal">
-                              <div className="flex flex-col gap-1">
-                                <span className="font-semibold text-[#18181B]">Explanation</span>
-                                <p className="text-[#71717A] leading-relaxed">
-                                  {selectedBatchItem.result.feedback.explanation}
-                                </p>
-                              </div>
-                              <div className="flex flex-col gap-1">
-                                <span className="font-semibold text-[#18181B]">Recommendation</span>
-                                <p className="text-[#71717A] leading-relaxed">
-                                  {selectedBatchItem.result.feedback.suggestion}
-                                </p>
-                              </div>
-                            </div>
+                          <Card className="rounded-2xl border-[#E5E7EB] bg-white overflow-hidden shadow-xs">
+                            <Table>
+                              <TableHeader className="bg-[#F7F7F8]">
+                                <TableRow className="border-[#E5E7EB]">
+                                  <TableHead className="text-xs font-semibold text-[#71717A]">Student</TableHead>
+                                  <TableHead className="text-xs font-semibold text-[#71717A]">Response Preview</TableHead>
+                                  <TableHead className="text-xs font-semibold text-[#71717A] text-right">Grade</TableHead>
+                                  <TableHead className="text-xs font-semibold text-[#71717A]">Status Tag</TableHead>
+                                  <TableHead className="w-10" />
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {filteredBatchItems.map((item) => {
+                                  const grade = item.result?.metrics.final_grade;
+                                  const tag = item.result?.feedback.tags[0] || '';
+                                  const isSelected = selectedBatchItem?.id === item.id;
+                                  return (
+                                    <TableRow
+                                      key={item.id}
+                                      onClick={() => item.result && setSelectedBatchItem(item)}
+                                      className={`border-[#E5E7EB] cursor-pointer transition-colors ${
+                                        isSelected ? 'bg-[#F7F7F8]' : 'hover:bg-[#F7F7F8]/50'
+                                      }`}
+                                    >
+                                      <TableCell className="text-xs font-semibold text-[#18181B]">
+                                        {item.id}
+                                      </TableCell>
+                                      <TableCell className="text-xs font-normal text-[#71717A] max-w-[200px] truncate">
+                                        {item.student}
+                                      </TableCell>
+                                      <TableCell className="text-xs font-semibold tabular-nums text-right text-[#18181B]">
+                                        {item.status === 'grading' ? (
+                                          <Spinner className="size-3 inline" />
+                                        ) : item.status === 'success' && grade !== undefined ? (
+                                          `${Math.round(grade)}%`
+                                        ) : (
+                                          <span className="text-rose-500 font-semibold">Err</span>
+                                        )}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item.status === 'success' && tag && (
+                                          <Badge
+                                            variant="outline"
+                                            className={`rounded-full text-[10px] font-semibold ${getTagBadgeStyle(
+                                              tag
+                                            )}`}
+                                          >
+                                            {tag}
+                                          </Badge>
+                                        )}
+                                      </TableCell>
+                                      <TableCell>
+                                        <ChevronRight
+                                          className={`size-4 text-[#71717A] ${
+                                            isSelected ? 'text-[#18181B]' : ''
+                                          }`}
+                                          strokeWidth={2}
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
                           </Card>
-                        )}
-                      </div>
-                    ) : (
+
+                          {/* Selected Student Detail Card */}
+                          {selectedBatchItem?.result && (
+                            <Card className="rounded-2xl border-[#E5E7EB] bg-white p-5 shadow-xs flex flex-col gap-4 animate-fade-up">
+                              <div className="flex flex-wrap items-center justify-between border-b border-[#E5E7EB] pb-3 gap-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-semibold text-[#18181B]">
+                                    Inspection: {selectedBatchItem.id}
+                                  </span>
+                                  <Badge
+                                    className={`rounded-full text-[10px] font-semibold ${
+                                      getScoreBadgeVariant(selectedBatchItem.result.metrics.final_grade).className
+                                    }`}
+                                  >
+                                    {Math.round(selectedBatchItem.result.metrics.final_grade)}%
+                                  </Badge>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleInspectBatchInWorkspace(selectedBatchItem)}
+                                    className="rounded-full text-xs font-semibold h-7 px-3"
+                                  >
+                                    Open in Workspace
+                                    <ArrowRight className="size-3 ml-1" />
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* 5-Criteria Mini Breakdown */}
+                              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                                {[
+                                  { name: 'Semantic', val: selectedBatchItem.result.metrics.semantic_score, color: '#5268F5' },
+                                  { name: 'Coverage', val: selectedBatchItem.result.metrics.coverage_score, color: '#0EA5E9' },
+                                  { name: 'Formality', val: selectedBatchItem.result.metrics.formality_score, color: '#64748B' },
+                                  { name: 'Grammar', val: selectedBatchItem.result.metrics.grammar_score, color: '#F97316' },
+                                  { name: 'Logic', val: selectedBatchItem.result.metrics.logic_score, color: '#A855F7' },
+                                ].map((c) => (
+                                  <div key={c.name} className="p-2.5 rounded-xl bg-[#F7F7F8] border border-[#E5E7EB] flex flex-col gap-1">
+                                    <span className="text-[10px] font-semibold text-[#71717A] uppercase">{c.name}</span>
+                                    <span className="text-xs font-semibold tabular-nums text-[#18181B]">
+                                      {Math.round(c.val * 100)}%
+                                    </span>
+                                    <div className="h-1 w-full rounded-full bg-zinc-200 overflow-hidden">
+                                      <div className="h-full rounded-full" style={{ width: `${Math.round(c.val * 100)}%`, backgroundColor: c.color }} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-normal">
+                                <div className="flex flex-col gap-1">
+                                  <span className="font-semibold text-[#18181B]">Explanation</span>
+                                  <p className="text-[#71717A] leading-relaxed">
+                                    {selectedBatchItem.result.feedback.explanation}
+                                  </p>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                  <span className="font-semibold text-[#18181B]">Recommendation</span>
+                                  <p className="text-[#71717A] leading-relaxed">
+                                    {selectedBatchItem.result.feedback.suggestion}
+                                  </p>
+                                </div>
+                              </div>
+                            </Card>
+                          )}
+                        </div>
+                      );
+                    })() : (
                       <Card className="rounded-2xl border-[#E5E7EB] bg-white p-8">
                         <Empty>
                           <EmptyHeader>
@@ -2027,6 +2199,15 @@ export default function App() {
                               LaTeX Table (Academic Publication Snippet)
                             </span>
                             <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={downloadAblationJson}
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs font-semibold h-7"
+                              >
+                                <Download className="size-3 mr-1" strokeWidth={2} />
+                                Export JSON
+                              </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
