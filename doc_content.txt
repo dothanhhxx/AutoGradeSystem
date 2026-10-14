@@ -1,0 +1,138 @@
+=== PARAGRAPHS ===
+[0] Deconstructing ASAG: Combining Deterministic NLP Tags with LLM Synthesis for Interpretable Grading
+[3] Abstract: Current Automated Short Answer Grading (ASAG) systems often achieve strong performance but provide limited criterion-level evidence for their grading decisions. This paper proposes HybridASAG, an interpretable framework that separates deterministic score computation from LLM-based feedback generation. Five NLP modules independently assess semantic similarity, keyword coverage, grammatical correctness, writing formality, and logical consistency. Their outputs are combined through transparent weighted aggregation, with weights optimized only on training data. Qwen2.5-3B-Instruct then generates evidence-grounded teacher-style feedback without modifying the computed score. Experiments on SemEval-2013 Task 7 and Mohler achieve 85.50% QWK, 83.50% Accuracy, and 99.12% JSON compliance.
+[4] Keywords: Automated Short Answer Assessment; Deterministic Linguistic Indicators; LLMs; Interpretable Grading; Automated Feedback Generation.
+[5] INTRODUCTION
+[6] Automated Short Answer Grading (ASAG) enables scalable assessment while reducing instructors' grading workload [1], [2]. However, many existing systems primarily optimize scoring accuracy and provide limited criterion-level evidence explaining their decisions. Conventional end-to-end models encode reference and student answers into latent representations before predicting a score, making the grading process difficult to interpret and audit [3]. This limitation can hinder the adoption of AI-assisted assessment, particularly in formative learning [1], [2], [4].
+[8] Figure 1. Conventional End-to-End ASAG Pipeline.
+[9] Recent LLM-based graders can generate fluent, context-aware feedback, but their scoring decisions may be non-deterministic and difficult to trace to specific assessment criteria [1], [5], [6]. We therefore propose HybridASAG, which separates deterministic grading from LLM-based feedback generation. Five NLP modules independently assess semantic similarity, keyword coverage, grammatical correctness, writing formality, and logical consistency. Their outputs are combined through transparent weighted aggregation to determine the final grade, while Qwen2.5-3B-Instruct generates evidence-grounded teacher-style feedback without modifying the score.
+[11] The main contributions are: (1) a five-dimensional deterministic NLP framework for criterion-level assessment; (2) a transparent grading mechanism that separates scoring from LLM feedback generation; and (3) an empirical evaluation on SemEval-2013 Task 7 and Mohler, including an ablation study of the proposed components. The framework is primarily evaluated on science and computer-science short answers.
+[12] RELATED WORK
+[13] Deep-Learning-Based ASAG
+[15] ASAG has evolved from RNNs and LSTMs to transformer-based models [7], [8]. Transfer learning, data augmentation, and attention mechanisms have further improved grading performance [9]–[11], while lightweight representation-based approaches have also been explored [12]. Despite strong performance, these models generally provide holistic scores with limited criterion-level interpretability.
+[16] Explainable and LLM-Based ASAG
+[18] Explainable ASAG methods use feature attribution, neural additive models, neuro-symbolic reasoning, and explicit evidence extraction to improve transparency [2]–[4]. However, their explanations are often post-hoc and do not directly represent explicit linguistic criteria.
+[19] LLM-based systems employ retrieval augmentation, adaptive grading, rubrics, and structured multi-agent or committee-based assessment [1], [5], [6], [14]–[17]. These approaches offer flexible and fluent feedback but may suffer from non-deterministic scoring and weak traceability.
+[20] C. Positioning
+[21] HybridASAG addresses this gap by separating deterministic criterion-level score computation from LLM feedback synthesis. The final grade is derived exclusively from explicit linguistic indicators, while the LLM is restricted to generating evidence-grounded feedback.
+[22] METHODS
+[23] System Overview
+[25] Fig. 3. Overall architecture of the proposed HybridASAG framework
+[27] Given an input triplet:
+[28] x = {Q, R, S},      (1)
+[29] where Q denotes the question, R the reference answer, and S the student answer, the proposed AutoGradeSystem predicts a final score y ∈ [0, 10] together with teacher-style feedback F.
+[30] The grading process first extracts five Deterministic NLP Tags using independent expert models:
+[31] where each component is a normalized score in [0, 1]. These tags serve as explicit linguistic evidence for Interpretable Grading. The tags are then aggregated through a transparent weighted mechanism to obtain the final score y. Finally, the input triplet together with the extracted tags and the computed score are provided to Qwen2.5-3B-Instruct for LLM Synthesis of teacher-style feedback. By separating deterministic tag extraction and score computation from feedback generation, the framework preserves interpretability while maintaining computational efficiency.
+[32] B. Extraction of Deterministic Linguistic Indicators
+[33] 1. Semantic Similarity
+[34] Semantic similarity quantifies the degree to which the student response S conveys the same underlying meaning as the reference answer R, irrespective of surface-form differences. To obtain dense sentence representations, we employ SimCSE (Simple Contrastive Learning of Sentence Embeddings) [15], a contrastive learning framework that produces high-quality sentence embeddings by maximizing agreement between differently dropout-augmented views of the same sentence. Both R and S are encoded by the pretrained SimCSE model:
+[37] where ​ and ​ denote the resulting embedding vectors of the reference and student answers, respectively. Their semantic relatedness is measured by the standard cosine similarity
+[39] which is then linearly mapped to the unit interval [0,1]:
+[41] where ssem [0, 1]  is the semantic-similarity indicator and  [-1, 1] denotes the cosine similarity between the two embeddings - their dot product normalized by the product of their vector norms. Consider a student answer that replaces “executes program instructions” with “processes instructions.” Although the wording differs, the semantic content remains equivalent, resulting in a high similarity score of approximately 0.93.
+[42] 2. Keyword Coverage
+[43] Semantic similarity alone may overlook missing concepts. Therefore, a second expert explicitly measures whether the essential concepts from the reference answer are covered by the student response. KeyBERT [25], a BERT-based keyword extraction method that identifies keywords or keyphrases according to their semantic similarity to the input document, is first used to extract the top-N most representative keywords:
+[45] from the reference answer. Each keyword embedding is then compared with the embedding of the student response via cosine similarity:
+[47] A keyword is judged to be covered whenever
+[49] where the similarity threshold is fixed at k  = 0.5 as an empirical heuristic. A comprehensive sensitivity analysis of this threshold is left for future work. The keyword coverage score is therefore defined as
+[51] For the CPU example, KeyBERT extracts concepts such as “instructions,” “calculations,” and “control.” Since three out of five representative keywords are matched, the resulting coverage score is scov= 0.6.
+[52] 3) Grammatical Correctness
+[53] Grammatical quality is assessed using a pretrained RoBERTa-based model [26] fine-tuned for linguistic acceptability classification on the Corpus of Linguistic Acceptability (CoLA) [27]. CoLA provides sentences annotated according to their grammatical acceptability and is widely used to evaluate acceptability classification models [18]. Let P acceptable​ denote the probability assigned by the model to the acceptable class for the student response S. The corresponding grammar score is defined as
+[54] Because the student response in the running example is free of grammatical errors, the model assigns it .
+[55] 4) Writing Formality
+[56] Academic assessment normally requires responses to adopt a formal register. A RoBERTa-based [17] classifier, trained to distinguish formal from informal register in the style of the GYAFC formality corpus [19], estimates the probability that S is written in an appropriate academic style:
+[58] where sfor [0, 1] is the formality indicator. The illustrative response uses suitably formal academic language and therefore receives a formality score of = 0.91.
+[59] 5) Logical Consistency
+[60] Even answers that are semantically close to the reference and grammatically well-formed may still contain logical contradictions. To detect this issue, we employ a DeBERTa-v3 Natural Language Inference (NLI) cross-encoder [28] that predicts the probabilities of entailment Pe ​ and contradiction Pc ​ between the reference R and the student answer S:
+[62] These probabilities are converted into a normalized logical-consistency score:
+[64] A response is regarded as logically inconsistent when the contradiction probability exceeds the threshold  c = 0.6. In addition, a stricter threshold is applied at the score-aggregation stage: if  > 0.90, the final grade is hard-capped at 40100 regardless of the other criterion scores.
+[65] For the running CPU example, the model yields   = 0.92 and   = 0.02, producing
+[67] Consequently, the complete criterion-level feature vector becomes
+[69] C. Interpretable Grading and LLM Synthesis
+[71] The five deterministic NLP tags si [0, 1] (i = 1,..,5) corresponding to semantic similarity, keyword coverage, grammatical correctness, writing formality, and logical consistency are aggregated into a final numerical grade by a transparent weighted linear combination:
+[73] where the weights satisfy the simplex constraint
+[75] The multiplication by 10 simply rescales the weighted sum from the unit interval [0,1] onto the grading scale [0,10]. The concrete weight vector was obtained by supervised tuning on the training portion of the combined SemEval-2013 and Mohler datasets. Both linear regression and random-forest regressors were fitted to predict human scores from the five-dimensional tag vector; the resulting importance scores were normalized to sum to one, yielding the final configuration
+[76] w = (0.15, 0.30, 0.10, 0.05, 0.40)      (18)
+[77] No test-set information was used during weight estimation, thereby avoiding data leakage. In addition, a hard constraint is imposed at aggregation time: if the NLI contradiction probability  > 0.90, the final grade is capped at 40100 irrespective of the other criterion scores.
+[78] Once the numerical grade y  has been deterministically computed, the original triplet (Q, R, S), the five criterion scores, and the grade itself are passed to Qwen2.5-3B-Instruct. The LLM is instructed to generate teacher-style feedback that is strictly grounded in the provided evidence and is not allowed to alter the already-computed score. This strict separation guarantees that every numerical decision remains fully reproducible and interpretable, while the language model focuses solely on producing pedagogically useful natural-language explanations.
+[79] Experiments And Results
+[80] Datasets and Base Models
+[81] Experiments were conducted on two established ASAG benchmarks: SemEval-2013 Task 7 [23] and the Mohler dataset. SemEval-2013 contains the Beetle and SciEntsBank subsets. Beetle contains approximately 4,000 student responses covering basic electricity and electronics, while SciEntsBank contains more than 10,000 responses covering broader science topics. Each instance includes a question, reference answer(s), student response, and human-assigned label.
+[82] The Mohler dataset contains 2,442 student answers to 87 questions from an introductory computer-science course on data structures. Human scores range from 0 to 5 and are averaged from two graders. All scores are normalized to ([0,10]) for compatibility with HybridASAG.
+[83] Evaluation Metrics
+[84] Grading performance is evaluated using Accuracy, Macro-F1, and Quadratic Weighted Kappa (QWK) [20]. Accuracy measures the proportion of correctly classified score categories, while Macro-F1 provides balanced performance across categories. QWK measures agreement with human grading while accounting for the magnitude of scoring disagreements.
+[85] Two additional indicators evaluate output quality. JSON Compliance Rate measures whether generated outputs follow the required structural format and is not considered a grading-quality metric. Hallucination Rate measures the proportion of responses whose generated feedback contains at least one unsupported factual claim.
+[86] For hallucination detection, an NLI-based filter first identifies potentially unsupported feedback sentences using an entailment threshold of 0.30. All flagged cases are then manually reviewed by the first author. A sample is counted as hallucinated when at least one unsupported claim is confirmed. Because only one annotator was used, this metric is considered preliminary.
+[87] Experimental Setup
+[88] All experiments were executed on a local NVIDIA-GPU workstation with CUDA acceleration. The five lightweight expert models were run in parallel via thread pooling, while Qwen2.5-3B-Instruct was quantized to 4-bit NF4 to reduce memory footprint. Feature weights were optimized offline by linear regression and random-forest regression, producing the final configuration  = 0.4,  = 0.3, = 0.15, = 0.10, = 0.05.
+[89] Whenever the NLI contradiction probability  exceeds 0.90, the final score is capped at 4.0, as specified in (15).
+[90] Quantitative Results
+[91] TABLE II-A. QUANTITATIVE RESULTS
+[93] TABLE II-B. OUTPUT QUALITY INDICATORS
+[95] TABLE III. PER-DATASET GRADING PERFORMANCE (Hybrid Full 5+1)
+[97] Qualitative Analysis
+[98] Table III presents a representative case. Given the question “What is the primary function of red blood cells?”, the student incorrectly states that red blood cells help fight infections, which is a factual error. The Base LLM has a tendency to score student answers containing logical or factual errors quite high, scoring 100/100 for the Stack–Queue question and 95/100 for the red-blood-cell question. On the contrary, DLSAA gives more appropriate scores of 50/100 and 60/100, respectively, as it detects the faulty definition of LIFO and the erroneous fact about the role of red blood cells. Thus, these examples illustrate the advantage of DLSAA over Base LLM in terms of more accurate, error-sensitive, and evidence-based feedback.
+[99] TABLE III. QUALITATIVE CASE STUDY
+[100] Discussion
+[101] After the text edit has been completed, the paper is ready for the template. Duplicate the template file by using the Save As command, and use the naming convention prescribed by your conference for the name of your paper. In this newly created file, highlight all of the contents and import your prepared text file. You are now ready to style your paper.
+[102] Overall Performance and Ablation
+[103] The Hybrid Model (Full 5+1) model shows the highest compliance of generated feedback with the JSON format (99.12%), lowest hallucination rate (1.24%), and human agreement (QWK = 85.50%) when compared to other examined models, thus proving that separation of deterministic score calculation from LLM-generated feedback production increases grading consistency and quality of feedback. In turn, an ablation analysis demonstrates the importance of using the logic module by showing how its omission decreases QWK from 85.50% to 75.20% and Accuracy and Macro F1 scores from 83.50% to 78.10% and from 82.90% to 77.54%, respectively.
+[104] Latency and Error Analysis
+[105] Whereas DLSAA makes some deterministic NLP calculations prior to LLM inference to produce feedback, the lightweight experts perform in parallel, but the computational burden lies in LLM inference. Future research in this area needs to focus on quantization, distillation, and other methods that can decrease the inference time needed for real-time application in the classroom. As can be seen from qualitative examples, one of the disadvantages of an LLM-based system is that it could give a high rating to incorrect answers, whereas DLSAA detects the errors at the criterion level.
+[106] Conclusion and Future Work
+[107] Current automated short-answer grading systems frequently prioritize scoring accuracy at the expense of transparency and useful feedback. To address this issue, we propose HybridASAG, a hybrid framework that combines five deterministic linguistic indicators for response scoring with Qwen2.5-3B-Instruct for generating teacher-style feedback. The final score is obtained through a transparent weighted aggregation process, while the language model is used only to synthesize evidence-based explanations. This separation improves criterion-level interpretability and limits the risk of unsupported feedback. On the evaluated ASAG benchmarks, HybridASAG achieved a QWK of 85.5%, a JSON compliance rate of 99.12%, and a hallucination rate of 1.24%, demonstrating its potential as a reliable and interpretable grading approach. Future work will evaluate the pedagogical value of the generated feedback through human educator assessment. Further research will also examine multiple reference answers, adaptive criterion weighting, threshold calibration, inference efficiency, cross-domain generalization, and robustness against error propagation across different pipeline components.
+[108] REFERENCES
+[110] [1]  Aggarwal, Dishank, et al. “‘I understand why I got this grade’: Automatic Short Answer Grading (ASAG) with Feedback.” International Conference on Artificial Intelligence in Education. Cham: Springer Nature Switzerland, 2025.
+[111] [2] Condor, Aubrey, and Zachary Pardos. “Explainable Automatic Grading with Neural Additive Models.” International Conference on Artificial Intelligence in Education. Cham: Springer Nature Switzerland, 2024.
+[112] [3]  Künnecke, Felix, et al. “Enhancing Multi-Domain Automatic Short Answer Grading through an Explainable Neuro-Symbolic Pipeline.” arXiv preprint arXiv:2403.01811 (2024).
+[113] [4]  Misgna, Haile, et al. “A Survey on Deep Learning-Based Automated Essay Scoring and Feedback Generation.” Artificial Intelligence Review 58.2 (2024): 36.
+[114] [5]  Ferreira Mello, Rafael, et al. “Automatic Short Answer Grading in the LLM Era: Does GPT-4 with Prompt Engineering Beat Traditional Models?” Proceedings of the 15th International Learning Analytics and Knowledge Conference. 2025.
+[115] [6]  Kortemeyer, Gerd. “Performance of the Pre-Trained Large Language Model GPT-4 on Automated Short Answer Grading.” Discover Artificial Intelligence 4.1 (2024): 47.
+[116] [7]  Haller, Stefan, et al. “Survey on Automated Short Answer Grading with Deep Learning: From Word Embeddings to Transformers.” arXiv preprint arXiv:2204.03503 (2022).
+[117] [8]  Condor, Aubrey, Max Litster, and Zachary Pardos. “Automatic Short Answer Grading with SBERT on Out-of-Sample Questions.” International Educational Data Mining Society (2021).
+[118] [9]  Jiang, Lan, and Nigel Bosch. “Short Answer Scoring with GPT-4.” Proceedings of the Eleventh ACM Conference on Learning @ Scale. 2024.
+[119] [10]  Duong, Ta Nguyen Binh, and Chai Yi Meng. “Automatic Grading of Short Answers Using Large Language Models in Software Engineering Courses.” 2024 IEEE Global Engineering Education Conference (EDUCON). IEEE, 2024.
+[120] [11]  Grévisse, Christian. “LLM-Based Automatic Short Answer Grading in Undergraduate Medical Education.” BMC Medical Education 24.1 (2024): 1060.
+[121] [12]  Chang, Li-Hsin, and Filip Ginter. “Automatic Short Answer Grading for Finnish with ChatGPT.” Proceedings of the AAAI Conference on Artificial Intelligence, vol. 38, no. 21, 2024.
+[122] [13]  Sonkar, Shashank, et al. “Automated Long Answer Grading with RiceChem Dataset.” International Conference on Artificial Intelligence in Education. Cham: Springer Nature Switzerland, 2024.
+[123] [14] Chu, Yucheng, et al. “A LLM-Powered Automatic Grading Framework with Human-Level Guidelines Optimization.” arXiv preprint arXiv:2410.02165 (2024).
+[124] [15]  Gao, Tianyu, Xingcheng Yao, and Danqi Chen. “SimCSE: Simple Contrastive Learning of Sentence Embeddings.” Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (EMNLP), 2021, pp. 6894–6910.
+[125] [16] Grootendorst, Maarten. “KeyBERT: Minimal Keyword Extraction with BERT.” Zenodo, 2020. doi:10.5281/zenodo.4461265.
+[126] [17] Liu, Yinhan, et al. “RoBERTa: A Robustly Optimized BERT Pretraining Approach.” arXiv preprint arXiv:1907.11692 (2019).
+[127] [18]  Warstadt, Alex, Amanpreet Singh, and Samuel R. Bowman. “Neural Network Acceptability Judgments.” Transactions of the Association for Computational Linguistics 7 (2019): 625–641.
+[128] [19] Rao, Sudha, and Joel Tetreault. “Dear Sir or Madam, May I Introduce the GYAFC Dataset: Corpus, Benchmarks and Metrics for Formality Style Transfer.” Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), 2018, pp. 129–140.
+[129] [20]  He, Pengcheng, Jianfeng Gao, and Weizhu Chen. “DeBERTaV3: Improving DeBERTa Using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing.” arXiv preprint arXiv:2111.09543 (2021).
+[130] [21]  Williams, Adina, Nikita Nangia, and Samuel R. Bowman. “A Broad-Coverage Challenge Corpus for Sentence Understanding through Inference.” Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), 2018, pp. 1112–1122.
+[131] [22]  Qwen Team. “Qwen2.5 Technical Report.” arXiv preprint arXiv:2412.15115 (2024).
+[132] [23]  Dzikovska, M. O., R. Nielsen, C. Brew, C. Leacock, D. Giampiccolo, L. Bentivogli, et al. “SemEval-2013 Task 7: The Joint Student Response Analysis and 8th Recognizing Textual Entailment Challenge.” Proc. 7th Int. Workshop on Semantic Evaluation (SemEval), Atlanta, GA, USA, 2013, pp. 263–274.
+[133] [24]  Mohler, Michael, Razvan Bunescu, and Rada Mihalcea. “Learning to Grade Short Answer Questions Using Semantic Similarity Measures and Dependency Graph Alignments.” Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies, 2011, pp. 752–762.
+[134] [25]  Cohen, Jacob. “Weighted Kappa: Nominal Scale Agreement with Provision for Scaled Disagreement or Partial Credit.” Psychological Bulletin 70.4 (1968): 213–2
+
+=== TABLES ===
+
+--- Table 1 ---
+Metric | Qwen2.5-1.5B | Qwen2.5-3B | Hybrid (Logic) | Hybrid (Full 5+1)
+Accuracy | 68.42% | 75.85% | 78.10% | 83.50%
+Macro F1 | 65.20% | 75.50% | 77.54% | 82.90%
+QWK | 60.15% | 72.40% | 75.20% | 85.50%
+JSON Compliance | 85.30% | 92.47% | 98.85% | 99.12%
+Hallucination Rate | 18.50% | 10.73% | 4.15% | 1.24%
+
+--- Table 2 ---
+Metric | Qwen2.5-1.5B | Qwen2.5-3B | Hybrid (Logic) | Hybrid (Full 5+1)
+JSON Compliance | 85.30% | 92.47% | 98.85% | 99.12%
+Hallucination Rate | 18.50% | 10.73% | 4.15% | 1.24%
+
+--- Table 3 ---
+Dataset | Test Samples | Accuracy | Macro F1 | QWK
+Beetle (UA) | ~700 | 84.20% | 83.50% | 86.10%
+Beetle (UQ) | ~700 | 82.80% | 82.10% | 84.70%
+SciEntsBank (Test) | ~3,500 | 83.90% | 83.20% | 85.80%
+Mohler(5-fold mean ± std) | 2,442 | 82.60 ± 2.1% | 81.90 ± 2.4% | 84.50 ± 2.8%
+
+--- Table 4 ---
+Criteria | Example 1 (Computer Science Domain) | Example 2 (STEM/Biology Domain)
+Question | Explain the main difference between a Stack and a Queue. | What is the primary function of red blood cells?
+Reference Answer | A Stack follows the Last-In-First-Out (LIFO) principle, while a Queue follows First-In-First-Out (FIFO). | Red blood cells carry oxygen from the lungs to the body and bring carbon dioxide back.
+Student Answer | A Stack uses LIFO, meaning the first item added is the first one removed. A Queue uses FIFO. | Red blood cells carry oxygen around the body and help fight infections.
+Base LLM (Qwen2.5-3B) | [Grade: 100/100] Your answer is perfect. You correctly identified that Stack uses LIFO and Queue uses FIFO. | [Grade: 95/100] Excellent. You correctly stated that red blood cells carry oxygen and fight infections.
+Hybrid Model (Full 5+1) | [Grade: 50/100] Partially Correct. You correctly named LIFO and FIFO. However, your definition of LIFO is a logical error. LIFO means the last item added is removed first, not the first item. | [Grade: 60/100] Partially Correct. While you are right about carrying oxygen, stating they fight infections is a factual error (white blood cells do that).
