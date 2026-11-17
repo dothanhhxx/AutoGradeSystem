@@ -1,0 +1,136 @@
+{
+  "dataset": "beetle",
+  "commit": "70119cd",
+  "fit": {
+    "weights": "NNLS on train gold_score",
+    "thresholds": "max QWK on dev"
+  },
+  "n_train": 3067,
+  "n_dev": 874,
+  "systems": [
+    {
+      "name": "hybrid",
+      "weights": {
+        "semantic": 0.2377,
+        "coverage": 0.3199,
+        "formality": 0.0136,
+        "grammar": 0.069,
+        "logic": 0.3597
+      },
+      "rules": true,
+      "thresholds": [
+        36.0,
+        67.0
+      ],
+      "meta": {
+        "weights": "nnls(train)"
+      }
+    },
+    {
+      "name": "hybrid_paperw",
+      "weights": {
+        "semantic": 0.15,
+        "coverage": 0.3,
+        "grammar": 0.1,
+        "formality": 0.05,
+        "logic": 0.4
+      },
+      "rules": true,
+      "thresholds": [
+        21.0,
+        65.0
+      ],
+      "meta": {
+        "weights": "paper Eq.16"
+      }
+    },
+    {
+      "name": "hybrid_uniform",
+      "weights": {
+        "semantic": 0.2,
+        "coverage": 0.2,
+        "formality": 0.2,
+        "grammar": 0.2,
+        "logic": 0.2
+      },
+      "rules": true,
+      "thresholds": [
+        37.0,
+        58.0
+      ],
+      "meta": {
+        "weights": "app default 0.2"
+      }
+    },
+    {
+      "name": "only_semantic",
+      "weights": {
+        "semantic": 1.0
+      },
+      "rules": false,
+      "thresholds": [
+        32.0,
+        75.0
+      ],
+      "meta": {
+        "single": "semantic"
+      }
+    },
+    {
+      "name": "only_coverage",
+      "weights": {
+        "coverage": 1.0
+      },
+      "rules": false,
+      "thresholds": [
+        31.0,
+        61.0
+      ],
+      "meta": {
+        "single": "coverage"
+      }
+    },
+    {
+      "name": "only_formality",
+      "weights": {
+        "formality": 1.0
+      },
+      "rules": false,
+      "thresholds": [
+        51.0,
+        54.0
+      ],
+      "meta": {
+        "single": "formality"
+      }
+    },
+    {
+      "name": "only_grammar",
+      "weights": {
+        "grammar": 1.0
+      },
+      "rules": false,
+      "thresholds": [
+        56.0,
+        63.0
+      ],
+      "meta": {
+        "single": "grammar"
+      }
+    },
+    {
+      "name": "only_logic",
+      "weights": {
+        "logic": 1.0
+      },
+      "rules": false,
+      "thresholds": [
+        48.0,
+        75.0
+      ],
+      "meta": {
+        "single": "logic"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+\begin{tabular}{lrlllllll}
+\toprule
+Attack & n & Hybrid 5+1 & DeBERTa-v3 FT & Qwen2.5-3B holistic & Qwen2.5-3B analytic & Semantic only & Coverage only & Logic (NLI) only \\
+\midrule
+Genuine incorrect (baseline) & 451 & 53 & 44±13 & 60 & 21 & 52 & 67 & 54 \\
+A1a keyword list & 150 & 76 & 92±2 & 100 & 57 & 76 & 85 & 73 \\
+A1b off-topic + keywords & 600 & 88 & 43±21 & 72 & 18 & 73 & 100 & 73 \\
+A1c keyword filler & 150 & 99 & 53±13 & 100 & 65 & 97 & 100 & 93 \\
+A2 fluent but wrong & 367 & 70 & 74±15 & 61 & 34 & 83 & 95 & 54 \\
+A3 negation flip & 423 & 53 & 72±15 & 65 & 23 & 81 & 91 & 30 \\
+A5 restate question & 150 & 92 & 89±7 & 100 & 63 & 85 & 98 & 87 \\
+A6 broken grammar (WB) & 600 & 92 & 44±10 & 67 & 9 & 82 & 100 & 72 \\
+A7 <5-word keywords (WB) & 150 & 9 & 91±2 & 98 & 42 & 0 & 97 & 100 \\
+A4 paraphrase (label drop) & 382 & 12 & 9±2 & 3 & 9 & 7 & 10 & 4 \\
+\bottomrule
+\end{tabular}

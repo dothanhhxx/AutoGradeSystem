@@ -10,7 +10,16 @@ This module contains all configurable settings including:
 
 from dataclasses import dataclass, field
 from typing import Dict, Optional
+import os
 import torch
+
+
+def _env_flag(name: str, default: bool) -> bool:
+    """Read a boolean flag from the environment (1/true/yes/on)."""
+    value = os.getenv(name)
+    if value is None or value.strip() == "":
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 @dataclass
@@ -77,9 +86,11 @@ class GraderConfig:
     
     # Research flags — new in research-grade version
     # use_4bit_quantization: load Qwen with BitsAndBytes NF4 4-bit to avoid OOM on CPU/low-VRAM GPU
-    use_4bit_quantization: bool = False
+    # Override with env var ASAG_USE_4BIT=1 (recommended for GPUs with <= 8 GB VRAM)
+    use_4bit_quantization: bool = field(default_factory=lambda: _env_flag("ASAG_USE_4BIT", False))
     # skip_llm: skip loading Qwen entirely — used for FM-LLM ablation variant and fast testing
-    skip_llm: bool = True
+    # Override with env var ASAG_SKIP_LLM=0 to run the full 5+1 pipeline with Qwen2.5-3B
+    skip_llm: bool = field(default_factory=lambda: _env_flag("ASAG_SKIP_LLM", True))
     
     # Generation settings
     max_new_tokens: int = 500

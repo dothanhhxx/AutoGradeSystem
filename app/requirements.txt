@@ -9,6 +9,11 @@ torchaudio
 
 # Transformers & NLP
 transformers>=4.35.0
+# transformers/tokenizers require huggingface-hub < 2.0 — keep this pin so
+# installing `datasets` does not silently upgrade it to 2.x
+huggingface-hub>=1.31,<2.0
+datasets  # used by scripts/download_public_datasets.py
+bitsandbytes  # optional: 4-bit Qwen (ASAG_USE_4BIT=1) on NVIDIA GPUs
 sentencepiece
 accelerate
 
