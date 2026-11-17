@@ -73,12 +73,24 @@ hf auth login
 # Nhập Access Token từ huggingface.co/settings/tokens
 ```
 
-### 4. Tùy chỉnh `app/config.py` (Khuyến nghị)
+### 4. Cấu hình qua biến môi trường (không cần sửa `app/config.py`)
 
-| Flag | Giá trị mặc định | Mô tả |
-|------|---------|---------|
-| `skip_llm` | `True` | Bỏ qua Qwen2.5-3B. Load siêu nhanh (~5s), tốn < 3 GB RAM. Hệ thống tự động dùng Rule-based Fallback để sinh nhận xét. |
-| `use_4bit_quantization` | `False` | Nén Qwen 4-bit NF4 (cần GPU NVIDIA + `bitsandbytes`). Giảm VRAM từ 12 GB xuống 2.5 GB. |
+| Biến môi trường | Flag trong config | Mặc định | Mô tả |
+|------|------|---------|---------|
+| `ASAG_SKIP_LLM` | `skip_llm` | `1` (bật) | Bỏ qua Qwen2.5-3B. Load siêu nhanh (~5s), tốn < 3 GB RAM. Hệ thống tự động dùng Rule-based Fallback để sinh nhận xét. Đặt `0` để chạy full pipeline 5+1. |
+| `ASAG_USE_4BIT` | `use_4bit_quantization` | `0` (tắt) | Nén Qwen 4-bit NF4 (cần GPU NVIDIA + `bitsandbytes`). Giảm VRAM từ 12 GB xuống 2.5 GB. Khuyến nghị cho GPU ≤ 8 GB. |
+
+Giá trị hợp lệ: `1/true/yes/on` hoặc `0/false/no/off`.
+
+```bash
+# Bash / Git Bash
+ASAG_SKIP_LLM=0 ASAG_USE_4BIT=1 uvicorn app.api:app --port 8000
+
+# PowerShell
+$env:ASAG_SKIP_LLM = "0"; $env:ASAG_USE_4BIT = "1"; uvicorn app.api:app --port 8000
+```
+
+> `app/requirements.txt` ghim `huggingface-hub>=1.31,<2.0` để việc cài `datasets` không tự nâng lên 2.x làm hỏng `transformers`.
 
 ### 5. Khởi chạy
 Mở **2 Terminal riêng biệt**:
@@ -110,6 +122,9 @@ AutoGradeSystem/
 │   └── requirements.txt
 │
 ├── research/               ← Module nghiên cứu (dành cho Paper)
+│   ├── robustness/         ← Nghiên cứu độ bền theo tiêu chí (tấn công, CDI, bộ phát hiện)
+│   ├── run_robustness.py   ← CLI chạy toàn bộ nghiên cứu robustness
+│   ├── generate_paper_figures.py ← Sinh fig1–fig8 vào evaluation/evaluation_results/figures
 │   ├── ablation_v2.py      ← Ablation Study + kiểm định thống kê (Wilcoxon, Bonferroni)
 │   ├── feature_cache.py    ← Cache đặc trưng tăng tốc thí nghiệm (pkl)
 │   ├── weight_optimizer.py ← Tối ưu trọng số bằng ML (LinearRegression, RandomForest)
@@ -128,11 +143,21 @@ AutoGradeSystem/
 │   └── hybrid_asag_grader.ipynb ← Notebook pipeline chấm điểm gốc
 │
 ├── scripts/                ← Script tiện ích (chạy từ bất kỳ thư mục nào)
+│   ├── download_public_datasets.py ← Tải SemEval-2013 + Mohler sang JSON chuẩn ASAGSample
+│   ├── generate_icoco_presentation.py ← Sinh slide ICOCO (dùng fig11)
 │   ├── create_excel.py     ← Xuất data/outputs/grading_results.json → grading_samples.xlsx
 │   └── production_fixes.py ← Áp dụng các bản vá production vào notebook
 │
 ├── data/
+│   ├── raw/                ← Parquet gốc từ HF (SciEntsBank, Beetle, ASAG/Mohler)
+│   ├── processed/          ← JSONL đã chuẩn hoá nhãn 3-way + splits.json
+│   ├── adversarial/        ← Câu trả lời tấn công (rule / llm / adaptive_llm) cho từng dataset
+│   ├── semeval2013/        ← semeval2013_all.json (từ download_public_datasets.py)
+│   ├── mohler/             ← mohler_dataset.json
 │   └── outputs/            ← Kết quả chấm mẫu (grading_results.json, grading_samples.xlsx)
+│
+├── tests/
+│   └── robustness/         ← pytest: attacks, features, metrics, systems
 │
 ├── docs/                   ← Tài liệu pipeline, kiến trúc hệ thống (drawio/excalidraw)
 │
@@ -141,7 +166,8 @@ AutoGradeSystem/
 │   └── results/
 │       ├── ablation/       ← CSV + LaTeX từ Ablation Study
 │       ├── optimizer/      ← Trọng số tối ưu từ ML (ml_weights.json)
-│       └── llm_benchmark/  ← CSV + LaTeX từ LLM Benchmark
+│       ├── llm_benchmark/  ← CSV + LaTeX từ LLM Benchmark
+│       └── robustness/     ← REPORT.md, ASR/CDI/detector CSV, bảng LaTeX, figures
 │
 └── frontend/
     └── src/
@@ -204,6 +230,48 @@ python research/run_llm_benchmark.py --mode real
 # Kết quả: experiments/results/llm_benchmark/llm_comparison.csv + llm_comparison_latex.tex
 ```
 
+### Phase 5: Per-criterion Robustness Study (Tấn công & Phát hiện)
+
+Kiểm tra grader 5+1 có bị "lừa" không, tiêu chí nào bị lừa, và dùng bất đồng giữa các tiêu chí
+(**Cognitive Discrepancy Index**, CDI = coverage − logic) để đánh dấu bài đáng ngờ cho giáo viên xem.
+
+**Dữ liệu thật (CC-BY-4.0):** SciEntsBank & Beetle (SemEval-2013 Task 7), Mohler (2011). Nhãn 3-way:
+correct / partial / incorrect.
+
+**Các họ tấn công:** A1 nhồi từ khoá (a/b/c), A2 trôi chảy nhưng sai, A3 đảo phủ định,
+A4 diễn đạt lại (kiểm tra tụt điểm oan), A5 chép lại câu hỏi, A6/A7 white-box riêng cho grader này.
+
+**Hệ so sánh:** Hybrid 5+1 (trọng số NNLS), DeBERTa-v3 fine-tune (3 seed), Qwen2.5-3B holistic/analytic,
+và từng tiêu chí đơn lẻ.
+
+```bash
+python -m research.run_robustness prepare          # data/processed + splits.json
+python -m research.run_robustness extract          # 5 đặc trưng cho mọi câu trả lời sạch (GPU)
+python -m research.run_robustness fit              # trọng số NNLS (train) + ngưỡng (dev)
+python -m research.run_robustness generate --llm   # tấn công theo luật + A2/A4 bằng LLM
+python -m research.run_robustness validate auto    # loại mẫu sinh hỏng
+python -m research.run_robustness baselines finetune
+python -m research.run_robustness baselines llm
+python -m research.run_robustness eval             # attack_results.csv, criterion_shift.csv
+python -m research.run_robustness detect           # bộ phát hiện D0..D3, leave-one-family-out
+python -m research.run_robustness adaptive --llm   # tấn công biết bộ phát hiện
+python -m research.run_robustness report           # REPORT.md + figures/
+```
+
+Kết quả: [`experiments/results/robustness/REPORT.md`](experiments/results/robustness/REPORT.md).
+Chi tiết thiết kế & threat model: [`research/robustness/README.md`](research/robustness/README.md).
+
+Tải lại dữ liệu công khai: `python scripts/download_public_datasets.py`.
+
+---
+
+## ✅ Kiểm thử
+
+```bash
+pytest -m "not slow"   # test nhanh, không cần tải model
+pytest                 # gồm cả test so khớp với grader thật (cần model, khuyến nghị GPU)
+```
+
 ---
 
 ## 🐛 Sự cố thường gặp
@@ -213,4 +281,5 @@ python research/run_llm_benchmark.py --mode real
 | `POST /grade → 500` | `skip_llm=True` nhưng `generate_feedback()` cố gọi tokenizer `None` | **Đã fix** trong `grader.py` — cập nhật code mới nhất |
 | Server kẹt ở `[6/6] Loading Qwen...` mãi không xong | Chưa đăng nhập HF, bị rate limit (~160 KB/s) | Chạy `hf auth login` rồi restart server |
 | `UnicodeEncodeError: 'charmap' codec` trên Windows | Terminal Windows không hỗ trợ ký tự `−` (Unicode minus) | **Đã fix** trong `ablation_v2.py` — cập nhật code mới nhất |
-| `OOM / Memory allocation failed` khi load Qwen | RAM không đủ (~12 GB cần) | Đặt `skip_llm = True` hoặc `use_4bit_quantization = True` |
+| `OOM / Memory allocation failed` khi load Qwen | RAM không đủ (~12 GB cần) | Đặt `ASAG_SKIP_LLM=1` hoặc `ASAG_USE_4BIT=1` |
+| `transformers` lỗi import sau khi `pip install datasets` | `huggingface-hub` bị nâng lên 2.x | `pip install "huggingface-hub>=1.31,<2.0"` |
