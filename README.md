@@ -144,7 +144,6 @@ AutoGradeSystem/
 │
 ├── scripts/                ← Script tiện ích (chạy từ bất kỳ thư mục nào)
 │   ├── download_public_datasets.py ← Tải SemEval-2013 + Mohler sang JSON chuẩn ASAGSample
-│   ├── generate_icoco_presentation.py ← Sinh slide ICOCO (dùng fig11)
 │   ├── create_excel.py     ← Xuất data/outputs/grading_results.json → grading_samples.xlsx
 │   └── production_fixes.py ← Áp dụng các bản vá production vào notebook
 │
