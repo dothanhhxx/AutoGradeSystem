@@ -134,6 +134,54 @@ def fig_asr():
     plt.close(fig)
 
 
+def fig_asr_delta():
+    """Heatmap: genuine-incorrect rate (top row, %) and attack ASR minus that rate (pp), mean over datasets."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import TwoSlopeNorm
+    df = pd.read_csv(RESULTS_DIR / "attack_results.csv")
+    agg = _collapse_seeds(df[["dataset", "attack", "system", "asr"]], ["asr"])
+    systems = [s for s in MAIN_SYSTEMS if s in set(agg.system)]
+    piv = agg.groupby(["dataset", "attack", "system"])["asr"].mean().unstack("system")[systems]
+    base = piv.xs("CLEAN_incorrect", level="attack")
+    attacks = [a for a in ATTACK_ORDER if a not in ("CLEAN_incorrect", "A4") and a in set(agg.attack)]
+    delta = np.array([((piv.xs(a, level="attack") - base).mean() * 100).values for a in attacks])
+    top = (base.mean() * 100).values
+
+    fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(4.6, 4.4), facecolor=SURF,
+                                   gridspec_kw={"height_ratios": [1, len(attacks)], "hspace": 0.08})
+    lim = max(50, np.nanmax(np.abs(delta)))
+    norm = TwoSlopeNorm(vmin=-lim, vcenter=0, vmax=lim)
+    ax0.imshow(top[None, :], cmap="Greys", vmin=0, vmax=250, aspect="auto")
+    im = ax1.imshow(delta, cmap="RdBu_r", norm=norm, aspect="auto")
+    for j, v in enumerate(top):
+        ax0.text(j, 0, f"{v:.0f}%", ha="center", va="center", fontsize=8, color=INK)
+    for i in range(delta.shape[0]):
+        for j in range(delta.shape[1]):
+            v = delta[i, j]
+            ax1.text(j, i, f"{v:+.0f}", ha="center", va="center", fontsize=8,
+                     color="white" if abs(v) > 0.6 * lim else INK)
+    ax0.set_yticks([0])
+    ax0.set_yticklabels(["Genuine incorrect"], fontsize=8, color=INK2)
+    ax0.set_xticks(range(len(systems)))
+    ax0.set_xticklabels([SYS_LABEL[s].replace(" ", "\n", 1) for s in systems], fontsize=7.5, color=INK2)
+    ax0.xaxis.tick_top()
+    ax1.set_yticks(range(len(attacks)))
+    ax1.set_yticklabels([ATTACK_LABEL[a] for a in attacks], fontsize=8, color=INK2)
+    ax1.set_xticks([])
+    for ax in (ax0, ax1):
+        ax.tick_params(length=0)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+    cb = fig.colorbar(im, ax=[ax0, ax1], fraction=0.04, pad=0.03)
+    cb.set_label("Percentage points vs. genuine incorrect", fontsize=7.5, color=INK2)
+    cb.ax.tick_params(labelsize=7, colors=MUTED, length=0)
+    cb.outline.set_visible(False)
+    fig.savefig(FIG / "fig_asr_delta.png", dpi=250, facecolor=SURF, bbox_inches="tight")
+    plt.close(fig)
+
+
 def fig_criterion_shift():
     import matplotlib
     matplotlib.use("Agg")
