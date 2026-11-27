@@ -264,6 +264,48 @@ def fig_adaptive():
     plt.close(fig)
 
 
+def fig_adaptive_column():
+    """Single-column version of fig_adaptive: legend instead of end labels, no title."""
+    p = RESULTS_DIR / "adaptive_search.csv"
+    if not p.exists():
+        return
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    df = pd.read_csv(p)
+    g = df.groupby(["dataset", "budget"])["success_vs_D2"].mean().reset_index()
+    budgets = sorted(g.budget.unique())
+    xpos = {b: i for i, b in enumerate(budgets)}
+    fig, ax = plt.subplots(figsize=(4.6, 2.9), facecolor=SURF)
+    ax.set_facecolor(SURF)
+    cols = ["#2a78d6", "#eb6834", "#1baf7a"]
+    markers = ["o", "s", "^"]
+    ds = [d for d in DATASET_LABEL if d in set(g.dataset)]
+    off = {d: o for d, o in zip(ds, (-0.06, 0.0, 0.06))}
+    for c_, m_, d in zip(cols, markers, ds):
+        s = g[g.dataset == d].sort_values("budget")
+        x = [xpos[b] + off[d] for b in s.budget]
+        ax.plot(x, s.success_vs_D2, color=c_, linewidth=1.8, marker=m_, markersize=5, label=DATASET_LABEL[d])
+    ax.set_xticks(range(len(budgets)))
+    ax.set_xticklabels([str(b) for b in budgets], fontsize=8, color=MUTED)
+    ax.set_xlim(-0.35, len(budgets) - 0.65)
+    ax.set_ylim(0.5, 1.03)
+    ax.set_yticks([0.5, 0.75, 1])
+    ax.set_yticklabels(["50%", "75%", "100%"], fontsize=8, color=MUTED)
+    ax.set_xlabel("Query budget per starting answer", fontsize=8, color=INK2)
+    ax.set_ylabel("Above 'incorrect' and not flagged", fontsize=7.5, color=INK2)
+    ax.grid(axis="y", color=GRID, linewidth=0.6)
+    ax.tick_params(length=0)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.spines["left"].set_color(BASE)
+    ax.spines["bottom"].set_color(BASE)
+    ax.legend(frameon=False, fontsize=7.5, loc="lower right", labelcolor=INK2)
+    fig.tight_layout()
+    fig.savefig(FIG / "fig_adaptive_column.png", dpi=250, facecolor=SURF)
+    plt.close(fig)
+
+
 def fig_framework():
     """Fig. 1: study framework (attacks -> five criteria -> grade; criteria gaps -> detector -> teacher)."""
     import matplotlib
@@ -348,6 +390,61 @@ def fig_roc():
     axes[0].legend(frameon=False, fontsize=7, loc="lower right", labelcolor=INK2)
     fig.tight_layout()
     fig.savefig(FIG / "fig_roc.png", dpi=200, facecolor=SURF)
+    plt.close(fig)
+
+
+def fig_roc_column():
+    """Single-column version of fig_roc: 2x2 grid (three datasets + legend), AUROC in each label."""
+    p = RESULTS_DIR / "detector_roc.json"
+    if not p.exists():
+        return
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    roc = read_json(p)
+    auc = pd.read_csv(RESULTS_DIR / "detector_overall.csv").set_index(["dataset", "detector"])["auroc"]
+    names = {"D0_cdi_rule": "D0 CDI rule", "D1_cdi_score": "D1 CDI score",
+             "D2_disagreement_lr": "D2 disagreement LR", "D3_boosting": "D3 boosting"}
+    cols = dict(zip(names, ["#eda100", "#eb6834", "#2a78d6", "#1baf7a"]))
+    ds = [d for d in DATASET_LABEL if d in roc]
+    fig, axes = plt.subplots(2, 2, figsize=(4.6, 4.4), facecolor=SURF)
+    axes = axes.ravel()
+    for ax, d in zip(axes, ds):
+        ax.set_facecolor(SURF)
+        ax.plot([0, 1], [0, 1], color=BASE, linewidth=0.8, linestyle=":")
+        for k in names:
+            if k in roc[d]:
+                ax.plot(roc[d][k]["fpr"], roc[d][k]["tpr"], color=cols[k], linewidth=1.6)
+        ax.axvline(0.05, color=MUTED, linewidth=0.7, linestyle="--")
+        ax.set_title(DATASET_LABEL[d], fontsize=8.5, color=INK, loc="left")
+        txt = "\n".join(f"{k[:2]} {auc.get((d, k), np.nan):.2f}" for k in names)
+        ax.text(0.97, 0.04, "AUROC\n" + txt, transform=ax.transAxes, ha="right", va="bottom",
+                fontsize=6.5, color=INK2, linespacing=1.25)
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1.01)
+        ax.set_xticks([0, 0.5, 1])
+        ax.set_yticks([0, 0.5, 1])
+        ax.tick_params(labelsize=6.5, colors=MUTED, length=0)
+        ax.grid(color=GRID, linewidth=0.5)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+        for sp in ("left", "bottom"):
+            ax.spines[sp].set_color(BASE)
+    for ax in axes[len(ds):]:
+        ax.axis("off")
+    leg = axes[len(ds)] if len(ds) < 4 else axes[-1]
+    handles = [Line2D([0], [0], color=cols[k], linewidth=2) for k in names]
+    handles.append(Line2D([0], [0], color=MUTED, linewidth=0.8, linestyle="--"))
+    leg.legend(handles, list(names.values()) + ["5% false positives"], frameon=False, fontsize=7.5,
+               loc="center", labelcolor=INK2)
+    for i in (0, 2):
+        axes[i].set_ylabel("True-positive rate", fontsize=7.5, color=INK2)
+    for i in (1, 2):
+        axes[i].set_xlabel("False-positive rate", fontsize=7.5, color=INK2)
+    axes[0].set_xlabel("False-positive rate", fontsize=7.5, color=INK2)
+    fig.tight_layout(h_pad=1.0, w_pad=1.0)
+    fig.savefig(FIG / "fig_roc_column.png", dpi=250, facecolor=SURF)
     plt.close(fig)
 
 
